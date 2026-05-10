@@ -27,7 +27,7 @@ function AppContent() {
             {showMenu && <Menu />}
             
             <Routes>
-                <Route path="/login" element={<Login />} />
+                <Route />
                 
                 <Route path="/" element={
                     <ProtectedRoute>
