@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Eye, EyeOff, Mail, Lock, User, ArrowRight, Globe, Hotel, Compass } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, User, ArrowRight } from 'lucide-react';
+import { Globe, Hotel, Compass } from "lucide-react";
 import { useLanguage } from '../accueil/LanguageContext';
 import { useAuth } from '../../context/AuthContext';
 import api from '../../services/api';
@@ -65,23 +66,26 @@ function Login() {
         
         try {
             if (isRegister) {
-                const response = await api.post('/register', {
+                // Step 1: Sifet verification code
+                const response = await api.post('/register-send-code', {
                     name: formData.name,
                     email: formData.email,
                     password: formData.password,
                     password_confirmation: formData.password_confirmation
                 });
                 
-                setSuccess(lt[lang].registerSuccess);
-                setIsRegister(false);
-                setFormData({
-                    ...formData,
-                    name: '',
-                    password: '',
-                    password_confirmation: ''
+                // Redirect l verification page b data dial user
+                navigate('/verify-code', {
+                    state: {
+                        email: formData.email,
+                        name: formData.name,
+                        password: formData.password,
+                        fromRegister: true
+                    }
                 });
                 
             } else {
+                // Login normal
                 const response = await api.post('/login', {
                     email: formData.email,
                     password: formData.password
@@ -219,10 +223,9 @@ function Login() {
     return (
         <div className={`login-page ${isRTL ? 'rtl' : ''}`}>
             <div className="login-container">
-                {/* LEFT SIDE - Matching Home Hero Style */}
+                {/* LEFT SIDE */}
                 <div className="login-left">
                     <div className="login-left-overlay"></div>
-                    
                     <div className="login-branding">
                         <div className="login-logo">AMUDUX</div>
                         <h1 className="login-tagline">
@@ -236,46 +239,35 @@ function Login() {
                              'An unforgettable journey through traditions, culture and breathtaking landscapes'}
                         </p>
                     </div>
-
                     <div className="login-features">
                         <div className="feature-item">
-                            <div className="feature-icon">
-                                <Globe size={20} />
-                            </div>
+                            <div className="feature-icon"><Globe size={20} /></div>
                             <div className="feature-text">
                                 <strong>{currentLang.discoverMorocco}</strong>
                                 <span>{lang === 'AR' ? 'وجهات فريدة' : lang === 'FR' ? 'Destinations uniques' : 'Unique destinations'}</span>
                             </div>
                         </div>
-                        
                         <div className="feature-item">
-                            <div className="feature-icon">
-                                <Hotel size={20} />
-                            </div>
+                            <div className="feature-icon"><Hotel size={20} /></div>
                             <div className="feature-text">
                                 <strong>{currentLang.bestHotels}</strong>
                                 <span>{lang === 'AR' ? 'إقامة فاخرة' : lang === 'FR' ? 'Hébergement de luxe' : 'Luxury accommodation'}</span>
                             </div>
                         </div>
-                        
                         <div className="feature-item">
-                            <div className="feature-icon">
-                                <Compass size={20} />
-                            </div>
+                            <div className="feature-icon"><Compass size={20} /></div>
                             <div className="feature-text">
                                 <strong>{currentLang.excitingActivities}</strong>
                                 <span>{lang === 'AR' ? 'تجارب لا تُنسى' : lang === 'FR' ? 'Expériences mémorables' : 'Memorable experiences'}</span>
                             </div>
                         </div>
                     </div>
-
-                    {/* Decorative circles like home */}
                     <div className="login-decorative-circle circle-1"></div>
                     <div className="login-decorative-circle circle-2"></div>
                     <div className="login-decorative-circle circle-3"></div>
                 </div>
 
-                {/* RIGHT SIDE - Form */}
+                {/* RIGHT SIDE */}
                 <div className="login-right">
                     <div className="login-form-wrapper">
                         <div className="login-form-header">
@@ -291,55 +283,21 @@ function Login() {
                         <form onSubmit={handleSubmit} className="login-form">
                             {isRegister && (
                                 <div className="form-group">
-                                    <label>
-                                        <User size={16} className="label-icon" />
-                                        {currentLang.name}
-                                    </label>
-                                    <input
-                                        type="text"
-                                        name="name"
-                                        value={formData.name}
-                                        onChange={handleChange}
-                                        placeholder={currentLang.name}
-                                        required
-                                    />
+                                    <label><User size={16} className="label-icon" />{currentLang.name}</label>
+                                    <input type="text" name="name" value={formData.name} onChange={handleChange} placeholder={currentLang.name} required />
                                 </div>
                             )}
                             
                             <div className="form-group">
-                                <label>
-                                    <Mail size={16} className="label-icon" />
-                                    {currentLang.email}
-                                </label>
-                                <input
-                                    type="email"
-                                    name="email"
-                                    value={formData.email}
-                                    onChange={handleChange}
-                                    placeholder="email@example.com"
-                                    required
-                                />
+                                <label><Mail size={16} className="label-icon" />{currentLang.email}</label>
+                                <input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="email@example.com" required />
                             </div>
                             
                             <div className="form-group">
-                                <label>
-                                    <Lock size={16} className="label-icon" />
-                                    {currentLang.password}
-                                </label>
+                                <label><Lock size={16} className="label-icon" />{currentLang.password}</label>
                                 <div className="password-input">
-                                    <input
-                                        type={showPassword ? 'text' : 'password'}
-                                        name="password"
-                                        value={formData.password}
-                                        onChange={handleChange}
-                                        placeholder="••••••••"
-                                        required
-                                    />
-                                    <button
-                                        type="button"
-                                        className="toggle-password"
-                                        onClick={() => setShowPassword(!showPassword)}
-                                    >
+                                    <input type={showPassword ? 'text' : 'password'} name="password" value={formData.password} onChange={handleChange} placeholder="••••••••" required />
+                                    <button type="button" className="toggle-password" onClick={() => setShowPassword(!showPassword)}>
                                         {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                                     </button>
                                 </div>
@@ -347,29 +305,13 @@ function Login() {
                             
                             {isRegister && (
                                 <div className="form-group">
-                                    <label>
-                                        <Lock size={16} className="label-icon" />
-                                        {currentLang.confirmPassword}
-                                    </label>
-                                    <input
-                                        type={showPassword ? 'text' : 'password'}
-                                        name="password_confirmation"
-                                        value={formData.password_confirmation}
-                                        onChange={handleChange}
-                                        placeholder="••••••••"
-                                        required
-                                    />
+                                    <label><Lock size={16} className="label-icon" />{currentLang.confirmPassword}</label>
+                                    <input type={showPassword ? 'text' : 'password'} name="password_confirmation" value={formData.password_confirmation} onChange={handleChange} placeholder="••••••••" required />
                                 </div>
                             )}
                             
-                            <button
-                                type="submit"
-                                className="login-submit"
-                                disabled={loading}
-                            >
-                                {loading ? (
-                                    <span className="spinner"></span>
-                                ) : (
+                            <button type="submit" className="login-submit" disabled={loading}>
+                                {loading ? <span className="spinner"></span> : (
                                     <>
                                         {isRegister ? currentLang.register : currentLang.login}
                                         <ArrowRight size={18} />
@@ -378,9 +320,7 @@ function Login() {
                             </button>
                         </form>
 
-                        <div className="login-divider">
-                            <span>{currentLang.orContinueWith}</span>
-                        </div>
+                        <div className="login-divider"><span>{currentLang.orContinueWith}</span></div>
 
                         <div className="social-login">
                             <button className="social-btn google">
