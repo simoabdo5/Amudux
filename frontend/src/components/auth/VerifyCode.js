@@ -63,7 +63,6 @@ function VerifyCode() {
         setError('');
 
         try {
-            // Verifier code w creer compte
             const response = await api.post('/register-verify', {
                 name: userData.name,
                 email: userData.email,
@@ -71,19 +70,31 @@ function VerifyCode() {
                 code: code
             });
             
+            const { user, token } = response.data;
+            
+            if (!user || !token) {
+                setError('Erreur: données manquantes du serveur');
+                return;
+            }
+            
             setSuccess(t.verified);
             
             // Auto-login
-            const { user, token } = response.data;
             login(user, token);
             
-            // Redirect l home page directement (ma ydakhelchi login)
+            // Redirect l home page directement
             setTimeout(() => {
                 navigate('/');
             }, 1500);
             
         } catch (err) {
-            setError(err.response?.data?.message || t.invalidCode);
+            if (err.response?.data?.errors) {
+                const errors = err.response.data.errors;
+                const firstError = Object.values(errors)[0]?.[0];
+                setError(firstError || t.invalidCode);
+            } else {
+                setError(err.response?.data?.message || t.invalidCode);
+            }
         } finally {
             setLoading(false);
         }
@@ -112,7 +123,6 @@ function VerifyCode() {
     return (
         <div className={`login-page ${isRTL ? 'rtl' : ''}`}>
             <div className="login-container">
-                {/* LEFT SIDE */}
                 <div className="login-left">
                     <div className="login-left-overlay"></div>
                     <div className="login-branding">
@@ -127,7 +137,6 @@ function VerifyCode() {
                     <div className="login-decorative-circle circle-2"></div>
                 </div>
 
-                {/* RIGHT SIDE */}
                 <div className="login-right">
                     <div className="login-form-wrapper">
                         <div className="login-form-header">

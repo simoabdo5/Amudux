@@ -12,16 +12,54 @@ use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
-    // ===== LOGIN & LOGOUT (ma tbdelhomch) =====
-    
-    public function login(Request $request) { /* ... */ }
-    public function logout(Request $request) { /* ... */ }
+    // ===== LOGIN =====
+    public function login(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
 
-    // ===== REGISTER JDID - ysifet code =====
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
 
-    /**
-     * Step 1: User y3amer form w ysifet code
-     */
+        $user = User::where('email', $request->email)->first();
+
+        if (!$user) {
+            return response()->json([
+                'message' => 'Email incorrect ou utilisateur non trouvé'
+            ], 401);
+        }
+
+        if (!Hash::check($request->password, $user->password)) {
+            return response()->json([
+                'message' => 'Mot de passe incorrect'
+            ], 401);
+        }
+
+        $token = $user->createToken('auth_token')->plainTextToken;
+
+        return response()->json([
+            'message' => 'Connexion réussie',
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'role' => $user->role,
+            ],
+            'token' => $token
+        ]);
+    }
+
+    // ===== LOGOUT =====
+    public function logout(Request $request)
+    {
+        $request->user()->currentAccessToken()->delete();
+        return response()->json(['message' => 'Déconnexion réussie']);
+    }
+
+    // ===== REGISTER STEP 1: Sifet code =====
     public function registerSendCode(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -34,7 +72,6 @@ class AuthController extends Controller
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        // Check ila email deja kayn f verification
         $existingUser = User::where('email', $request->email)->first();
         if ($existingUser) {
             return response()->json([
@@ -42,20 +79,16 @@ class AuthController extends Controller
             ], 422);
         }
 
-        // Generer code
         $code = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
 
-        // Supprimer codes 9dam
         VerificationCode::where('email', $request->email)->delete();
 
-        // Creer code jdid
         VerificationCode::create([
             'email' => $request->email,
             'code' => $code,
             'expires_at' => now()->addMinutes(10)
         ]);
 
-        // Sifet email b code
         try {
             Mail::to($request->email)->send(new VerificationCodeMail($code));
             
@@ -67,14 +100,12 @@ class AuthController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Erreur lors de l\'envoi de l\'email'
+                'message' => 'Erreur lors de l\'envoi de l\'email: ' . $e->getMessage()
             ], 500);
         }
     }
 
-    /**
-     * Step 2: Verifier code w creer compte
-     */
+    // ===== REGISTER STEP 2: Verifier code w creer compte =====
     public function registerVerify(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -88,7 +119,6 @@ class AuthController extends Controller
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        // Verifier code
         $record = VerificationCode::where('email', $request->email)
             ->where('code', $request->code)
             ->where('expires_at', '>', now())
@@ -101,10 +131,8 @@ class AuthController extends Controller
             ], 400);
         }
 
-        // Supprimer code
         $record->delete();
 
-        // Creer user
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
@@ -118,14 +146,17 @@ class AuthController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Inscription réussie !',
-            'user' => $user,
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'role' => $user->role,
+            ],
             'token' => $token
         ]);
     }
 
-    /**
-     * Verifier code (l-7a9i9i - bila creer compte)
-     */
+    // ===== Verifier code (bila creer compte) =====
     public function verifyCode(Request $request)
     {
         $validator = Validator::make($request->all(), [

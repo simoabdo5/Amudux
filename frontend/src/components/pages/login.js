@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Eye, EyeOff, Mail, Lock, User, ArrowRight } from 'lucide-react';
-import { Globe, Hotel, Compass } from "lucide-react";
+import { Eye, EyeOff, Mail, Lock, User, ArrowRight, Globe, Hotel, Compass } from 'lucide-react';
 import { useLanguage } from '../accueil/LanguageContext';
 import { useAuth } from '../../context/AuthContext';
 import api from '../../services/api';
@@ -74,7 +73,7 @@ function Login() {
                     password_confirmation: formData.password_confirmation
                 });
                 
-                // Redirect l verification page b data dial user
+                // Redirect l verification page
                 navigate('/verify-code', {
                     state: {
                         email: formData.email,
@@ -124,7 +123,6 @@ function Login() {
         setSuccess('');
     };
 
-    // Traductions
     const lt = {
         FR: {
             welcomeBack: 'Bon retour !',
@@ -146,7 +144,6 @@ function Login() {
             verifyInfo: 'Veuillez vérifier vos informations',
             invalidCredentials: 'Email ou mot de passe incorrect',
             networkError: 'Erreur réseau. Vérifiez que le backend est démarré',
-            registerSuccess: 'Inscription réussie ! Connectez-vous maintenant.',
             orContinueWith: 'Ou continuer avec',
             google: 'Google',
             facebook: 'Facebook',
@@ -176,7 +173,6 @@ function Login() {
             verifyInfo: 'Please check your information',
             invalidCredentials: 'Invalid email or password',
             networkError: 'Network error. Check if backend is running',
-            registerSuccess: 'Registration successful! Please log in.',
             orContinueWith: 'Or continue with',
             google: 'Google',
             facebook: 'Facebook',
@@ -206,7 +202,6 @@ function Login() {
             verifyInfo: 'يرجى التحقق من المعلومات',
             invalidCredentials: 'البريد أو كلمة المرور غير صحيحة',
             networkError: 'خطأ في الشبكة. تأكد من تشغيل الخادم',
-            registerSuccess: 'تم التسجيل بنجاح! سجل الدخول الآن.',
             orContinueWith: 'أو تابع باستخدام',
             google: 'جوجل',
             facebook: 'فيسبوك',
@@ -223,7 +218,6 @@ function Login() {
     return (
         <div className={`login-page ${isRTL ? 'rtl' : ''}`}>
             <div className="login-container">
-                {/* LEFT SIDE */}
                 <div className="login-left">
                     <div className="login-left-overlay"></div>
                     <div className="login-branding">
@@ -267,7 +261,6 @@ function Login() {
                     <div className="login-decorative-circle circle-3"></div>
                 </div>
 
-                {/* RIGHT SIDE */}
                 <div className="login-right">
                     <div className="login-form-wrapper">
                         <div className="login-form-header">
