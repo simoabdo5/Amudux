@@ -15,6 +15,9 @@ import Login from "./components/pages/login";
 import Saved from "./components/pages/saved";
 import Chatbot from "./components/Chatbot/Chatbot";
 import AdminDashboard from "./components/pages/adminDashboard";
+import EmailVerification from './components/auth/EmailVerification';
+import VerifyCode from './components/auth/VerifyCode';
+
 
 function AppContent() {
     const location = useLocation();
@@ -68,6 +71,11 @@ function AppContent() {
                         <AdminDashboard />
                     </ProtectedRoute>
                 } />
+
+                <Route path="/verify-email" element={<EmailVerification />} />
+
+                <Route path="/verify-code" element={<VerifyCode />} />
+
 
                 {/* fallback */}
                 <Route path="*" element={<Navigate to="/" />} />

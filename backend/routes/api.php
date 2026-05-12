@@ -4,15 +4,18 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
 
-// PUBLIC - ma khassch token
-Route::post('/register', [AuthController::class, 'register']);
+// PUBLIC
 Route::post('/login', [AuthController::class, 'login']);
 
-// PROTECTED - khas token
+// REGISTER - 2 steps
+Route::post('/register-send-code', [AuthController::class, 'registerSendCode']);
+Route::post('/register-verify', [AuthController::class, 'registerVerify']);
+Route::post('/verify-code', [AuthController::class, 'verifyCode']);
+
+// PROTECTED
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     
-    // ADMIN ONLY
     Route::middleware('admin')->group(function () {
         Route::get('/admin/users', [AdminController::class, 'getAllUsers']);
         Route::delete('/admin/users/{id}', [AdminController::class, 'deleteUser']);
