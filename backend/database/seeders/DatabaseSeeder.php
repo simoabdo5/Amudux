@@ -16,7 +16,7 @@ class DatabaseSeeder extends Seeder
         // Créer admin
         User::create([
             'name' => 'Admin User',
-            'email' => 'admin@amodox.com',
+            'email' => 'admin@gmail.com',
             'password' => Hash::make('admin123'),
             'role' => 'admin',
         ]);
@@ -24,7 +24,7 @@ class DatabaseSeeder extends Seeder
         // Créer user
         User::create([
             'name' => 'Normal User',
-            'email' => 'user@amodox.com',
+            'email' => 'user@gmail.com',
             'password' => Hash::make('user123'),
             'role' => 'user',
         ]);
