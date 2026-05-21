@@ -17,6 +17,7 @@ import Login from "./components/pages/login";
 import Saved from "./components/pages/saved";
 import Chatbot from "./components/Chatbot/Chatbot";
 import AdminDashboard from "./components/pages/adminDashboard";
+import Pack from "./components/pages/pack";
 
 import EmailVerification from './components/auth/EmailVerification';
 import VerifyCode from './components/auth/VerifyCode';
@@ -55,6 +56,7 @@ function AppContent() {
                 <Route path="/card" element={<Card />} />
                 <Route path="/destination" element={<Destination />} />
                 <Route path="/languages" element={<Languages />} />
+                <Route path="/pack" element={<Pack />} />
 
                 {/* LOGIN */}
                 <Route path="/login" element={<Login />} />
