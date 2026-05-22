@@ -1,4 +1,8 @@
+import React from "react";
+import MasterLearningHub from "../learn/MasterLearningHub";
+
 function Languages() {
-  return <h1>Languages Page</h1>;
+  return <MasterLearningHub />;
 }
+
 export default Languages;
