@@ -1,5 +1,6 @@
+// App.js - Version corrigée (sans Router imbriqué)
 import React from "react";
-import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation, Navigate } from 'react-router-dom';
 
 import { LanguageProvider } from "./components/accueil/LanguageContext";
 import { AuthProvider } from './context/AuthContext';
@@ -22,6 +23,14 @@ import ResetPassword from './components/auth/ResetPassword';
 import GoogleCallback from './components/auth/GoogleCallback';
 
 
+// Import des pages de destinations
+import Agadir from "./components/pages/destinations/Agadir";
+import Casablanca from "./components/pages/destinations/Casablanca";
+import Marrakech from "./components/pages/destinations/Marrakech";
+import Fes from "./components/pages/destinations/Fes";
+import Chefchaouen from "./components/pages/destinations/Chefchaouen";
+import Essaouira from "./components/pages/destinations/Essaouira";
+
 function AppContent() {
     const location = useLocation();
 
@@ -41,24 +50,32 @@ function AppContent() {
             {showMenu && <Menu />}
 
             <Routes>
-                {/* ✅ PUBLIC - Bla login */}
+                {/* Routes principales */}
                 <Route path="/" element={<Home />} />
                 <Route path="/card" element={<Card />} />
                 <Route path="/destination" element={<Destination />} />
                 <Route path="/languages" element={<Languages />} />
 
-                {/* ✅ LOGIN page */}
+                {/* Routes des villes */}
+                <Route path="/destination/agadir" element={<Agadir />} />
+                <Route path="/destination/casablanca" element={<Casablanca />} />
+                <Route path="/destination/marrakech" element={<Marrakech />} />
+                <Route path="/destination/fes" element={<Fes />} />
+                <Route path="/destination/chefchaouen" element={<Chefchaouen />} />
+                <Route path="/destination/essaouira" element={<Essaouira />} />
+
+                {/* Login page */}
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Login />} />
 
-                {/* ✅ PROTECTED - Khassin login */}
+                {/* Protected routes */}
                 <Route path="/saved" element={
                     <ProtectedRoute>
                         <Saved />
                     </ProtectedRoute>
                 } />
 
-                {/* ✅ ADMIN - Khassin login + admin role */}
+                {/* Admin route */}
                 <Route path="/admin" element={
                     <ProtectedRoute requireAdmin={true}>
                         <AdminDashboard />
@@ -74,7 +91,7 @@ function AppContent() {
                 <Route path="/auth/registration-success" element={<Navigate to="/" replace />} />
 
 
-                {/* fallback */}
+                {/* Fallback */}
                 <Route path="*" element={<Navigate to="/" />} />
             </Routes>
 
@@ -82,11 +99,14 @@ function AppContent() {
         </>
     );
 }
+
 function App() {
     return (
         <AuthProvider>
             <LanguageProvider>
-                <AppContent />
+                <Router>
+                    <AppContent />
+                </Router>
             </LanguageProvider>
         </AuthProvider>
     );
