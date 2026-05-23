@@ -12,20 +12,43 @@ import {
   Plane,
   Hotel,
   UtensilsCrossed,
-  Camera
+  Camera,
+  ChevronLeft,
+  ChevronRight,
+  Tent,
+  Home
 } from "lucide-react";
 import { useLanguage } from "../accueil/LanguageContext";
 import { generateTripData } from "../../services/aiService";
-import { MOROCCO_CITIES, getMoroccoImageByText, CITY_CATEGORIES } from "../../services/moroccoData";
+import { MOROCCO_CITIES, getMoroccoImageByText, CITY_CATEGORIES, getGoogleMapsHotelOptions, getRealGoogleMapsOptions } from "../../services/moroccoData";
 import "../css/pack.css";
+
+const formatDateInput = (date) => date.toISOString().slice(0, 10);
+
+const addDays = (date, days) => {
+  const next = new Date(date);
+  next.setDate(next.getDate() + days);
+  return next;
+};
+
+const getInclusiveDays = (startDate, endDate) => {
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+  if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime()) || end < start) return 1;
+  return Math.min(14, Math.max(1, Math.round((end - start) / 86400000) + 1));
+};
 
 function Pack() {
   const { t, lang, isRTL } = useLanguage();
+  const today = formatDateInput(new Date());
+  const defaultEndDate = formatDateInput(addDays(new Date(), 2));
   
   // Form State
   const [formData, setFormData] = useState({
     location: "Marrakech",
     noOfDays: "3",
+    startDate: today,
+    endDate: defaultEndDate,
     budget: "Moderate",
     traveler: "Couple"
   });
@@ -42,6 +65,12 @@ function Pack() {
   const [expandedDays, setExpandedDays] = useState({});
   const cityDropdownRef = useRef(null);
 
+  // Horizontal Scroll Refs
+  const hotelsScrollRef = useRef(null);
+  const restaurantsScrollRef = useRef(null);
+  const hostelsScrollRef = useRef(null);
+  const campingScrollRef = useRef(null);
+
   // Saved Trips State
   const [savedTrips, setSavedTrips] = useState(() => {
     try {
@@ -57,7 +86,7 @@ function Pack() {
 
   // Get city geographical category
   const getCityCategory = (cityName) => {
-    return CITY_CATEGORIES[cityName] || "imperial";
+    return CITY_CATEGORIES?.[cityName] || "imperial";
   };
 
   // Emoji Categories mapping helper
@@ -99,6 +128,17 @@ function Pack() {
     return expandedDays[dayIndex] !== false; // expanded by default
   };
 
+  // Horizontal scroll helper
+  const scrollContainer = (ref, direction) => {
+    if (ref.current) {
+      const scrollAmount = 340;
+      ref.current.scrollBy({
+        left: direction === "right" ? scrollAmount : -scrollAmount,
+        behavior: "smooth"
+      });
+    }
+  };
+
   const STEP_MESSAGES = [
     {
       icon: <Compass size={18} />,
@@ -128,6 +168,20 @@ function Pack() {
 
   const handleInputChange = (name, value) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleDateChange = (name, value) => {
+    setFormData((prev) => {
+      const next = { ...prev, [name]: value };
+      if (name === "startDate" && next.endDate < value) {
+        next.endDate = value;
+      }
+      if (name === "endDate" && value < next.startDate) {
+        next.startDate = value;
+      }
+      next.noOfDays = getInclusiveDays(next.startDate, next.endDate).toString();
+      return next;
+    });
   };
 
   // Launch AI Trip Generation
@@ -204,7 +258,15 @@ function Pack() {
 
   // Select a past saved trip
   const selectSavedTrip = (trip) => {
-    setFormData(trip.formData);
+    setFormData({
+      location: "Marrakech",
+      noOfDays: "3",
+      startDate: today,
+      endDate: defaultEndDate,
+      budget: "Moderate",
+      traveler: "Couple",
+      ...trip.formData,
+    });
     setTripResult(trip.result);
     setExpandedDays({}); // Reset toggles
     setTimeout(() => {
@@ -249,6 +311,89 @@ function Pack() {
     { value: "Friends", label: t("friendsTravel"), desc: t("friendsDesc"), icon: "👥" }
   ];
 
+  // Section headings for accommodation types
+  const sectionLabels = {
+    hotels: lang === "AR" ? "فنادق حقيقية على Google Maps" : lang === "FR" ? "Hôtels réels sur Google Maps" : "Real hotels on Google Maps",
+    restaurants: lang === "AR" ? "مطاعم حقيقية" : lang === "FR" ? "Restaurants réels" : "Real restaurants",
+    hostels: lang === "AR" ? "نزل حقيقية" : lang === "FR" ? "Auberges réelles" : "Real hostels",
+    camping: lang === "AR" ? "Camping réel" : lang === "FR" ? "Camping réel" : "Real camping"
+  };
+
+  const googleHotelOptions = getGoogleMapsHotelOptions(formData.location, lang, formData.budget);
+  const realRestaurantOptions = getRealGoogleMapsOptions(formData.location, lang, formData.budget, "restaurants");
+  const realHostelOptions = getRealGoogleMapsOptions(formData.location, lang, formData.budget, "hostels");
+  const realCampingOptions = getRealGoogleMapsOptions(formData.location, lang, formData.budget, "camping");
+  const mapsLabel = "Google Maps";
+
+  const renderRealPlaceCard = (item, index, fallbackContext = "hotel") => (
+    <div key={`${item.name}-${index}`} className="h-scroll-card pack-card" style={{ "--delay": `${index * 0.12}s` }}>
+      <div className="h-scroll-img-wrapper">
+        <img src={item.image_url || getMoroccoImageByText(formData.location, fallbackContext)} alt={item.name} />
+        <div className="h-scroll-price-badge">{item.price}</div>
+        {item.cuisine && (
+          <div className="h-scroll-cuisine-badge">{item.cuisine}</div>
+        )}
+      </div>
+      <div className="h-scroll-info">
+        <div className="h-scroll-title-row">
+          <h3>{item.name}</h3>
+          <div className="h-scroll-rating">
+            <Star size={12} fill="currentColor" />
+            <span>{item.rating}</span>
+          </div>
+        </div>
+        <p className="h-scroll-address">
+          <MapPin size={12} />
+          <span>{item.address || item.source}{item.reviews ? ` • ${item.reviews}` : ""}</span>
+        </p>
+        <p className="h-scroll-desc">{item.description}</p>
+        <button
+          className="maps-redirect-btn mini"
+          onClick={() => openGoogleMaps(item.maps_query || `${item.name}, ${formData.location}, Morocco`)}
+        >
+          <ExternalLink size={12} />
+          <span>{mapsLabel}</span>
+        </button>
+      </div>
+    </div>
+  );
+
+  const renderGoogleHotelCard = (hotel, index) => renderRealPlaceCard(hotel, index, "hotel");
+
+  // Reusable horizontal scroll section component
+  const renderHorizontalSection = (title, icon, items, scrollRef, renderCard) => {
+    if (!items || items.length === 0) return null;
+    return (
+      <div className="accommodation-section animate-slide-up" style={{ "--delay": "0.1s" }}>
+        <div className="accommodation-section-header">
+          <div className="section-title-row">
+            {icon}
+            <h2>{title}</h2>
+          </div>
+          <div className="scroll-nav-arrows">
+            <button 
+              className="scroll-arrow-btn" 
+              onClick={() => scrollContainer(scrollRef, "left")}
+              aria-label="Scroll left"
+            >
+              <ChevronLeft size={18} />
+            </button>
+            <button 
+              className="scroll-arrow-btn" 
+              onClick={() => scrollContainer(scrollRef, "right")}
+              aria-label="Scroll right"
+            >
+              <ChevronRight size={18} />
+            </button>
+          </div>
+        </div>
+        <div className="horizontal-scroll-track" ref={scrollRef}>
+          {items.map((item, index) => renderCard(item, index))}
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className={`pack-page ${isRTL ? "rtl" : ""}`}>
       {/* Banner/Header */}
@@ -268,190 +413,195 @@ function Pack() {
       <div className="pack-container">
 
         <div className="pack-layout">
-          {/* Left Panel: Configuration Form */}
+          {/* Left Panel: Configuration Form — Independent Scroll */}
           <div className="pack-form-side animate-slide-up" style={{ "--delay": "0.1s" }}>
-            <div className="pack-card form-card">
-              
-              {/* Destination Input - Custom Search Autocomplete Dropdown */}
-              <div className="form-group animate-slide-up" style={{ "--delay": "0.15s" }}>
-                <label className="form-label">
-                  <MapPin size={16} className="label-icon" />
-                  <span>{t("searchPlaceholder")}</span>
-                </label>
-                <div className="premium-city-selector-wrapper" ref={cityDropdownRef}>
-                  <div 
-                    className={`premium-city-trigger ${cityDropdownOpen ? "active" : ""}`}
-                    onClick={() => setCityDropdownOpen(!cityDropdownOpen)}
-                  >
-                    <span className="trigger-emoji">{getCityCategoryIcon(formData.location)}</span>
-                    <div className="trigger-text-details">
-                      <span className="trigger-val">{formData.location}</span>
-                      <span className="trigger-sub">{getCityCategory(formData.location).toUpperCase()}</span>
+            <div className="pack-form-scroll-wrapper">
+              <div className="pack-card form-card">
+                
+                {/* Destination Input - Custom Search Autocomplete Dropdown */}
+                <div className="form-group animate-slide-up" style={{ "--delay": "0.15s" }}>
+                  <label className="form-label">
+                    <MapPin size={16} className="label-icon" />
+                    <span>{t("searchPlaceholder")}</span>
+                  </label>
+                  <div className="premium-city-selector-wrapper" ref={cityDropdownRef}>
+                    <div 
+                      className={`premium-city-trigger ${cityDropdownOpen ? "active" : ""}`}
+                      onClick={() => setCityDropdownOpen(!cityDropdownOpen)}
+                    >
+                      <span className="trigger-emoji">{getCityCategoryIcon(formData.location)}</span>
+                      <div className="trigger-text-details">
+                        <span className="trigger-val">{formData.location}</span>
+                        <span className="trigger-sub">{getCityCategory(formData.location).toUpperCase()}</span>
+                      </div>
+                      <Compass size={16} className={`chevron-indicator ${cityDropdownOpen ? "open" : ""}`} />
                     </div>
-                    <Compass size={16} className={`chevron-indicator ${cityDropdownOpen ? "open" : ""}`} />
-                  </div>
-                  
-                  {cityDropdownOpen && (
-                    <div className="premium-city-dropdown animate-slide-down">
-                      <input 
-                        type="text" 
-                        placeholder={lang === "AR" ? "ابحث عن مدينة..." : lang === "FR" ? "Rechercher une ville..." : "Search a city..."} 
-                        value={citySearch}
-                        onChange={(e) => setCitySearch(e.target.value)}
-                        className="dropdown-search-input"
-                        onClick={(e) => e.stopPropagation()}
-                        autoFocus
-                      />
-                      <div className="dropdown-options-list">
-                        {MOROCCO_CITIES.filter(city => 
-                          city.toLowerCase().includes(citySearch.toLowerCase())
-                        ).map((city) => (
-                          <div 
-                            key={city}
-                            className={`dropdown-option-item ${formData.location === city ? "selected" : ""}`}
-                            onClick={() => {
-                              handleInputChange("location", city);
-                              setCityDropdownOpen(false);
-                              setCitySearch("");
-                            }}
-                          >
-                            <span className="option-icon">{getCityCategoryIcon(city)}</span>
-                            <div className="option-details">
-                              <span className="option-name">{city}</span>
-                              <span className="option-sub">{getCityCategory(city)}</span>
+                    
+                    {cityDropdownOpen && (
+                      <div className="premium-city-dropdown animate-slide-down">
+                        <input 
+                          type="text" 
+                          placeholder={lang === "AR" ? "ابحث عن مدينة..." : lang === "FR" ? "Rechercher une ville..." : "Search a city..."} 
+                          value={citySearch}
+                          onChange={(e) => setCitySearch(e.target.value)}
+                          className="dropdown-search-input"
+                          onClick={(e) => e.stopPropagation()}
+                          autoFocus
+                        />
+                        <div className="dropdown-options-list">
+                          {MOROCCO_CITIES.filter(city => 
+                            city.toLowerCase().includes(citySearch.toLowerCase())
+                          ).map((city) => (
+                            <div 
+                              key={city}
+                              className={`dropdown-option-item ${formData.location === city ? "selected" : ""}`}
+                              onClick={() => {
+                                handleInputChange("location", city);
+                                setCityDropdownOpen(false);
+                                setCitySearch("");
+                              }}
+                            >
+                              <span className="option-icon">{getCityCategoryIcon(city)}</span>
+                              <div className="option-details">
+                                <span className="option-name">{city}</span>
+                                <span className="option-sub">{getCityCategory(city)}</span>
+                              </div>
+                              {formData.location === city && <Check size={14} className="option-check" />}
                             </div>
-                            {formData.location === city && <Check size={14} className="option-check" />}
-                          </div>
-                        ))}
-                        {MOROCCO_CITIES.filter(city => 
-                          city.toLowerCase().includes(citySearch.toLowerCase())
-                        ).length === 0 && (
-                          <div className="dropdown-no-results">
-                            {lang === "AR" ? "لا توجد نتائج" : lang === "FR" ? "Aucun résultat" : "No results found"}
-                          </div>
-                        )}
+                          ))}
+                          {MOROCCO_CITIES.filter(city => 
+                            city.toLowerCase().includes(citySearch.toLowerCase())
+                          ).length === 0 && (
+                            <div className="dropdown-no-results">
+                              {lang === "AR" ? "لا توجد نتائج" : lang === "FR" ? "Aucun résultat" : "No results found"}
+                            </div>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* Duration Days Input - Premium Numeric Stepper */}
-              <div className="form-group animate-slide-up" style={{ "--delay": "0.2s" }}>
-                <label className="form-label">
-                  <Calendar size={16} className="label-icon" />
-                  <span>{t("daysLabel")}</span>
-                </label>
-                <div className="premium-stepper-container">
-                  <button 
-                    type="button"
-                    className="stepper-btn stepper-btn-minus"
-                    onClick={() => handleInputChange("noOfDays", Math.max(1, Number(formData.noOfDays) - 1).toString())}
-                    disabled={Number(formData.noOfDays) <= 1}
-                  >
-                    &minus;
-                  </button>
-                  <div className="stepper-value-display">
-                    <span className="stepper-number">{formData.noOfDays}</span>
-                    <span className="stepper-label">{lang === "AR" ? "أيام" : lang === "FR" ? "jours" : "days"}</span>
+                    )}
                   </div>
-                  <button 
-                    type="button"
-                    className="stepper-btn stepper-btn-plus"
-                    onClick={() => handleInputChange("noOfDays", Math.min(14, Number(formData.noOfDays) + 1).toString())}
-                    disabled={Number(formData.noOfDays) >= 14}
-                  >
-                    +
-                  </button>
                 </div>
-              </div>
 
-              {/* Budget Option Cards */}
-              <div className="form-group animate-slide-up" style={{ "--delay": "0.25s" }}>
-                <label className="form-label">
-                  <TrendingUp size={16} className="label-icon" />
-                  <span>{t("budgetLabel")}</span>
-                </label>
-                <div className="card-selector-grid">
-                  {budgetOptions.map((opt) => (
-                    <div 
-                      key={opt.value}
-                      className={`selector-card ${formData.budget === opt.value ? "active" : ""}`}
-                      onClick={() => handleInputChange("budget", opt.value)}
-                    >
-                      <div className="selector-header">
-                        <span className="selector-emoji">{opt.icon}</span>
-                        <h3>{opt.label}</h3>
-                      </div>
-                      <p>{opt.desc}</p>
+                {/* Duration Date Range */}
+                <div className="form-group duration-group animate-slide-up" style={{ "--delay": "0.2s" }}>
+                  <label className="form-label">
+                    <Calendar size={16} className="label-icon" />
+                    <span>{t("daysLabel")}</span>
+                  </label>
+                  <div className="date-range-panel redesigned">
+                    <div className="date-field">
+                      <span>{lang === "AR" ? "اليوم الأول" : lang === "FR" ? "Jour de début" : "Start day"}</span>
+                      <input
+                        type="date"
+                        value={formData.startDate}
+                        min={today}
+                        onChange={(e) => handleDateChange("startDate", e.target.value)}
+                      />
                     </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Traveler Companion Cards */}
-              <div className="form-group animate-slide-up" style={{ "--delay": "0.3s" }}>
-                <label className="form-label">
-                  <Smile size={16} className="label-icon" />
-                  <span>{t("groupLabel")}</span>
-                </label>
-                <div className="card-selector-grid">
-                  {travelerOptions.map((opt) => (
-                    <div 
-                      key={opt.value}
-                      className={`selector-card ${formData.traveler === opt.value ? "active" : ""}`}
-                      onClick={() => handleInputChange("traveler", opt.value)}
-                    >
-                      <div className="selector-header">
-                        <span className="selector-emoji">{opt.icon}</span>
-                        <h3>{opt.label}</h3>
-                      </div>
-                      <p>{opt.desc}</p>
+                    <div className="date-field">
+                      <span>{lang === "AR" ? "اليوم الأخير" : lang === "FR" ? "Jour de fin" : "End day"}</span>
+                      <input
+                        type="date"
+                        value={formData.endDate}
+                        min={formData.startDate || today}
+                        max={formatDateInput(addDays(new Date(formData.startDate || today), 13))}
+                        onChange={(e) => handleDateChange("endDate", e.target.value)}
+                      />
                     </div>
-                  ))}
+                    <div className="date-duration-summary">
+                      <span className="stepper-number">{formData.noOfDays}</span>
+                      <span className="stepper-label">{lang === "AR" ? "أيام" : lang === "FR" ? "jours" : "days"}</span>
+                    </div>
+                  </div>
                 </div>
-              </div>
 
-              {/* Action Button */}
-              <button 
-                className={`generate-btn ${loading ? "loading" : ""} animate-slide-up`} 
-                style={{ "--delay": "0.35s" }}
-                onClick={handleGenerate}
-                disabled={loading}
-              >
-                <Sparkles size={18} className={loading ? "animate-spin" : ""} />
-                <span>{loading ? t("loadingTrip") : t("generateBtn")}</span>
-              </button>
-
-            </div>
-
-            {/* Quick Access: Saved Past Trips */}
-            {savedTrips.length > 0 && (
-              <div className="pack-card saved-trips-card animate-slide-up" style={{ "--delay": "0.4s" }}>
-                <h2>{t("saved")}</h2>
-                <div className="saved-trips-list">
-                  {savedTrips.map((trip) => (
-                    <div 
-                      key={trip.id} 
-                      className="saved-trip-item"
-                      onClick={() => selectSavedTrip(trip)}
-                    >
-                      <div className="saved-trip-info">
-                        <h3>{trip.formData.location}</h3>
-                        <p>{trip.formData.noOfDays} {t("duration")} • {trip.date}</p>
-                      </div>
-                      <button 
-                        className="delete-saved-btn"
-                        onClick={(e) => deleteSavedTrip(trip.id, e)}
+                {/* Budget Option Cards */}
+                <div className="form-group budget-group animate-slide-up" style={{ "--delay": "0.25s" }}>
+                  <label className="form-label">
+                    <TrendingUp size={16} className="label-icon" />
+                    <span>{t("budgetLabel")}</span>
+                  </label>
+                  <div className="budget-segmented-control">
+                    {budgetOptions.map((opt) => (
+                      <button
+                        type="button"
+                        key={opt.value}
+                        className={`budget-pill ${formData.budget === opt.value ? "active" : ""}`}
+                        onClick={() => handleInputChange("budget", opt.value)}
                       >
-                        &times;
+                        <span className="selector-emoji">{opt.icon}</span>
+                        <span className="budget-pill-text">
+                          <h3>{opt.label}</h3>
+                          <small>{opt.desc}</small>
+                        </span>
                       </button>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
-              </div>
-            )}
 
+                {/* Traveler Companion Cards */}
+                <div className="form-group animate-slide-up" style={{ "--delay": "0.3s" }}>
+                  <label className="form-label">
+                    <Smile size={16} className="label-icon" />
+                    <span>{t("groupLabel")}</span>
+                  </label>
+                  <div className="card-selector-grid">
+                    {travelerOptions.map((opt) => (
+                      <div 
+                        key={opt.value}
+                        className={`selector-card ${formData.traveler === opt.value ? "active" : ""}`}
+                        onClick={() => handleInputChange("traveler", opt.value)}
+                      >
+                        <div className="selector-header">
+                          <span className="selector-emoji">{opt.icon}</span>
+                          <h3>{opt.label}</h3>
+                        </div>
+                        <p>{opt.desc}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Action Button */}
+                <button 
+                  className={`generate-btn ${loading ? "loading" : ""} animate-slide-up`} 
+                  style={{ "--delay": "0.35s" }}
+                  onClick={handleGenerate}
+                  disabled={loading}
+                >
+                  <Sparkles size={18} className={loading ? "animate-spin" : ""} />
+                  <span>{loading ? t("loadingTrip") : t("generateBtn")}</span>
+                </button>
+
+              </div>
+
+              {/* Quick Access: Saved Past Trips */}
+              {savedTrips.length > 0 && (
+                <div className="pack-card saved-trips-card animate-slide-up" style={{ "--delay": "0.4s" }}>
+                  <h2>{t("saved")}</h2>
+                  <div className="saved-trips-list">
+                    {savedTrips.map((trip) => (
+                      <div 
+                        key={trip.id} 
+                        className="saved-trip-item"
+                        onClick={() => selectSavedTrip(trip)}
+                      >
+                        <div className="saved-trip-info">
+                          <h3>{trip.formData.location}</h3>
+                          <p>{trip.formData.noOfDays} {t("duration")} • {trip.date}</p>
+                        </div>
+                        <button 
+                          className="delete-saved-btn"
+                          onClick={(e) => deleteSavedTrip(trip.id, e)}
+                        >
+                          &times;
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Right Panel: Premium Loading & Results */}
@@ -503,10 +653,26 @@ function Pack() {
 
             {/* No Trip Generated yet state */}
             {!loading && !tripResult && (
-              <div className="empty-planner-display pack-card animate-slide-up" style={{ "--delay": "0.15s" }}>
-                <Compass size={64} className="compass-icon animate-spin-slow" />
-                <h2>{lang === "AR" ? "مساعد السفر الذكي للمغرب" : lang === "FR" ? "Concierge de Voyage IA Maroc" : "Morocco AI Travel Concierge"}</h2>
-                <p>{lang === "AR" ? "اختر وجهتك وتفضيلاتك في الجانب الأيسر ثم اضغط على إنشاء لصياغة خطة رحلتك المخصصة." : lang === "FR" ? "Configurez votre destination et vos préférences à gauche, puis cliquez sur générer pour créer votre plan de voyage sur-mesure." : "Configure your destination and preferences on the left side, then click generate to craft your custom trip plan."}</p>
+              <div className="planner-waiting-card pack-card animate-fade-in">
+                <div className="waiting-map">
+                  <span className="map-line line-one"></span>
+                  <span className="map-line line-two"></span>
+                  <span className="map-line line-three"></span>
+                  <span className="map-point point-one"></span>
+                  <span className="map-point point-two"></span>
+                  <span className="map-point point-three"></span>
+                  <Compass size={42} className="waiting-compass" />
+                </div>
+                <div className="waiting-copy">
+                  <span className="waiting-kicker">{formData.location}</span>
+                  <h2>{lang === "AR" ? "خطتك جاهزة للتصميم" : lang === "FR" ? "Votre plan attend le départ" : "Your plan is ready to begin"}</h2>
+                  <p>{lang === "AR" ? "اختار المدينة، التاريخ، الميزانية والمرافقين ثم اضغط على إنشاء." : lang === "FR" ? "Choisissez la ville, les dates, le budget et les voyageurs, puis lancez la génération." : "Choose the city, dates, budget and travelers, then generate your trip."}</p>
+                </div>
+                <div className="waiting-summary">
+                  <span>{formData.startDate}</span>
+                  <strong>{formData.noOfDays} {t("duration")}</strong>
+                  <span>{formData.endDate}</span>
+                </div>
               </div>
             )}
 
@@ -521,10 +687,11 @@ function Pack() {
                   <div className="itinerary-header-text">
                     <div className="trip-meta-chips">
                       <span className="meta-chip">{formData.noOfDays} {t("duration")}</span>
+                      <span className="meta-chip">{formData.startDate} - {formData.endDate}</span>
                       <span className="meta-chip">{formData.budget}</span>
                       <span className="meta-chip">{formData.traveler}</span>
                     </div>
-                    <h1>{formData.location} Itinerary</h1>
+                    <h1>{formData.location} {lang === "AR" ? "خطة الرحلة" : lang === "FR" ? "Itinéraire" : "Itinerary"}</h1>
                     <button className="save-trip-btn" onClick={saveTrip}>
                       <Check size={14} />
                       <span>{t("saved")}</span>
@@ -532,41 +699,41 @@ function Pack() {
                   </div>
                 </div>
 
-                {/* Hotels List */}
-                <div className="hotels-section">
-                  <h2>{t("hotelHeading")}</h2>
-                  <div className="hotels-grid">
-                    {tripResult.hotel_options?.map((hotel, index) => (
-                      <div key={index} className="hotel-item-card pack-card" style={{ "--delay": `${index * 0.15}s` }}>
-                        <div className="hotel-img-wrapper">
-                          <img src={hotel.image_url || getMoroccoImageByText(formData.location, "hotel")} alt={hotel.name} />
-                          <div className="hotel-price-badge">{hotel.price}</div>
-                        </div>
-                        <div className="hotel-info">
-                          <div className="hotel-title-row">
-                            <h3>{hotel.name}</h3>
-                            <div className="hotel-rating">
-                              <Star size={12} fill="currentColor" />
-                              <span>{hotel.rating}</span>
-                            </div>
-                          </div>
-                          <p className="hotel-address">
-                            <MapPin size={12} />
-                            <span>{hotel.address}</span>
-                          </p>
-                          <p className="hotel-desc">{hotel.description}</p>
-                          <button 
-                            className="maps-redirect-btn"
-                            onClick={() => openGoogleMaps(`${hotel.name}, ${hotel.address}`)}
-                          >
-                            <ExternalLink size={12} />
-                            <span>{t("viewOnMap")}</span>
-                          </button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
+                {/* ============ HOTELS — HORIZONTAL SCROLL ============ */}
+                {renderHorizontalSection(
+                  sectionLabels.hotels,
+                  <Hotel size={20} className="section-icon" />,
+                  googleHotelOptions,
+                  hotelsScrollRef,
+                  renderGoogleHotelCard
+                )}
+
+                {/* ============ RESTAURANTS — HORIZONTAL SCROLL ============ */}
+                {renderHorizontalSection(
+                  sectionLabels.restaurants,
+                  <UtensilsCrossed size={20} className="section-icon" />,
+                  realRestaurantOptions,
+                  restaurantsScrollRef,
+                  (restaurant, index) => renderRealPlaceCard(restaurant, index, "restaurant")
+                )}
+
+                {/* ============ HOSTELS — HORIZONTAL SCROLL ============ */}
+                {renderHorizontalSection(
+                  sectionLabels.hostels,
+                  <Home size={20} className="section-icon" />,
+                  realHostelOptions,
+                  hostelsScrollRef,
+                  (hostel, index) => renderRealPlaceCard(hostel, index, "hostel")
+                )}
+
+                {/* ============ CAMPING — HORIZONTAL SCROLL ============ */}
+                {renderHorizontalSection(
+                  sectionLabels.camping,
+                  <Tent size={20} className="section-icon" />,
+                  realCampingOptions,
+                  campingScrollRef,
+                  (camp, index) => renderRealPlaceCard(camp, index, "camping hiking")
+                )}
 
                 {/* Day by Day Plan Timeline */}
                 <div className="itinerary-timeline-section">

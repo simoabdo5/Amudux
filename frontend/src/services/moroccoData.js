@@ -30,8 +30,6 @@ export const MOROCCO_CITIES = [
   "Bin El Ouidane",
 ];
 
-// ====== CITY CATEGORY MAPPING ======
-// Each city belongs to one primary category that defines the type of activities generated.
 export const CITY_CATEGORIES = {
   Marrakech: "imperial",
   Fes: "imperial",
@@ -41,13 +39,11 @@ export const CITY_CATEGORIES = {
   Tetouan: "imperial",
   Volubilis: "imperial",
   Chefchaouen: "imperial",
-
   Merzouga: "desert",
   Zagora: "desert",
   Ouarzazate: "desert",
   "Ait Ben Haddou": "desert",
   Tarfaya: "desert",
-
   Legzira: "beach",
   Dakhla: "beach",
   Agadir: "beach",
@@ -57,7 +53,6 @@ export const CITY_CATEGORIES = {
   Asilah: "beach",
   "El Jadida": "beach",
   Tangier: "beach",
-
   "Atlas Mountains": "nature",
   "Paradise Valley": "nature",
   "Ouzoud Falls": "nature",
@@ -67,9 +62,7 @@ export const CITY_CATEGORIES = {
   "Bin El Ouidane": "nature",
 };
 
-export const getCityCategory = (cityName) => {
-  return CITY_CATEGORIES[cityName] || "imperial";
-};
+export const getCityCategory = (cityName = "") => CITY_CATEGORIES[cityName] || "imperial";
 
 export const CITY_IMAGE_MAP = {
   Marrakech: "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=1400&q=80",
@@ -86,494 +79,618 @@ export const CITY_IMAGE_MAP = {
   Dakhla: "https://images.unsplash.com/photo-1473116763249-2faaef81ccda?auto=format&fit=crop&w=1400&q=80",
   Tetouan: "https://images.unsplash.com/photo-1548018560-c7c6412d1aa1?auto=format&fit=crop&w=1400&q=80",
   "Al Hoceima": "https://images.unsplash.com/photo-1490077476659-095159692ab5?auto=format&fit=crop&w=1400&q=80",
-  Zagora: "https://images.unsplash.com/photo-1509316785289-025f5b846b35?auto=format&fit=crop&w=1400&q=80",
-  Meknes: "https://images.unsplash.com/photo-1631545806603-066f6a1940c0?auto=format&fit=crop&w=1400&q=80",
-  Asilah: "https://images.unsplash.com/photo-1548018560-c7c6412d1aa1?auto=format&fit=crop&w=1400&q=80",
-  Akchour: "https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?auto=format&fit=crop&w=1400&q=80",
-  "Atlas Mountains": "https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?auto=format&fit=crop&w=1400&q=80",
-  "Paradise Valley": "https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?auto=format&fit=crop&w=1400&q=80",
-  Legzira: "https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=1400&q=80",
-  "Ouzoud Falls": "https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?auto=format&fit=crop&w=1400&q=80",
-  Volubilis: "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=1400&q=80",
-  "Ait Ben Haddou": "https://images.unsplash.com/photo-1709291535925-572d879ca759?auto=format&fit=crop&w=1400&q=80",
-  Saidia: "https://images.unsplash.com/photo-1473116763249-2faaef81ccda?auto=format&fit=crop&w=1400&q=80",
-  "El Jadida": "https://images.unsplash.com/photo-1567601380901-7db4f9f23be7?auto=format&fit=crop&w=1400&q=80",
-  Tarfaya: "https://images.unsplash.com/photo-1473116763249-2faaef81ccda?auto=format&fit=crop&w=1400&q=80",
-  Tafraoute: "https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?auto=format&fit=crop&w=1400&q=80",
-  "Bin El Ouidane": "https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?auto=format&fit=crop&w=1400&q=80",
 };
 
 export const CONTEXT_IMAGE_MAP = {
-  restaurant: [
-    "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=1400&q=80",
+  restaurant: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=1400&q=80",
+  dining: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1400&q=80",
+  lunch: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1400&q=80",
+  dinner: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=1400&q=80",
+  cafe: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=1400&q=80",
+  riad: "https://images.unsplash.com/photo-1598935888738-cd2622bcd437?auto=format&fit=crop&w=1400&q=80",
+  hotel: "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=1400&q=80",
+  hammam: "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&w=1400&q=80",
+  souk: "https://images.unsplash.com/photo-1524492412937-b28074a5d7da?auto=format&fit=crop&w=1400&q=80",
+  desert: "https://images.unsplash.com/photo-1509316785289-025f5b846b35?auto=format&fit=crop&w=1400&q=80",
+  hiking: "https://images.unsplash.com/photo-1551632811-561732d1e306?auto=format&fit=crop&w=1400&q=80",
+  beach: "https://images.unsplash.com/photo-1473116763249-2faaef81ccda?auto=format&fit=crop&w=1400&q=80",
+  museum: "https://images.unsplash.com/photo-1573648952759-0d5d7e7b9eb0?auto=format&fit=crop&w=1400&q=80",
+  palace: "https://images.unsplash.com/photo-1624439762564-2b71d3af5793?auto=format&fit=crop&w=1400&q=80",
+  waterfall: "https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?auto=format&fit=crop&w=1400&q=80",
+  surfing: "https://images.unsplash.com/photo-1502680390548-bdbac40ca449?auto=format&fit=crop&w=1400&q=80",
+  mountain: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1400&q=80",
+  lake: "https://images.unsplash.com/photo-1439066615861-d1af74d74000?auto=format&fit=crop&w=1400&q=80",
+};
+
+const GOOGLE_HOTEL_IMAGE_MAP = {
+  Marrakech: [
+    "https://images.unsplash.com/photo-1596436889106-be35e843f974?auto=format&fit=crop&w=700&q=80",
+    "https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=700&q=80",
+    "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=700&q=80",
+    "https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=700&q=80",
   ],
-  dining: [
-    "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1400&q=80",
+  default: [
+    "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=700&q=80",
+    "https://images.unsplash.com/photo-1564501049412-61c2a3083791?auto=format&fit=crop&w=700&q=80",
+    "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?auto=format&fit=crop&w=700&q=80",
+    "https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=700&q=80",
   ],
-  lunch: [
-    "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1400&q=80",
+};
+
+const PLACE_IMAGE_POOLS = {
+  hotels: [
+    "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=700&q=80",
+    "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?auto=format&fit=crop&w=700&q=80",
+    "https://images.unsplash.com/photo-1564501049412-61c2a3083791?auto=format&fit=crop&w=700&q=80",
+    "https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=700&q=80",
+    "https://images.unsplash.com/photo-1596436889106-be35e843f974?auto=format&fit=crop&w=700&q=80",
   ],
-  dinner: [
-    "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=1400&q=80",
+  restaurants: [
+    "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=700&q=80",
+    "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=700&q=80",
+    "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=700&q=80",
+    "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=700&q=80",
+    "https://images.unsplash.com/photo-1498654896293-37aacf113fd9?auto=format&fit=crop&w=700&q=80",
   ],
-  cafe: [
-    "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=1400&q=80",
+  hostels: [
+    "https://images.unsplash.com/photo-1555854877-bab0e564b8d5?auto=format&fit=crop&w=700&q=80",
+    "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=700&q=80",
+    "https://images.unsplash.com/photo-1598928506311-c55ded91a20c?auto=format&fit=crop&w=700&q=80",
+    "https://images.unsplash.com/photo-1560448075-bb485b067938?auto=format&fit=crop&w=700&q=80",
   ],
-  riad: [
-    "https://images.unsplash.com/photo-1598935888738-cd2622bcd437?auto=format&fit=crop&w=1400&q=80",
+  camping: [
+    "https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?auto=format&fit=crop&w=700&q=80",
+    "https://images.unsplash.com/photo-1478131143081-80f7f84ca84d?auto=format&fit=crop&w=700&q=80",
+    "https://images.unsplash.com/photo-1509316785289-025f5b846b35?auto=format&fit=crop&w=700&q=80",
+    "https://images.unsplash.com/photo-1525811902-f2342640856e?auto=format&fit=crop&w=700&q=80",
   ],
-  hotel: [
-    "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=1400&q=80",
+};
+
+const GOOGLE_MAPS_HOTELS_BY_CITY = {
+  Marrakech: [
+    { name: "Le Meridien N'Fis", price: "2.225 MAD", rating: "4.0", reviews: "1,9 k", source: "Google Maps" },
+    { name: "ibis Marrakech Palmeraie", price: "545 MAD", rating: "4.2", reviews: "3,4 k", source: "Booking.com" },
+    { name: "Hotel Racine Marrakech", price: "650 MAD", rating: "4.1", reviews: "3,2 k", source: "Google Maps" },
+    { name: "Hotel Almas Marrakech", price: "760 MAD", rating: "4.0", reviews: "1,7 k", source: "Google Maps" },
+    { name: "Opera Plaza Hotel Marrakech", price: "1.028 MAD", rating: "4.2", reviews: "2,8 k", source: "Google Maps" },
+    { name: "Park Hyatt Marrakech", price: "6.599 MAD", rating: "4.7", reviews: "325", source: "Park Hyatt" },
+    { name: "Imperial Holiday Hotel & Spa", price: "580 MAD", rating: "2.3", reviews: "752", source: "Booking.com" },
+    { name: "Sofitel Marrakech Lounge and Spa", price: "7.162 MAD", rating: "4.7", reviews: "9,8 k", source: "Skyscanner" },
+    { name: "Movenpick Hotel Mansour Eddahbi Marrakech", price: "3.262 MAD", rating: "4.7", reviews: "12 k", source: "Skyscanner" },
+    { name: "Radisson Blu Hotel Marrakech Carre Eden", price: "2.357 MAD", rating: "4.4", reviews: "2,8 k", source: "Radisson Hotels" },
+    { name: "Savoy Le Grand Hotel Marrakech", price: "3.126 MAD", rating: "4.1", reviews: "3,8 k", source: "Google Maps" },
   ],
-  hammam: [
-    "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&w=1400&q=80",
+  Casablanca: [
+    { name: "Four Seasons Hotel Casablanca", price: "4.000 MAD", rating: "4.5", reviews: "4 k", source: "Google Maps" },
+    { name: "Hyatt Regency Casablanca", price: "2.200 MAD", rating: "4.2", reviews: "3,8 k", source: "Google Maps" },
+    { name: "Kenzi Tower Hotel", price: "1.300 MAD", rating: "4.2", reviews: "3,3 k", source: "Google Maps" },
+    { name: "Barcelo Anfa Casablanca", price: "1.500 MAD", rating: "4.3", reviews: "1,8 k", source: "Google Maps" },
   ],
-  souk: [
-    "https://images.unsplash.com/photo-1524492412937-b28074a5d7da?auto=format&fit=crop&w=1400&q=80",
+  Agadir: [
+    { name: "Sofitel Agadir Royal Bay Resort", price: "2.100 MAD", rating: "4.5", reviews: "3,7 k", source: "Google Maps" },
+    { name: "Hotel Riu Palace Tikida Agadir", price: "2.300 MAD", rating: "4.5", reviews: "5,9 k", source: "Google Maps" },
+    { name: "Iberostar Waves Founty Beach", price: "1.700 MAD", rating: "4.4", reviews: "5,4 k", source: "Google Maps" },
+    { name: "Hotel Timoulay and Spa Agadir", price: "950 MAD", rating: "4.4", reviews: "1,2 k", source: "Google Maps" },
   ],
-  desert: [
-    "https://images.unsplash.com/photo-1509316785289-025f5b846b35?auto=format&fit=crop&w=1400&q=80",
+  Fes: [
+    { name: "Hotel Sahrai", price: "2.200 MAD", rating: "4.5", reviews: "1,4 k", source: "Google Maps" },
+    { name: "Fes Marriott Hotel Jnan Palace", price: "1.500 MAD", rating: "4.3", reviews: "2,5 k", source: "Google Maps" },
+    { name: "Palais Faraj Suites & Spa", price: "2.400 MAD", rating: "4.6", reviews: "1 k", source: "Google Maps" },
+    { name: "Riad Fes - Relais & Chateaux", price: "3.000 MAD", rating: "4.6", reviews: "800", source: "Google Maps" },
   ],
-  hiking: [
-    "https://images.unsplash.com/photo-1551632811-561732d1e306?auto=format&fit=crop&w=1400&q=80",
+  Tangier: [
+    { name: "Hilton Tangier Al Houara Resort & Spa", price: "1.900 MAD", rating: "4.3", reviews: "2,9 k", source: "Google Maps" },
+    { name: "Fairmont Tazi Palace Tangier", price: "3.200 MAD", rating: "4.6", reviews: "850", source: "Google Maps" },
+    { name: "Hilton Tanger City Center", price: "1.600 MAD", rating: "4.4", reviews: "2,6 k", source: "Google Maps" },
+    { name: "Marina Bay City Center Tangier", price: "1.000 MAD", rating: "4.2", reviews: "1,8 k", source: "Google Maps" },
   ],
-  beach: [
-    "https://images.unsplash.com/photo-1473116763249-2faaef81ccda?auto=format&fit=crop&w=1400&q=80",
+  Rabat: [
+    { name: "The View Rabat", price: "2.000 MAD", rating: "4.4", reviews: "1,9 k", source: "Google Maps" },
+    { name: "Sofitel Rabat Jardin des Roses", price: "2.300 MAD", rating: "4.5", reviews: "4,4 k", source: "Google Maps" },
+    { name: "Rabat Marriott Hotel", price: "2.100 MAD", rating: "4.5", reviews: "900", source: "Google Maps" },
+    { name: "Hotel La Tour Hassan Palace", price: "2.600 MAD", rating: "4.4", reviews: "1,7 k", source: "Google Maps" },
   ],
-  museum: [
-    "https://images.unsplash.com/photo-1573648952759-0d5d7e7b9eb0?auto=format&fit=crop&w=1400&q=80",
+  Essaouira: [
+    { name: "Heure Bleue Palais", price: "2.000 MAD", rating: "4.6", reviews: "650", source: "Google Maps" },
+    { name: "Atlas Essaouira & Spa", price: "1.100 MAD", rating: "4.1", reviews: "2,7 k", source: "Google Maps" },
+    { name: "Sofitel Essaouira Mogador Golf & Spa", price: "1.700 MAD", rating: "4.4", reviews: "2,4 k", source: "Google Maps" },
+    { name: "Riad Mimouna", price: "900 MAD", rating: "4.5", reviews: "900", source: "Google Maps" },
   ],
-  palace: [
-    "https://images.unsplash.com/photo-1624439762564-2b71d3af5793?auto=format&fit=crop&w=1400&q=80",
+  Chefchaouen: [
+    { name: "Lina Ryad & Spa", price: "1.600 MAD", rating: "4.5", reviews: "520", source: "Google Maps" },
+    { name: "Dar Jasmine", price: "1.500 MAD", rating: "4.7", reviews: "680", source: "Google Maps" },
+    { name: "Hotel Parador", price: "800 MAD", rating: "3.9", reviews: "1,4 k", source: "Google Maps" },
+    { name: "Casa Perleta", price: "700 MAD", rating: "4.5", reviews: "620", source: "Google Maps" },
   ],
-  waterfall: [
-    "https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?auto=format&fit=crop&w=1400&q=80",
+};
+
+const EXTENDED_HOTELS_BY_CITY = {
+  Ouarzazate: [
+    { name: "Berbere Palace", price: "1.700 MAD", rating: "4.4", reviews: "1,8 k", source: "Google Maps" },
+    { name: "Oscar Hotel by Atlas Studios", price: "850 MAD", rating: "4.1", reviews: "1,5 k", source: "Google Maps" },
+    { name: "Dar Chamaa", price: "700 MAD", rating: "4.4", reviews: "600", source: "Google Maps" },
   ],
-  surfing: [
-    "https://images.unsplash.com/photo-1502680390548-bdbac40ca449?auto=format&fit=crop&w=1400&q=80",
+  Ifrane: [
+    { name: "Michlifen Resort & Golf", price: "2.900 MAD", rating: "4.6", reviews: "2,7 k", source: "Google Maps" },
+    { name: "Hotel Farah Inn Ifrane", price: "850 MAD", rating: "3.4", reviews: "2,5 k", source: "Google Maps" },
+    { name: "Zephyr Ifrane", price: "950 MAD", rating: "4.0", reviews: "1,4 k", source: "Google Maps" },
   ],
-  mountain: [
-    "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1400&q=80",
+  Dakhla: [
+    { name: "Dakhla Attitude", price: "1.400 MAD", rating: "4.4", reviews: "1,7 k", source: "Google Maps" },
+    { name: "Westpoint Dakhla", price: "1.250 MAD", rating: "4.3", reviews: "850", source: "Google Maps" },
+    { name: "La Crique Nature & Spa Dakhla", price: "2.200 MAD", rating: "4.6", reviews: "700", source: "Google Maps" },
   ],
-  lake: [
-    "https://images.unsplash.com/photo-1439066615861-d1af74d74000?auto=format&fit=crop&w=1400&q=80",
+  Tetouan: [
+    { name: "Hotel Chams Tetouan", price: "850 MAD", rating: "4.0", reviews: "1,8 k", source: "Google Maps" },
+    { name: "Blanco Riad", price: "900 MAD", rating: "4.3", reviews: "500", source: "Google Maps" },
+    { name: "Prestige Hotel Tetouan", price: "700 MAD", rating: "4.3", reviews: "1,1 k", source: "Google Maps" },
   ],
+  "Al Hoceima": [
+    { name: "Mercure Quemado Resort Al Hoceima", price: "1.150 MAD", rating: "4.0", reviews: "2,2 k", source: "Google Maps" },
+    { name: "Radisson Blu Resort Al Hoceima", price: "1.500 MAD", rating: "4.2", reviews: "1,4 k", source: "Google Maps" },
+    { name: "Suites Hotel Mohammed V", price: "800 MAD", rating: "3.8", reviews: "850", source: "Google Maps" },
+  ],
+  Zagora: [
+    { name: "Riad Lamane", price: "780 MAD", rating: "4.2", reviews: "900", source: "Google Maps" },
+    { name: "La Perle du Draa", price: "620 MAD", rating: "4.1", reviews: "780", source: "Google Maps" },
+    { name: "Riad Dar Sofian", price: "900 MAD", rating: "4.6", reviews: "650", source: "Google Maps" },
+  ],
+  Meknes: [
+    { name: "Hotel Transatlantique Meknes", price: "820 MAD", rating: "3.9", reviews: "1,4 k", source: "Google Maps" },
+    { name: "Riad Yacout Meknes", price: "850 MAD", rating: "4.3", reviews: "900", source: "Google Maps" },
+    { name: "Ibis Meknes", price: "520 MAD", rating: "3.7", reviews: "1,8 k", source: "Google Maps" },
+  ],
+  Asilah: [
+    { name: "Hotel Al Alba", price: "800 MAD", rating: "4.3", reviews: "750", source: "Google Maps" },
+    { name: "Al Khaima Hotel Asilah", price: "680 MAD", rating: "3.8", reviews: "1,1 k", source: "Google Maps" },
+    { name: "Hotel Zelis Asilah", price: "500 MAD", rating: "3.8", reviews: "800", source: "Google Maps" },
+  ],
+  Akchour: [
+    { name: "Auberge Dardara", price: "650 MAD", rating: "4.2", reviews: "950", source: "Google Maps" },
+    { name: "Ermitage d'Akchour", price: "1.300 MAD", rating: "4.4", reviews: "1,1 k", source: "Google Maps" },
+  ],
+  "Atlas Mountains": [
+    { name: "Kasbah Tamadot", price: "8.000 MAD", rating: "4.8", reviews: "650", source: "Google Maps" },
+    { name: "Kasbah du Toubkal", price: "1.800 MAD", rating: "4.5", reviews: "900", source: "Google Maps" },
+    { name: "Riad Atlas Prestige", price: "550 MAD", rating: "4.6", reviews: "500", source: "Google Maps" },
+  ],
+  "Paradise Valley": [
+    { name: "Auberge Bab Imouzer", price: "550 MAD", rating: "4.2", reviews: "500", source: "Google Maps" },
+    { name: "Hotel des Cascades Ecolodge", price: "900 MAD", rating: "4.1", reviews: "650", source: "Google Maps" },
+  ],
+  Legzira: [
+    { name: "Hotel Beach Club Legzira", price: "650 MAD", rating: "4.1", reviews: "900", source: "Google Maps" },
+    { name: "Auberge Legzira", price: "450 MAD", rating: "4.0", reviews: "650", source: "Google Maps" },
+  ],
+  "Ouzoud Falls": [
+    { name: "Riad Cascades d'Ouzoud", price: "750 MAD", rating: "4.4", reviews: "750", source: "Google Maps" },
+    { name: "Hotel Chellal Ouzoud", price: "420 MAD", rating: "4.0", reviews: "850", source: "Google Maps" },
+    { name: "Widiane Resort", price: "2.000 MAD", rating: "4.4", reviews: "1,8 k", source: "Google Maps" },
+  ],
+  Volubilis: [
+    { name: "Volubilis Inn", price: "700 MAD", rating: "3.9", reviews: "800", source: "Google Maps" },
+    { name: "Diyar Timnay", price: "650 MAD", rating: "4.1", reviews: "900", source: "Google Maps" },
+  ],
+  "Ait Ben Haddou": [
+    { name: "Kasbah Tebi", price: "900 MAD", rating: "4.5", reviews: "700", source: "Google Maps" },
+    { name: "Ksar Ighnda", price: "1.350 MAD", rating: "4.5", reviews: "1 k", source: "Google Maps" },
+    { name: "Riad Caravane", price: "1.000 MAD", rating: "4.7", reviews: "750", source: "Google Maps" },
+  ],
+  Saidia: [
+    { name: "Iberostar Saidia", price: "1.800 MAD", rating: "4.2", reviews: "4,4 k", source: "Google Maps" },
+    { name: "Radisson Blu Resort Saidia Beach", price: "1.600 MAD", rating: "4.0", reviews: "2,5 k", source: "Google Maps" },
+    { name: "Be Live Collection Saidia", price: "1.450 MAD", rating: "3.8", reviews: "3,2 k", source: "Google Maps" },
+  ],
+  "El Jadida": [
+    { name: "Mazagan Beach & Golf Resort", price: "2.400 MAD", rating: "4.5", reviews: "9 k", source: "Google Maps" },
+    { name: "Pullman Mazagan Royal Golf & Spa", price: "1.300 MAD", rating: "4.2", reviews: "2,5 k", source: "Google Maps" },
+    { name: "Ibis El Jadida", price: "620 MAD", rating: "3.7", reviews: "1,8 k", source: "Google Maps" },
+  ],
+  Tarfaya: [
+    { name: "Hotel Casamar Tarfaya", price: "450 MAD", rating: "3.8", reviews: "500", source: "Google Maps" },
+    { name: "Hotel El Ghazi Tarfaya", price: "380 MAD", rating: "3.7", reviews: "350", source: "Google Maps" },
+  ],
+  Tafraoute: [
+    { name: "Hotel Les Amandiers Tafraoute", price: "650 MAD", rating: "4.0", reviews: "900", source: "Google Maps" },
+    { name: "Hotel Salama Tafraoute", price: "420 MAD", rating: "4.2", reviews: "500", source: "Google Maps" },
+  ],
+  "Bin El Ouidane": [
+    { name: "Widiane Resort", price: "2.000 MAD", rating: "4.4", reviews: "1,8 k", source: "Google Maps" },
+    { name: "Chems du Lac Bin El Ouidane", price: "850 MAD", rating: "4.0", reviews: "1 k", source: "Google Maps" },
+  ],
+};
+
+const REAL_RESTAURANTS_BY_CITY = {
+  Marrakech: [
+    { name: "Nomad Marrakech", price: "150-250 MAD", cuisine: "Moroccan", rating: "4.1", address: "1 Derb Aarjane, Marrakech", description: "Modern Moroccan dining near the medina with a rooftop terrace." },
+    { name: "Le Jardin Marrakech", price: "160-280 MAD", cuisine: "Moroccan", rating: "4.2", address: "32 Souk Jeld Sidi Abdelaziz, Marrakech", description: "Garden restaurant serving Moroccan dishes in a calm riad setting." },
+    { name: "Cafe Clock Marrakech", price: "90-180 MAD", cuisine: "Moroccan Cafe", rating: "4.4", address: "224 Derb Chtouka, Marrakech", description: "Casual cultural cafe known for Moroccan plates and live events." },
+    { name: "Al Fassia Aguedal", price: "250-400 MAD", cuisine: "Moroccan", rating: "4.5", address: "9bis Route de l'Ourika, Marrakech", description: "Well-known Moroccan restaurant with classic service and traditional cuisine." },
+  ],
+  Casablanca: [
+    { name: "La Sqala", price: "120-240 MAD", cuisine: "Moroccan", rating: "4.2", address: "Boulevard des Almohades, Casablanca", description: "Moroccan restaurant set in a historic fortified garden." },
+    { name: "Rick's Cafe", price: "300-500 MAD", cuisine: "International", rating: "4.3", address: "248 Boulevard Sour Jdid, Casablanca", description: "Iconic Casablanca restaurant with refined dining and piano-bar atmosphere." },
+    { name: "Le Cabestan", price: "400-700 MAD", cuisine: "Seafood", rating: "4.3", address: "90 Boulevard de la Corniche, Casablanca", description: "Oceanfront restaurant with seafood and Atlantic views." },
+  ],
+  Agadir: [
+    { name: "Pure Passion Restaurant", price: "250-450 MAD", cuisine: "Seafood", rating: "4.4", address: "Marina d'Agadir, Agadir", description: "Popular marina restaurant focused on fresh seafood." },
+    { name: "Le Jardin d'Eau", price: "160-300 MAD", cuisine: "Moroccan Seafood", rating: "4.1", address: "Boulevard du 20 Aout, Agadir", description: "Relaxed restaurant with Moroccan and seafood dishes." },
+    { name: "Restaurant Daffy", price: "80-170 MAD", cuisine: "Moroccan", rating: "4.3", address: "Rue des Orangers, Agadir", description: "Local favorite for affordable Moroccan meals." },
+  ],
+  Fes: [
+    { name: "Cafe Clock Fes", price: "90-180 MAD", cuisine: "Moroccan Cafe", rating: "4.4", address: "7 Derb el Magana, Fes", description: "Well-known medina cafe with Moroccan plates and cultural events." },
+    { name: "The Ruined Garden", price: "180-320 MAD", cuisine: "Moroccan", rating: "4.4", address: "15 Derb Idrissy Sidi Ahmed Chaoui, Fes", description: "Garden restaurant in the medina with traditional Moroccan cooking." },
+    { name: "Restaurant Dar Hatim", price: "220-350 MAD", cuisine: "Moroccan", rating: "4.7", address: "19 Derb Ezaouia Fandak Lihoudi, Fes", description: "Family-run restaurant famous for home-style Moroccan cuisine." },
+  ],
+  Tangier: [
+    { name: "El Morocco Club", price: "250-450 MAD", cuisine: "Moroccan International", rating: "4.3", address: "Place du Tabor, Tangier", description: "Elegant restaurant and piano bar in the kasbah." },
+    { name: "Saveur de Poisson", price: "250-350 MAD", cuisine: "Seafood", rating: "4.4", address: "2 Escalier Waller, Tangier", description: "Famous fixed-menu seafood restaurant in Tangier." },
+    { name: "Cafe Hafa", price: "40-100 MAD", cuisine: "Cafe", rating: "4.2", address: "Rue Hafa, Tangier", description: "Historic cliffside cafe known for mint tea and sea views." },
+  ],
+  Rabat: [
+    { name: "Dar Naji", price: "100-220 MAD", cuisine: "Moroccan", rating: "4.2", address: "Avenue Jazirat Al Arabe, Rabat", description: "Popular Moroccan restaurant for tagines, couscous, and tea." },
+    { name: "Le Dhow", price: "250-450 MAD", cuisine: "International", rating: "4.1", address: "Quai de Bouregreg, Rabat", description: "Restaurant boat with river views and varied cuisine." },
+    { name: "Ty Potes", price: "160-280 MAD", cuisine: "French Moroccan", rating: "4.4", address: "11 Rue Ghafsa, Rabat", description: "Cozy restaurant with fresh plates and garden seating." },
+  ],
+  Essaouira: [
+    { name: "La Table by Madada", price: "250-450 MAD", cuisine: "Seafood", rating: "4.5", address: "7 Rue Youssef El Fassi, Essaouira", description: "Refined seafood restaurant close to the port and medina." },
+    { name: "Taros", price: "180-350 MAD", cuisine: "Moroccan International", rating: "4.1", address: "Place Moulay Hassan, Essaouira", description: "Rooftop restaurant with sea views and live music." },
+    { name: "Restaurant Adwak", price: "90-190 MAD", cuisine: "Moroccan", rating: "4.4", address: "2 Rue Moulay Hassan, Essaouira", description: "Small medina restaurant serving Moroccan classics." },
+  ],
+  Chefchaouen: [
+    { name: "Cafe Clock Chefchaouen", price: "80-170 MAD", cuisine: "Moroccan Cafe", rating: "4.5", address: "3 Derb Tijani, Chefchaouen", description: "Cultural cafe with Moroccan food and rooftop views." },
+    { name: "Restaurant Beldi Bab Ssour", price: "70-150 MAD", cuisine: "Moroccan", rating: "4.5", address: "5 Rue El Kharrazin, Chefchaouen", description: "Affordable Moroccan restaurant in the blue medina." },
+    { name: "Casa Aladdin", price: "90-180 MAD", cuisine: "Moroccan", rating: "4.0", address: "Rue Targui, Chefchaouen", description: "Medina restaurant with terrace views and traditional dishes." },
+  ],
+};
+
+const REAL_HOSTELS_BY_CITY = {
+  Marrakech: [
+    { name: "Rodamon Riad Marrakech Hostel", price: "180-450 MAD / night", rating: "4.5", address: "Amssafah 32, Marrakech", description: "Design hostel in a riad with dorms, private rooms, and a pool." },
+    { name: "Equity Point Marrakech", price: "160-380 MAD / night", rating: "4.2", address: "80 Derb El Hammam Mouassine, Marrakech", description: "Medina hostel with rooftop spaces and budget rooms." },
+    { name: "The Central House Marrakech Medina", price: "220-520 MAD / night", rating: "4.5", address: "Amssafah 84, Marrakech", description: "Modern hostel-riad with social areas and private-room options." },
+  ],
+  Fes: [
+    { name: "Funky Fes Hostel", price: "120-320 MAD / night", rating: "4.2", address: "60 Arset Lamdelssi, Fes", description: "Budget hostel in Fes medina with dorms and terrace." },
+    { name: "Medina Social Club", price: "180-420 MAD / night", rating: "4.3", address: "11 Derb El Menia, Fes", description: "Social hostel and riad with events and shared rooms." },
+  ],
+  Essaouira: [
+    { name: "The Chill Art Hostel", price: "120-350 MAD / night", rating: "4.3", address: "22 Rue Abderrahamane Eddakhil, Essaouira", description: "Creative medina hostel with terrace and dorm rooms." },
+    { name: "Essaouira Beach Hostel", price: "110-300 MAD / night", rating: "4.1", address: "Rue Lalla Hasna, Essaouira", description: "Budget hostel close to the beach and surf spots." },
+  ],
+  Chefchaouen: [
+    { name: "Hostel Aline", price: "90-220 MAD / night", rating: "4.3", address: "Rue Sidi Ahmed El Ouafi, Chefchaouen", description: "Simple budget hostel in Chefchaouen medina." },
+    { name: "Dar Dadicilef", price: "120-300 MAD / night", rating: "4.4", address: "Derb Hadri, Chefchaouen", description: "Traditional guesthouse with hostel-style budget rooms." },
+  ],
+  Tangier: [
+    { name: "The Riad Hostel Tangier", price: "130-350 MAD / night", rating: "4.3", address: "23 Rue Mohamed Bergach, Tangier", description: "Medina hostel with terrace views and shared rooms." },
+    { name: "Tangier Kasbah Hostel", price: "120-320 MAD / night", rating: "4.1", address: "Rue Sidi Jalil, Tangier", description: "Budget hostel near the kasbah and medina." },
+  ],
+};
+
+const REAL_CAMPING_BY_CITY = {
+  Marrakech: [
+    { name: "Terre des Etoiles", price: "900-1800 MAD / night", rating: "4.4", address: "Agafay Desert, Marrakech", description: "Real desert camp in Agafay with tents, pool, and desert views." },
+    { name: "Scarabeo Camp", price: "1800-3200 MAD / night", rating: "4.5", address: "Agafay Desert, Marrakech", description: "Luxury canvas camp near Marrakech with desert dining." },
+    { name: "Inara Camp", price: "1600-3000 MAD / night", rating: "4.6", address: "Agafay Desert, Marrakech", description: "Glamping camp in Agafay with private tents and activities." },
+  ],
+  Merzouga: [
+    { name: "Sahara Stars Camp", price: "650-1600 MAD / night", rating: "4.8", address: "Erg Chebbi, Merzouga", description: "Desert camp in the dunes near Merzouga." },
+    { name: "Luxury Desert Camp Merzouga", price: "1200-2800 MAD / night", rating: "4.7", address: "Erg Chebbi, Merzouga", description: "Luxury camp with private tents and dune views." },
+    { name: "Ali & Sara's Desert Palace", price: "900-2000 MAD / night", rating: "4.8", address: "Erg Chebbi, Merzouga", description: "Well-rated desert camp with camel activities and dinner." },
+  ],
+  Agadir: [
+    { name: "Atlantica Parc", price: "300-900 MAD / night", rating: "4.1", address: "Imi Ouaddar, Agadir", description: "Large seaside camping and holiday park north of Agadir." },
+    { name: "Camping Aourir", price: "120-350 MAD / night", rating: "4.0", address: "Aourir, Agadir", description: "Budget camping area near Taghazout and surf beaches." },
+  ],
+  Essaouira: [
+    { name: "Camping Sidi Magdoul", price: "100-300 MAD / night", rating: "3.8", address: "Essaouira", description: "Known camping site near Essaouira beach and town." },
+    { name: "Camping Le Calme", price: "180-450 MAD / night", rating: "4.3", address: "Ida Ougourd, Essaouira", description: "Quiet campsite outside Essaouira with simple facilities." },
+  ],
+  Chefchaouen: [
+    { name: "Camping Azilan", price: "80-250 MAD / night", rating: "4.0", address: "Ras El Ma, Chefchaouen", description: "Camping spot above Chefchaouen with mountain views." },
+  ],
+};
+
+export const buildGoogleMapsSearchUrl = (query = "") =>
+  `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
+
+const getHotelPriceValue = (price = "") => {
+  const match = String(price).replace(/\s/g, "").match(/(\d+(?:[.,]\d+)?)/);
+  if (!match) return null;
+  return Number(match[1].replace(".", "").replace(",", "."));
+};
+
+const doesHotelMatchBudget = (hotel, budget) => {
+  const price = getHotelPriceValue(hotel.price);
+  if (!price) return true;
+  if (budget === "Cheap") return price < 700;
+  if (budget === "Luxury") return price > 1800;
+  return price >= 700 && price <= 1800;
+};
+
+const doesPlaceMatchBudget = (place, budget, type) => {
+  const price = getHotelPriceValue(place.price);
+  if (!price) return true;
+
+  if (type === "restaurants") {
+    if (budget === "Cheap") return price < 120;
+    if (budget === "Luxury") return price > 240;
+    return price >= 120 && price <= 240;
+  }
+
+  if (budget === "Cheap") return price < 350;
+  if (budget === "Luxury") return price > 900;
+  return price >= 300 && price <= 1200;
+};
+
+const buildBudgetHotelSearches = (city, lang, budget) => {
+  const budgetLabel =
+    budget === "Cheap"
+      ? (lang === "EN" ? "cheap" : lang === "AR" ? "اقتصادية" : "economiques")
+      : budget === "Luxury"
+        ? (lang === "EN" ? "luxury" : lang === "AR" ? "فاخرة" : "luxe")
+        : (lang === "EN" ? "moderate" : lang === "AR" ? "متوسطة" : "moderes");
+  return [
+    { name: `${budgetLabel} hotels ${city}`, price: lang === "EN" ? "See prices" : "Voir les prix", rating: "4+", reviews: "", source: "Google Maps" },
+    { name: `${budgetLabel} riads ${city}`, price: lang === "EN" ? "See prices" : "Voir les prix", rating: "4+", reviews: "", source: "Google Maps" },
+    { name: `${budgetLabel} resorts ${city}`, price: lang === "EN" ? "See prices" : "Voir les prix", rating: "4+", reviews: "", source: "Google Maps" },
+    { name: `best rated hotels ${city}`, price: lang === "EN" ? "See prices" : "Voir les prix", rating: "4+", reviews: "", source: "Google Maps" },
+    { name: `available hotels near ${city}`, price: lang === "EN" ? "See prices" : "Voir les prix", rating: "4+", reviews: "", source: "Google Maps" },
+    { name: `hotel deals ${city}`, price: lang === "EN" ? "See prices" : "Voir les prix", rating: "4+", reviews: "", source: "Google Maps" },
+  ];
+};
+
+export const getGoogleMapsHotelOptions = (location = "Marrakech", lang = "FR", budget = "Moderate") => {
+  const city =
+    MOROCCO_CITIES.find((item) => item.toLowerCase() === String(location).trim().toLowerCase()) ||
+    location ||
+    "Marrakech";
+  const exactHotels = [
+    ...(GOOGLE_MAPS_HOTELS_BY_CITY[city] || []),
+    ...(EXTENDED_HOTELS_BY_CITY[city] || []),
+  ];
+  const baseHotels = exactHotels.length > 0 ? exactHotels : [
+    { name: `Hotels in ${city}`, price: lang === "EN" ? "See prices" : "Voir les prix", rating: "4+", reviews: "", source: "Google Maps" },
+    { name: `Riads in ${city}`, price: lang === "EN" ? "See prices" : "Voir les prix", rating: "4+", reviews: "", source: "Google Maps" },
+    { name: `Resorts in ${city}`, price: lang === "EN" ? "See prices" : "Voir les prix", rating: "4+", reviews: "", source: "Google Maps" },
+  ];
+  const hotelsForBudget = baseHotels.filter((hotel) => doesHotelMatchBudget(hotel, budget));
+  const budgetSearches = buildBudgetHotelSearches(city, lang, budget);
+  const selectedHotels = (hotelsForBudget.length > 0 ? hotelsForBudget : []).concat(budgetSearches).slice(0, 8);
+  const imagePool = GOOGLE_HOTEL_IMAGE_MAP[city] || GOOGLE_HOTEL_IMAGE_MAP.default;
+
+  return selectedHotels.map((hotel, index) => ({
+    ...hotel,
+    address: `${city}, Morocco`,
+    description:
+      lang === "EN"
+        ? `Open this hotel search directly in Google Maps for ${city}.`
+        : lang === "AR"
+          ? `افتح هذا الفندق مباشرة في خرائط Google في ${city}.`
+          : `Ouvrez cet hotel directement dans Google Maps a ${city}.`,
+    image_url: hotel.image_url || imagePool[index % imagePool.length] || PLACE_IMAGE_POOLS.hotels[index % PLACE_IMAGE_POOLS.hotels.length],
+    maps_query: `${hotel.name}, ${city}, Morocco`,
+    maps_url: buildGoogleMapsSearchUrl(`${hotel.name}, ${city}, Morocco`),
+  }));
+};
+
+const REAL_PLACE_DATASETS = {
+  restaurants: REAL_RESTAURANTS_BY_CITY,
+  hostels: REAL_HOSTELS_BY_CITY,
+  camping: REAL_CAMPING_BY_CITY,
+};
+
+const getFallbackPlaceSearches = (city, type, lang, budget) => {
+  const typeLabel = {
+    restaurants: lang === "EN" ? "restaurants" : lang === "AR" ? "مطاعم" : "restaurants",
+    hostels: lang === "EN" ? "hostels" : lang === "AR" ? "نزل" : "auberges",
+    camping: lang === "EN" ? "camping" : lang === "AR" ? "تخييم" : "camping",
+  }[type] || type;
+  const budgetLabel =
+    budget === "Cheap"
+      ? (lang === "EN" ? "cheap" : lang === "AR" ? "اقتصادية" : "economiques")
+      : budget === "Luxury"
+        ? (lang === "EN" ? "luxury" : lang === "AR" ? "فاخرة" : "luxe")
+        : (lang === "EN" ? "moderate" : lang === "AR" ? "متوسطة" : "moderes");
+
+  const labelsByType = {
+    restaurants: [
+      `${budgetLabel} ${typeLabel} ${city}`,
+      `best restaurants ${city}`,
+      `Moroccan restaurants ${city}`,
+      `restaurants near me ${city}`,
+      `rooftop restaurants ${city}`,
+      `local food ${city}`,
+    ],
+    hostels: [
+      `${budgetLabel} ${typeLabel} ${city}`,
+      `best hostels ${city}`,
+      `auberges ${city}`,
+      `budget accommodation ${city}`,
+      `guesthouses ${city}`,
+      `backpacker hostel ${city}`,
+    ],
+    camping: [
+      `${budgetLabel} ${typeLabel} ${city}`,
+      `camping near ${city}`,
+      `glamping ${city}`,
+      `bivouac ${city}`,
+      `nature camp ${city}`,
+      `campground ${city}`,
+    ],
+  };
+
+  return (labelsByType[type] || [`${budgetLabel} ${typeLabel} ${city}`]).map((name) => ({
+    name,
+    price: lang === "EN" ? "See prices" : "Voir les prix",
+    rating: "4+",
+    address: `${city}, Morocco`,
+    cuisine: type === "restaurants" ? "Google Maps" : undefined,
+    description: lang === "EN" ? `Open real ${typeLabel} results in Google Maps.` : `Ouvrir les vrais resultats ${typeLabel} dans Google Maps.`,
+    source: "Google Maps",
+  }));
+};
+
+export const getRealGoogleMapsOptions = (location = "Marrakech", lang = "FR", budget = "Moderate", type = "restaurants") => {
+  const city =
+    MOROCCO_CITIES.find((item) => item.toLowerCase() === String(location).trim().toLowerCase()) ||
+    location ||
+    "Marrakech";
+  const dataset = REAL_PLACE_DATASETS[type] || {};
+  const baseItems = dataset[city] || [];
+  const itemsForBudget = baseItems.filter((item) => doesPlaceMatchBudget(item, budget, type));
+  const selectedItems = (itemsForBudget.length > 0 ? itemsForBudget : [])
+    .concat(getFallbackPlaceSearches(city, type, lang, budget))
+    .slice(0, 8);
+  const imagePool = PLACE_IMAGE_POOLS[type] || PLACE_IMAGE_POOLS.hotels;
+
+  return selectedItems.map((item, index) => ({
+    ...item,
+    address: item.address || `${city}, Morocco`,
+    image_url: item.image_url || imagePool[index % imagePool.length] || getMoroccoImageByText(city, type === "restaurants" ? "restaurant" : type === "camping" ? "camping hiking" : "hostel hotel"),
+    maps_query: `${item.name}, ${city}, Morocco`,
+    maps_url: buildGoogleMapsSearchUrl(`${item.name}, ${city}, Morocco`),
+  }));
 };
 
 export const guessCategoryFromText = (text = "") => {
-  const t = text.toLowerCase();
-  if (t.match(/hammam|bain|bath|spa/)) return "hammam";
-  if (t.match(/riad|ryad/)) return "riad";
-  if (t.match(/hotel|hostel|lodge/)) return "hotel";
-  if (t.match(/desert|dune|sahara/)) return "desert";
-  if (t.match(/beach|plage|surf/)) return "beach";
-  if (t.match(/hiking|trek|mountain|randonnée/)) return "hiking";
-  if (t.match(/souk|market|bazaar/)) return "souk";
-  if (t.match(/museum|exposition/)) return "museum";
-  if (t.match(/palace|palais|kasbah/)) return "palace";
-  if (t.match(/dinner|diner/)) return "dinner";
-  if (t.match(/lunch|déjeuner/)) return "lunch";
-  if (t.match(/cafe|café|coffee|tea/)) return "cafe";
-  if (t.match(/waterfall|cascade|chute/)) return "waterfall";
-  if (t.match(/surf|surfing/)) return "surfing";
-  if (t.match(/lake|lac|barrage/)) return "lake";
+  const value = text.toLowerCase();
+  if (/hammam|bain|bath|spa/.test(value)) return "hammam";
+  if (/riad|ryad/.test(value)) return "riad";
+  if (/hotel|hostel|auberge|lodge/.test(value)) return "hotel";
+  if (/restaurant|food|cuisine/.test(value)) return "restaurant";
+  if (/desert|dune|sahara|camp/.test(value)) return "desert";
+  if (/beach|plage|surf|ocean/.test(value)) return "beach";
+  if (/hiking|trek|mountain|atlas|valley/.test(value)) return "hiking";
+  if (/souk|market|bazaar|medina/.test(value)) return "souk";
+  if (/museum|exposition/.test(value)) return "museum";
+  if (/palace|palais|kasbah/.test(value)) return "palace";
+  if (/dinner|diner/.test(value)) return "dinner";
+  if (/lunch|dejeuner|midi/.test(value)) return "lunch";
+  if (/cafe|coffee|tea/.test(value)) return "cafe";
+  if (/waterfall|cascade|falls/.test(value)) return "waterfall";
+  if (/lake|lac|barrage/.test(value)) return "lake";
   return null;
 };
 
-export const getMoroccoImageByText = (text, contextText = "") => {
-  const combinedContext = `${text || ""} ${contextText || ""}`;
-  const contextCategory = guessCategoryFromText(combinedContext);
-  if (contextCategory && CONTEXT_IMAGE_MAP[contextCategory]) {
-    return CONTEXT_IMAGE_MAP[contextCategory][0];
-  }
-  const lowerText = (text || "").toLowerCase();
-  const city = MOROCCO_CITIES.find((item) =>
-    lowerText.includes(item.toLowerCase())
-  );
-  return city ? CITY_IMAGE_MAP[city] : "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=1400&q=80";
+export const getMoroccoImageByText = (text = "", contextText = "") => {
+  const category = guessCategoryFromText(`${text} ${contextText}`);
+  if (category && CONTEXT_IMAGE_MAP[category]) return CONTEXT_IMAGE_MAP[category];
+
+  const lowerText = text.toLowerCase();
+  const city = MOROCCO_CITIES.find((item) => lowerText.includes(item.toLowerCase()));
+
+  return city && CITY_IMAGE_MAP[city]
+    ? CITY_IMAGE_MAP[city]
+    : CITY_IMAGE_MAP.Marrakech;
 };
 
-const ACTIVITIES = {
-  imperial: {
-    EN: [
-      [
-        { time: "Morning", place: "Medina & Historic Souks", details: "Wander through the labyrinthine alleys of the old medina, discovering artisan workshops, spice stalls, and handcrafted leather goods.", ticket_pricing: "Free", rating: "4.7" },
-        { time: "Lunch", place: "Café Maure", details: "Savor traditional Moroccan mint tea and pastilla on a panoramic rooftop terrace overlooking the medina rooftops.", ticket_pricing: "80–150 MAD", rating: "4.5" },
-        { time: "Afternoon", place: "Royal Palace & Gardens", details: "Explore the majestic royal palace grounds, admire intricate zellige tilework and carved cedarwood, and stroll through manicured Andalusian gardens.", ticket_pricing: "70 MAD", rating: "4.8" },
-        { time: "Evening", place: "Traditional Moroccan Dinner", details: "End the day with a multi-course dinner of slow-cooked lamb tagine, couscous with seven vegetables, and fresh orange blossom pastries.", ticket_pricing: "200–350 MAD", rating: "4.9" }
-      ],
-      [
-        { time: "Morning", place: "Medersa & Koranic School", details: "Visit an ancient Islamic school featuring stunning stucco carvings, marble columns, and peaceful interior courtyards reflecting centuries of scholarship.", ticket_pricing: "30 MAD", rating: "4.8" },
-        { time: "Lunch", place: "Local Street Food Tour", details: "Taste authentic msemen flatbreads, harira soup, and freshly grilled merguez sausages at bustling street-side stalls.", ticket_pricing: "50–100 MAD", rating: "4.6" },
-        { time: "Afternoon", place: "Traditional Hammam & Spa", details: "Relax with a full traditional Moroccan bath experience — black soap scrub, rhassoul clay mask, and argan oil massage.", ticket_pricing: "200–400 MAD", rating: "4.9" },
-        { time: "Evening", place: "Rooftop Sunset Lounge", details: "Watch the sun set over the city skyline from a stylish rooftop lounge while enjoying fresh juices, Moroccan tapas, and live Gnawa music.", ticket_pricing: "100–200 MAD", rating: "4.7" }
-      ],
-      [
-        { time: "Morning", place: "Museum of Moroccan Arts", details: "Discover rich collections of Berber jewelry, antique carpets, traditional ceramics, and regional musical instruments.", ticket_pricing: "50 MAD", rating: "4.5" },
-        { time: "Lunch", place: "Riad Restaurant", details: "Dine inside a beautifully restored riad, enjoying pastilla au pigeon, zaalouk salad, and fresh-baked khobz bread.", ticket_pricing: "120–220 MAD", rating: "4.7" },
-        { time: "Afternoon", place: "Artisan Quarter & Tanneries", details: "Watch master craftsmen dye leather using centuries-old techniques in open-air stone vats, and browse handmade leather bags and shoes.", ticket_pricing: "Free (tip expected)", rating: "4.4" },
-        { time: "Evening", place: "Night Market & Local Entertainment", details: "Immerse yourself in the evening atmosphere of the main square with storytellers, snake charmers, henna artists, and sizzling open-air grills.", ticket_pricing: "Free", rating: "4.8" }
-      ]
-    ],
-    FR: [
-      [
-        { time: "Matin", place: "Médina & Souks Historiques", details: "Déambulez dans les ruelles labyrinthiques de la vieille médina, découvrez les ateliers d'artisans, les étals d'épices et la maroquinerie artisanale.", ticket_pricing: "Gratuit", rating: "4.7" },
-        { time: "Midi", place: "Café Maure", details: "Savourez du thé à la menthe marocain traditionnel et de la pastilla sur une terrasse panoramique offrant une vue imprenable sur la médina.", ticket_pricing: "80–150 MAD", rating: "4.5" },
-        { time: "Après-midi", place: "Palais Royal & Jardins", details: "Explorez le majestueux palais royal, admirez les zelliges raffinés et le bois de cèdre sculpté, puis promenez-vous dans les magnifiques jardins andalous.", ticket_pricing: "70 MAD", rating: "4.8" },
-        { time: "Soir", place: "Dîner Marocain Traditionnel", details: "Terminez la journée par un dîner traditionnel composé de tajine d'agneau mijoté, de couscous aux sept légumes et de pâtisseries à la fleur d'oranger.", ticket_pricing: "200–350 MAD", rating: "4.9" }
-      ],
-      [
-        { time: "Matin", place: "Médersa & École Coranique", details: "Visitez une ancienne école coranique ornée de stucs sculptés, de colonnes de marbre et d'une cour paisible témoignant de siècles d'histoire.", ticket_pricing: "30 MAD", rating: "4.8" },
-        { time: "Midi", place: "Tour Culinaire de Rue", details: "Dégustez des galettes msemen authentiques, de la soupe harira et des saucisses merguez grillées sur les étals animés.", ticket_pricing: "50–100 MAD", rating: "4.6" },
-        { time: "Après-midi", place: "Hammam & Spa Traditionnel", details: "Détendez-vous avec un rituel complet de hammam marocain — gommage au savon noir, enveloppement au rhassoul et massage à l'huile d'argan.", ticket_pricing: "200–400 MAD", rating: "4.9" },
-        { time: "Soir", place: "Salon de Coucher de Soleil sur le Toit", details: "Contemplez le coucher de soleil depuis un rooftop élégant tout en savourant des jus de fruits frais, des tapas marocaines et de la musique Gnawa live.", ticket_pricing: "100–200 MAD", rating: "4.7" }
-      ],
-      [
-        { time: "Matin", place: "Musée des Arts Marocains", details: "Découvrez de riches collections de bijoux berbères, de tapis anciens, de céramiques traditionnelles et d'instruments de musique.", ticket_pricing: "50 MAD", rating: "4.5" },
-        { time: "Midi", place: "Restaurant de Riad", details: "Dînez au cœur d'un riad magnifiquement restauré, en dégustant une pastilla, de la salade zaalouk et du pain khobz chaud.", ticket_pricing: "120–220 MAD", rating: "4.7" },
-        { time: "Après-midi", place: "Quartier des Artisans & Tanneries", details: "Observez les artisans teindre le cuir selon des techniques ancestrales dans des cuves en pierre, et découvrez la maroquinerie fine.", ticket_pricing: "Gratuit (pourboire apprécié)", rating: "4.4" },
-        { time: "Soir", place: "Marché Nocturne & Spectacles", details: "Plongez dans l'ambiance nocturne de la place principale animée par des conteurs, des charmeurs de serpents et des barbecues géants.", ticket_pricing: "Gratuit", rating: "4.8" }
-      ]
-    ],
-    AR: [
-      [
-        { time: "صباحاً", place: "المدينة العتيقة والأسواق التاريخية", details: "تجول في الأزقة المتاهية للمدينة العتيقة، واكتشف ورش الحرفيين، وأكشاك التوابل، والمنتجات الجلدية المصنوعة يدويًا.", ticket_pricing: "مجاني", rating: "4.7" },
-        { time: "غداء", place: "المقهى الموريسكي", details: "تذوق الشاي المغربي التقليدي بالنعناع والبسطيلة على شرفة سطح بانورامية تطل على أسطح المدينة العتيقة.", ticket_pricing: "80–150 درهم", rating: "4.5" },
-        { time: "بعد الزوال", place: "القصر الملكي والحدائق", details: "استكشف ساحات القصر الملكي المهيب، وتأمل أعمال الزليج المعقدة وخشب الأرز المنحوت، وتجول في الحدائق الأندلسية المنسقة.", ticket_pricing: "70 درهم", rating: "4.8" },
-        { time: "مساءً", place: "عشاء مغربي تقليدي", details: "اختتم يومك بعشاء متعدد الأطباق من طاجين اللحم المطبوخ ببطء، والكسكس بالخضروات السبع، وحلويات ماء الزهر الطازجة.", ticket_pricing: "200–350 درهم", rating: "4.9" }
-      ],
-      [
-        { time: "صباحاً", place: "المدرسة القرآنية والأثرية", details: "قم بزيارة مدرسة إسلامية عريقة تتميز بنقوش الجبس الرائعة، والأعمدة الرخامية، والساحات الداخلية الهادئة التي تعكس قروناً من العلم.", ticket_pricing: "30 درهم", rating: "4.8" },
-        { time: "غداء", place: "جولة أطعمة الشارع المحلية", details: "تذوق رغيف المسمن الأصيل، وحساء الحريرية، ونقانق المرقاز المشوية الطازجة في أكشاك الشارع النابضة بالحياة.", ticket_pricing: "50–100 درهم", rating: "4.6" },
-        { time: "بعد الزوال", place: "الحمام التقليدي والسبا", details: "استرخِ مع تجربة حمام مغربي تقليدي كاملة — فرك بالصابون البلدي، وقناع طين الغاسول، وتدليك بزيت الأركان.", ticket_pricing: "200–400 درهم", rating: "4.9" },
-        { time: "مساءً", place: "لاونج السطح عند الغروب", details: "شاهد غروب الشمس فوق أفق المدينة من شرفة سطح أنيقة بينما تستمتع بالعصائر الطازجة، والمقبلات المغربية، وموسيقى كناوة الحية.", ticket_pricing: "100–200 درهم", rating: "4.7" }
-      ],
-      [
-        { time: "صباحاً", place: "متحف الفنون المغربية", details: "اكتشف مجموعات غنية من الحلي الأمازيغية، والزرابي العتيقة، والخزف التقليدي، والآلات الموسيقية الإقليمية.", ticket_pricing: "50 درهم", rating: "4.5" },
-        { time: "غداء", place: "مطعم في رياض تقليدي", details: "تناول طعامك داخل رياض تم ترميمه بشكل جميل، مستمتعاً ببسطيلة الحمام، وسلطة الزعلوك، وخبز الدار الساخن الطازج.", ticket_pricing: "120–220 درهم", rating: "4.7" },
-        { time: "بعد الزوال", place: "حي الحرفيين والدباغة", details: "شاهد المعلمين الحرفيين يصبغون الجلد باستخدام تقنيات عمرها قرون في أحواض حجرية مفتوحة، وتصفح الحقائب والأحذية الجلدية المصنوعة يدويًا.", ticket_pricing: "مجاني (بخشيش متوقع)", rating: "4.4" },
-        { time: "مساءً", place: "السوق الليلي والعروض المحلية", details: "انغمس في الأجواء المسائية للساحة الرئيسية مع الحكواتيين، ومروضي الأفاعي، ونقاشات الحناء، والمشاوي المفتوحة الساخنة.", ticket_pricing: "مجاني", rating: "4.8" }
-      ]
-    ]
-  },
-  desert: {
-    EN: [
-      [
-        { time: "Morning", place: "Sunrise Camel Trek", details: "Rise before dawn and ride a dromedary camel across golden Saharan dunes as the first light paints the desert in shades of amber and pink.", ticket_pricing: "250–400 MAD", rating: "4.9" },
-        { time: "Lunch", place: "Berber Nomad Camp", details: "Share a meal with local Berber nomads — fresh-baked bread cooked in sand, slow-simmered lentil stew, and sweet mint tea.", ticket_pricing: "100–180 MAD", rating: "4.7" },
-        { time: "Afternoon", place: "Sandboarding on the Dunes", details: "Experience the thrill of sandboarding down towering Erg dunes, followed by a peaceful walk to a hidden desert oasis.", ticket_pricing: "150 MAD", rating: "4.6" },
-        { time: "Evening", place: "Desert Stargazing & Campfire", details: "Sit around a crackling campfire under one of the clearest night skies on Earth, listening to traditional Gnawa drumming and Berber folk songs.", ticket_pricing: "Included in camp stay", rating: "5.0" }
-      ],
-      [
-        { time: "Morning", place: "Kasbah & Fortress Exploration", details: "Explore a centuries-old kasbah fortress made of rammed earth, climbing to the rooftop for sweeping views of palm-filled oasis valleys.", ticket_pricing: "30–60 MAD", rating: "4.6" },
-        { time: "Lunch", place: "Oasis Palm Grove Picnic", details: "Enjoy a shaded picnic lunch under date palms by a cool irrigation canal — fresh salads, grilled chicken, and Moroccan flatbreads.", ticket_pricing: "80–150 MAD", rating: "4.5" },
-        { time: "Afternoon", place: "4x4 Desert Safari", details: "Speed across rocky desert plains and sandy tracks in a 4x4 vehicle, stopping at dramatic viewpoints and ancient fossil beds.", ticket_pricing: "350–500 MAD", rating: "4.8" },
-        { time: "Evening", place: "Luxury Desert Bivouac Dinner", details: "Dine under a canopy of stars at a luxury desert camp — grilled lamb mechoui, Berber couscous, and traditional entertainment.", ticket_pricing: "300–500 MAD", rating: "4.9" }
-      ],
-      [
-        { time: "Morning", place: "Desert Quad Biking", details: "Rev up a quad bike and race across the open desert landscape, weaving between dunes and dried river beds.", ticket_pricing: "300–450 MAD", rating: "4.7" },
-        { time: "Lunch", place: "Desert Khaima Tent Lunch", details: "Rest in a traditional Berber khaima tent and enjoy tangia (slow-cooked clay pot stew) with fresh vegetables and warm bread.", ticket_pricing: "100–200 MAD", rating: "4.6" },
-        { time: "Afternoon", place: "Fossil & Mineral Discovery", details: "Visit local fossil sites to see ancient trilobites and ammonites preserved in stone, and browse a cooperative selling polished mineral specimens.", ticket_pricing: "Free", rating: "4.3" },
-        { time: "Evening", place: "Sunset Dune Walk & Photography", details: "Hike to the summit of the tallest dune for a breathtaking sunset panorama — perfect for photography as shadows stretch across the sand sea.", ticket_pricing: "Free", rating: "4.9" }
-      ]
-    ],
-    FR: [
-      [
-        { time: "Matin", place: "Randonnée à dos de dromadaire au lever du soleil", details: "Levez-vous avant l'aube et montez à dos de dromadaire sur les dunes dorées du Sahara alors que la première lumière peint le désert de nuances ambrées.", ticket_pricing: "250–400 MAD", rating: "4.9" },
-        { time: "Midi", place: "Camp Nomade Berbère", details: "Partagez un repas avec des nomades berbères locaux — pain frais cuit dans le sable, ragoût de lentilles mijoté et thé à la menthe.", ticket_pricing: "100–180 MAD", rating: "4.7" },
-        { time: "Après-midi", place: "Sandboarding sur les Dunes", details: "Vivez le frisson de descendre les immenses dunes de l'Erg sur un surf de sable, suivi d'une promenade paisible vers une oasis cachée.", ticket_pricing: "150 MAD", rating: "4.6" },
-        { time: "Soir", place: "Observation des Étoiles & Feu de camp", details: "Asseyez-vous autour d'un feu de camp crépitant sous l'un des ciels nocturnes les plus purs de la Terre, au son des tambours Gnawa.", ticket_pricing: "Inclus avec le camp", rating: "5.0" }
-      ],
-      [
-        { time: "Matin", place: "Exploration des Kasbahs & Forteresses", details: "Explorez une forteresse kasbah centenaire en terre battue, montez sur le toit pour admirer la vue sur les vallées de l'oasis.", ticket_pricing: "30–60 MAD", rating: "4.6" },
-        { time: "Midi", place: "Pique-nique dans la Palmeraie", details: "Savourez un pique-nique ombragé sous les palmiers dattiers — salades fraîches, poulet grillé et galettes marocaines.", ticket_pricing: "80–150 MAD", rating: "4.5" },
-        { time: "Après-midi", place: "Safari en 4x4 dans le désert", details: "Parcourez les pistes sablonneuses à bord d'un véhicule 4x4, avec des arrêts sur des points de vue spectaculaires et des gisements de fossiles.", ticket_pricing: "350–500 MAD", rating: "4.8" },
-        { time: "Soir", place: "Dîner dans un Bivouac de Luxe", details: "Dînez sous les étoiles dans un camp de luxe — méchoui d'agneau grillé, couscous berbère et chants traditionnels autour du feu.", ticket_pricing: "300–500 MAD", rating: "4.9" }
-      ],
-      [
-        { time: "Matin", place: "Quad dans les dunes", details: "Faites le plein de sensations fortes en pilotant un quad à travers les dunes de sable fin.", ticket_pricing: "300–450 MAD", rating: "4.7" },
-        { time: "Midi", place: "Déjeuner sous une tente Khaima", details: "Reposez-vous sous une tente traditionnelle en dégustant une tangia (ragoût en pot de terre cuite) avec des légumes frais.", ticket_pricing: "100–200 MAD", rating: "4.6" },
-        { time: "Après-midi", place: "Découverte de minéraux et fossiles", details: "Visitez des sites de fossiles locaux pour admirer des ammonites pétrifiées et découvrez une coopérative de minéraux polis.", ticket_pricing: "Gratuit", rating: "4.3" },
-        { time: "Soir", place: "Coucher de soleil sur les dunes", details: "Grimpez au sommet de la plus haute dune pour contempler un coucher de soleil époustouflant, idéal pour immortaliser ce moment en photo.", ticket_pricing: "Gratuit", rating: "4.9" }
-      ]
-    ],
-    AR: [
-      [
-        { time: "صباحاً", place: "رحلة الجمال عند شروق الشمس", details: "استيقظ قبل الفجر واركب الجمل عبر الكثبان الرملية الذهبية في الصحراء بينما يرسم الضوء الأول الصحراء بظلال من اللونين الكهرماني والوردي.", ticket_pricing: "250–400 درهم", rating: "4.9" },
-        { time: "غداء", place: "مخيم البدو الأمازيغ", details: "شارك وجبة طعام مع البدو الأمازيغ المحليين — خبز طازج مطبوخ في الرمل، وحساء العدس المطبوخ ببطء، وشاي النعناع الحلو.", ticket_pricing: "100–180 درهم", rating: "4.7" },
-        { time: "بعد الزوال", place: "التزلج على الرمال", details: "عش إثارة التزلج على الرمال من الكثبان الرملية الشاهقة، تليها نزهة هادئة إلى واحة صحراوية مخفية.", ticket_pricing: "150 درهم", rating: "4.6" },
-        { time: "مساءً", place: "رصد النجوم والنار في الصحراء", details: "اجلس حول نار المخيم المتوقدة تحت واحدة من أوضح السماوات الليلية على الأرض، مستمعًا إلى طبول كناوة والأغاني الشعبية الأمازيغية.", ticket_pricing: "مشمول في إقامة المخيم", rating: "5.0" }
-      ],
-      [
-        { time: "صباحاً", place: "استكشاف القصبات والقلاع الأثرية", details: "استكشف قلعة قصبة عمرها قرون مبنية من الطين، واصعد إلى السطح للاستمتاع بإطلالات بانورامية على وديان الواحات المليئة بالنخيل.", ticket_pricing: "30–60 درهم", rating: "4.6" },
-        { time: "غداء", place: "نزهة في واحة النخيل", details: "استمتع بنزهة غداء مظللة تحت أشجار النخيل بجوار قناة ري باردة — سلطات طازجة، دجاج مشوي، وخبز مغربي مسطح.", ticket_pricing: "80–150 درهم", rating: "4.5" },
-        { time: "بعد الزوال", place: "سفاري صحراوي بسيارات 4x4", details: "انطلق بسرعة عبر السهول الصحراوية الصخرية والممرات الرملية في سيارة رباعية الدفع، وتوقف عند نقاط المشاهدة الرائعة ومكامن الحفريات القديمة.", ticket_pricing: "350–500 درهم", rating: "4.8" },
-        { time: "مساءً", place: "عشاء فاخر في المخيم الصحراوي", details: "تناول العشاء تحت قبة من النجوم في مخيم صحراوي فاخر — خروف مشوي على الطريقة التقليدية، كسكس أمازيغي، وترفيه تقليدي.", ticket_pricing: "300–500 درهم", rating: "4.9" }
-      ],
-      [
-        { time: "صباحاً", place: "ركوب الدراجات الرباعية (الكواد) في الصحراء", details: "انطلق بدراجة رباعية وتسابق عبر المناظر الطبيعية الصحراوية المفتوحة، متنقلاً بين الكثبان الرملية ومجاري الأنهار الجافة.", ticket_pricing: "300–450 درهم", rating: "4.7" },
-        { time: "غداء", place: "غداء في خيمة الخيمة الصحراوية", details: "استرخ في خيمة أمازيغية تقليدية واستمتع بالطنجية (لحم مطبوخ ببطء في قدر فخاري) مع الخضار الطازجة والخبز الدافئ.", ticket_pricing: "100–200 درهم", rating: "4.6" },
-        { time: "بعد الزوال", place: "اكتشاف الحفريات والمعادن", details: "قم بزيارة مواقع الحفريات المحلية لرؤية ثلاثيات الفصوص والأمونيت القديمة المحفوظة في الحجر، وتصفح تعاونية لبيع عينات المعادن المصقولة.", ticket_pricing: "مجاني", rating: "4.3" },
-        { time: "مساءً", place: "نزهة الكثبان الرملية عند الغروب والتصوير", details: "اصعد إلى قمة أعلى كثيب رملي للاستمتاع ببانوراما غروب الشمس الخاطفة للأنفاس — مثالية للتصوير الفوتوغرافي مع امتداد الظلال على بحر الرمال.", ticket_pricing: "مجاني", rating: "4.9" }
-      ]
-    ]
-  },
-  beach: {
-    EN: [
-      [
-        { time: "Morning", place: "Beach Walk & Swimming", details: "Start your day with a refreshing swim in crystal-clear Atlantic or Mediterranean waters, followed by a barefoot walk along pristine sandy shores.", ticket_pricing: "Free", rating: "4.7" },
-        { time: "Lunch", place: "Beachside Seafood Grill", details: "Feast on freshly caught grilled fish, shrimp skewers, and calamari at an oceanfront restaurant with panoramic sea views.", ticket_pricing: "120–250 MAD", rating: "4.8" },
-        { time: "Afternoon", place: "Surfing Lesson", details: "Hit the waves with a professional surf instructor — beginners welcome. Ride Atlantic swells on the best surf breaks in Morocco.", ticket_pricing: "200–350 MAD", rating: "4.6" },
-        { time: "Evening", place: "Sunset Coastal Promenade", details: "Stroll along the seaside corniche as the sun dips below the horizon, stopping for fresh fruit smoothies and Moroccan crêpes.", ticket_pricing: "Free", rating: "4.8" }
-      ],
-      [
-        { time: "Morning", place: "Coastal Cliff & Rock Arch Hike", details: "Explore dramatic coastal rock formations and natural stone arches carved by centuries of ocean waves, with stunning photo opportunities.", ticket_pricing: "Free", rating: "4.7" },
-        { time: "Lunch", place: "Harbor Fish Market & Grill", details: "Pick your own fish at the local harbor market and have it grilled fresh on the spot with Chermoula sauce, salads, and fresh bread.", ticket_pricing: "80–180 MAD", rating: "4.9" },
-        { time: "Afternoon", place: "Jet Ski & Water Sports", details: "Experience adrenaline-pumping jet skiing, parasailing, or paddleboarding across turquoise coastal waters.", ticket_pricing: "250–400 MAD", rating: "4.5" },
-        { time: "Evening", place: "Oceanview Rooftop Dinner", details: "Enjoy a candlelit dinner overlooking the moonlit ocean — grilled lobster, saffron rice, and Moroccan rosé wine.", ticket_pricing: "250–450 MAD", rating: "4.9" }
-      ],
-      [
-        { time: "Morning", place: "Kayaking & Coastal Cave Tour", details: "Paddle a sea kayak along the coastline, discovering hidden caves, natural pools, and secluded beaches inaccessible by foot.", ticket_pricing: "200–300 MAD", rating: "4.6" },
-        { time: "Lunch", place: "Beach Café & Juice Bar", details: "Relax at a laid-back beach café with avocado toast, fresh orange juice, and panoramic ocean views from a shaded terrace.", ticket_pricing: "60–120 MAD", rating: "4.5" },
-        { time: "Afternoon", place: "Old Port & Medina Walk", details: "Explore the charming whitewashed medina streets near the port, browsing local art galleries, souvenir shops, and spice stalls.", ticket_pricing: "Free", rating: "4.4" },
-        { time: "Evening", place: "Bonfire Night on the Beach", details: "Gather around a beach bonfire with live acoustic music, freshly grilled sardines, and star-filled skies over the ocean.", ticket_pricing: "Free", rating: "4.8" }
-      ]
-    ],
-    FR: [
-      [
-        { time: "Matin", place: "Baignade & Balade sur la plage", details: "Commencez votre journée par une baignade rafraîchissante dans les eaux de l'Atlantique ou de la Méditerranée, suivie d'une balade pieds nus sur la plage.", ticket_pricing: "Gratuit", rating: "4.7" },
-        { time: "Midi", place: "Grillade de poissons au bord de mer", details: "Régalez-vous de poissons grillés fraîchement pêchés, de brochettes de crevettes et de calamars dans un restaurant face à la mer.", ticket_pricing: "120–250 MAD", rating: "4.8" },
-        { time: "Après-midi", place: "Cours de surf", details: "Domptez les vagues avec un instructeur professionnel — idéal pour les débutants sur les meilleurs spots de surf du Maroc.", ticket_pricing: "200–350 MAD", rating: "4.6" },
-        { time: "Soir", place: "Promenade côtière au coucher du soleil", details: "Flânez le long de la corniche alors que le soleil se couche, en vous arrêtant pour un smoothie de fruits frais ou des crêpes marocaines.", ticket_pricing: "Gratuit", rating: "4.8" }
-      ],
-      [
-        { time: "Matin", place: "Randonnée des falaises et arches de pierre", details: "Explorez des formations rocheuses impressionnantes et des arches de pierre sculptées par les vagues, idéales pour de superbes photos.", ticket_pricing: "Gratuit", rating: "4.7" },
-        { time: "Midi", place: "Poisson frais au port", details: "Choisissez vos poissons au marché du port et faites-les griller sur place, servis avec de la sauce Chermoula et des salades.", ticket_pricing: "80–180 MAD", rating: "4.9" },
-        { time: "Après-midi", place: "Jet Ski & Sports Nautiques", details: "Faites le plein d'adrénaline en jet-ski, parachute ascensionnel ou stand-up paddle sur les eaux turquoise.", ticket_pricing: "250–400 MAD", rating: "4.5" },
-        { time: "Soir", place: "Dîner face à l'océan", details: "Profitez d'un dîner aux chandelles surplombant l'océan — homard grillé, riz au safran et pain croustillant.", ticket_pricing: "250–450 MAD", rating: "4.9" }
-      ],
-      [
-        { time: "Matin", place: "Kayak de mer & Grottes marines", details: "Naviguez en kayak le long de la côte, découvrez des grottes cachées et des criques secrètes inaccessibles à pied.", ticket_pricing: "200–300 MAD", rating: "4.6" },
-        { time: "Midi", place: "Café de la plage & Bar à jus", details: "Détendez-vous dans un café branché en bord de plage avec des tartines d'avocat, du jus d'orange frais et une vue imprenable.", ticket_pricing: "60–120 MAD", rating: "4.5" },
-        { time: "Après-midi", place: "Balade dans la médina blanche", details: "Explorez les ruelles blanchies à la chaux près du port, découvrez les galeries d'art locales et les boutiques d'artisanat.", ticket_pricing: "Gratuit", rating: "4.4" },
-        { time: "Soir", place: "Feu de joie sur le sable", details: "Rassemblez-vous autour d'un feu de joie avec de la musique acoustique et des sardines grillées sous la voûte étoilée.", ticket_pricing: "Gratuit", rating: "4.8" }
-      ]
-    ],
-    AR: [
-      [
-        { time: "صباحاً", place: "نزهة على الشاطئ والسباحة", details: "ابدأ يومك بسباحة منعشة في مياه المحيط الأطلسي أو البحر الأبيض المتوسط الصافية، تليها نزهة حافي القدمين على الرمال الناعمة.", ticket_pricing: "مجاني", rating: "4.7" },
-        { time: "غداء", place: "مشاوي المأكولات البحرية على الشاطئ", details: "استمتع بوجبة من الأسماك المشوية الطازجة، وأسياخ الروبيان، والكلماري في مطعم مواجه للمحيط مع إطلالات بانورامية.", ticket_pricing: "120–250 درهم", rating: "4.8" },
-        { time: "بعد الزوال", place: "درس ركوب الأمواج", details: "اركب الأمواج مع مدرب محترف — المبتدؤون مرحب بهم. استمتع بأفضل مواقع ركوب الأمواج في المغرب.", ticket_pricing: "200–350 درهم", rating: "4.6" },
-        { time: "مساءً", place: "نزهة ساحلية عند الغروب", details: "مجاني", rating: "4.8" }
-      ],
-      [
-        { time: "صباحاً", place: "رحلة المنحدرات الساحلية والأقواس الصخرية", details: "استكشف التشكيلات الصخرية الساحلية الدراماتيكية والأقواس الحجرية الطبيعية التي نحتتها أمواج المحيط على مر القرون.", ticket_pricing: "مجاني", rating: "4.7" },
-        { time: "غداء", place: "سوق السمك في الميناء والمشاوي", details: "اختر سمكك بنفسك من سوق الميناء المحلي واشوه على الفور مع صلصة الشرمولة اللذيذة، السلطات والخبز الطازج.", ticket_pricing: "80–180 درهم", rating: "4.9" },
-        { time: "بعد الزوال", place: "جيت سكي والرياضات المائية", details: "عش إثارة ركوب الدراجات المائية (الجيت سكي)، أو التزلج الهوائي، أو التجديف واقفًا في المياه الفيروزية.", ticket_pricing: "250–400 درهم", rating: "4.5" },
-        { time: "مساءً", place: "عشاء مطل على المحيط", details: "استمتع بعشاء رومانسي على ضوء الشموع يطل على المحيط المضاء بنور القمر — الكركند المشوي، أرز الزعفران، وعصائر لذيذة.", ticket_pricing: "250–450 درهم", rating: "4.9" }
-      ],
-      [
-        { time: "صباحاً", place: "جولة قوارب الكاياك والكهوف البحرية", details: "جدف بقارب كاياك بحري على طول الساحل، لتكتشف الكهوف المخفية، والمسابح الطبيعية، والشواطئ المعزولة التي لا يمكن الوصول إليها سيرًا على الأقدام.", ticket_pricing: "200–300 درهم", rating: "4.6" },
-        { time: "غداء", place: "مقهى الشاطئ وبار العصائر", details: "استرخ في مقهى شاطئي هادئ مع توست الأفوكادو، وعصير البرتقال الطازج، وإطلالات رائعة على المحيط من شرفة مظللة.", ticket_pricing: "60–120 درهم", rating: "4.5" },
-        { time: "بعد الزوال", place: "نزهة في الميناء القديم والمدينة البيضاء", details: "استكشف شوارع المدينة القديمة الساحرة ذات الجدران البيضاء بالقرب من الميناء، وتصفح معارض الفنون المحلية ومحلات الهدايا التذكارية.", ticket_pricing: "مجاني", rating: "4.4" },
-        { time: "مساءً", place: "سهرة النار على الشاطئ", details: "تجمع حول نار شاطئية دافئة مع موسيقى أكوستيك حية، وسردين مشوي طازج، وسماء مليئة بالنجوم فوق المحيط.", ticket_pricing: "مجاني", rating: "4.8" }
-      ]
-    ]
-  },
-  nature: {
-    EN: [
-      [
-        { time: "Morning", place: "Mountain Trail Hike", details: "Set off on a guided mountain trail through cedar and oak forests, crossing clear mountain streams with views of snow-capped peaks.", ticket_pricing: "Free (guide: 200 MAD)", rating: "4.8" },
-        { time: "Lunch", place: "Berber Village Home-Cooked Meal", details: "Share a traditional Berber lunch in a mountain village — hand-rolled couscous, vegetable tagine, and fresh walnut bread baked in a clay oven.", ticket_pricing: "80–150 MAD", rating: "4.9" },
-        { time: "Afternoon", place: "Waterfall & Natural Pool Swim", details: "Hike to a cascading waterfall and cool off in natural rock pools surrounded by lush green valleys and wildflowers.", ticket_pricing: "20 MAD", rating: "4.7" },
-        { time: "Evening", place: "Mountain Lodge Fireside Dinner", details: "Warm up by a crackling fireplace in a cozy mountain lodge, enjoying hearty lamb stew, fresh salads, and homemade apple pie.", ticket_pricing: "150–280 MAD", rating: "4.6" }
-      ],
-      [
-        { time: "Morning", place: "River Canyon Walk", details: "Follow a scenic river canyon trail past towering rock walls, rope bridges, and crystal-clear turquoise pools carved into the stone.", ticket_pricing: "Free", rating: "4.8" },
-        { time: "Lunch", place: "Riverside Picnic", details: "Set up a picnic on the grassy riverbank with local cheeses, olives, seasonal fruit, fresh bread, and honey from nearby hives.", ticket_pricing: "50–100 MAD", rating: "4.5" },
-        { time: "Afternoon", place: "Zip-Lining & Adventure Park", details: "Soar across valley zip-lines and navigate rope obstacle courses high above the tree canopy in an outdoor adventure park.", ticket_pricing: "200–350 MAD", rating: "4.6" },
-        { time: "Evening", place: "Stargazing from Mountain Ridge", details: "Drive to a high-altitude viewpoint for unobstructed stargazing far from city lights — spot the Milky Way, planets, and shooting stars.", ticket_pricing: "Free", rating: "4.9" }
-      ],
-      [
-        { time: "Morning", place: "Lake & Dam Scenic Walk", details: "Circle a turquoise mountain lake or reservoir dam on a peaceful walking trail with views of reflected peaks and soaring eagles.", ticket_pricing: "Free", rating: "4.5" },
-        { time: "Lunch", place: "Trout Farm Restaurant", details: "Enjoy freshly caught and grilled rainbow trout with herb butter, roasted vegetables, and local bread at a lakeside trout farm.", ticket_pricing: "100–200 MAD", rating: "4.7" },
-        { time: "Afternoon", place: "Horseback Riding through Valleys", details: "Ride gentle Barb horses through wildflower meadows and olive groves, following ancient mule trails between Berber villages.", ticket_pricing: "250–400 MAD", rating: "4.7" },
-        { time: "Evening", place: "Eco-Lodge Moroccan Tea Ceremony", details: "Unwind at an eco-lodge with a traditional Moroccan tea ceremony, learning the art of pouring from height, accompanied by almond pastries.", ticket_pricing: "Free (with stay)", rating: "4.6" }
-      ]
-    ],
-    FR: [
-      [
-        { time: "Matin", place: "Randonnée dans les sentiers de montagne", details: "Partez pour une randonnée guidée à travers les forêts de cèdres, traversez des ruisseaux clairs avec vue sur les sommets.", ticket_pricing: "Gratuit (guide: 200 MAD)", rating: "4.8" },
-        { time: "Midi", place: "Repas berbère chez l'habitant", details: "Partagez un déjeuner traditionnel dans un village de montagne — couscous fait maison et tajine cuit au feu de bois.", ticket_pricing: "80–150 MAD", rating: "4.9" },
-        { time: "Après-midi", place: "Baignade dans les cascades & piscines naturelles", details: "Marchez jusqu'à une cascade rafraîchissante et baignez-vous dans des piscines de roche naturelle entourées de fleurs sauvages.", ticket_pricing: "20 MAD", rating: "4.7" },
-        { time: "Soir", place: "Dîner au coin du feu dans un chalet", details: "Réchauffez-vous près d'une cheminée crépitante dans un chalet de montagne, en dégustant un ragoût d'agneau réconfortant.", ticket_pricing: "150–280 MAD", rating: "4.6" }
-      ],
-      [
-        { time: "Matin", place: "Balade dans les canyons", details: "Suivez un sentier pittoresque dans les canyons, traversez des ponts de singe et admirez les parois rocheuses vertigineuses.", ticket_pricing: "Gratuit", rating: "4.8" },
-        { time: "Midi", place: "Pique-nique au bord de l'eau", details: "Installez un pique-nique sur la rive herbeuse avec des fromages locaux, des olives, du miel de montagne et du pain frais.", ticket_pricing: "50–100 MAD", rating: "4.5" },
-        { time: "Après-midi", place: "Tyrolienne & Parc d'aventure", details: "Volez au-dessus de la vallée en tyrolienne et parcourez des obstacles suspendus dans un parc d'aventure en pleine nature.", ticket_pricing: "200–350 MAD", rating: "4.6" },
-        { time: "Soir", place: "Observation des étoiles sur la crête", details: "Montez vers un point de vue élevé pour une observation des étoiles sans pollution lumineuse — repérez la Voie Lactée.", ticket_pricing: "Gratuit", rating: "4.9" }
-      ],
-      [
-        { time: "Matin", place: "Randonnée autour du lac bleu", details: "Faites le tour d'un lac de montagne aux eaux turquoise sur un sentier paisible avec vue sur les sommets environnants.", ticket_pricing: "Gratuit", rating: "4.5" },
-        { time: "Midi", place: "Déjeuner de truite grillée", details: "Dégustez de la truite fraîchement pêchée et grillée au beurre d'herbes dans un restaurant familial au bord du lac.", ticket_pricing: "100–200 MAD", rating: "4.7" },
-        { time: "Après-midi", place: "Balade à cheval dans les vallées", details: "Montez de doux chevaux barbe à travers les prairies fleuries et les vergers d'oliviers, en suivant d'anciens sentiers.", ticket_pricing: "250–400 MAD", rating: "4.7" },
-        { time: "Soir", place: "Cérémonie du thé à l'éco-lodge", details: "Détendez-vous dans un éco-lodge lors d'une cérémonie traditionnelle du thé à la menthe servi avec des cornes de gazelle.", ticket_pricing: "Gratuit (avec séjour)", rating: "4.6" }
-      ]
-    ],
-    AR: [
-      [
-        { time: "صباحاً", place: "رحلة المشي في الجبال (هايكنج)", details: "انطلق في رحلة جبلية بصحبة مرشد عبر غابات الأرز والبلوط، معبرًا الجداول الجبلية الصافية مع إطلالات على القمم الشامخة.", ticket_pricing: "مجاني (المرشد: 200 درهم)", rating: "4.8" },
-        { time: "غداء", place: "وجبة أمازيغية مطبوخة في المنزل", details: "شارك غداءً أمازيغيًا تقليديًا في قرية جبلية — كسكس مفتول يدويًا، طاجين خضروات، وخبز الجوز الساخن المطبوخ في فرن طيني.", ticket_pricing: "80–150 درهم", rating: "4.9" },
-        { time: "بعد الزوال", place: "سباحة في الشلالات والمسابح الطبيعية", details: "سر إلى شلال متدفق واستمتع بالبرودة في مسابح صخرية طبيعية محاطة بالوديان الخضراء المورقة والزهور البرية.", ticket_pricing: "20 درهم", rating: "4.7" },
-        { time: "مساءً", place: "عشاء بجانب الموقد في نزل جبلي", details: "استدفئ بجوار مدفأة متوقدة في نزل جبلي مريح، مستمتعًا بحساء لحم الضأن المشبع، السلطات الطازجة، وفطيرة تفاح منزلية.", ticket_pricing: "150–280 درهم", rating: "4.6" }
-      ],
-      [
-        { time: "صباحاً", place: "نزهة في أخدود النهر (الوادي)", details: "اتبع مسارًا خلابًا في أخدود النهر مرورًا بجدران صخرية شاهقة، وجسور معلقة، ومسابح فيروزية صافية منحوتة في الحجر.", ticket_pricing: "مجاني", rating: "4.8" },
-        { time: "غداء", place: "نزهة غداء على ضفة النهر", details: "أقم نزهة غداء على ضفة النهر العشبية مع الأجبان المحلية، والزيتون، والفواكه الموسمية، والخبز الطازج، والعسل من خلايا النحل القريبة.", ticket_pricing: "50–100 درهم", rating: "4.5" },
-        { time: "بعد الزوال", place: "التحليق بالحبل (الإنزلاق) وحديقة المغامرات", details: "حلق عبر خطوط الإنزلاق المعلقة في الوادي واجتز مسارات العقبات المرتفعة في حديقة مغامرات خارجية وسط الغابة.", ticket_pricing: "200–350 درهم", rating: "4.6" },
-        { time: "مساءً", place: "رصد النجوم من قمة الجبل", details: "قد سيارتك إلى نقطة مشاهدة عالية الارتفاع للاستمتاع برصد النجوم دون تلوث ضوئي — شاهد مجرة درب التبانة والشهب المتساقطة.", ticket_pricing: "مجاني", rating: "4.9" }
-      ],
-      [
-        { time: "صباحاً", place: "نزهة خلابة حول البحيرة والسد", details: "طف حول بحيرة جبلية فيروزية أو سد مائي على مسار مشي هادئ مع إطلالات على القمم المنعكسة والنسور المحلقة.", ticket_pricing: "مجاني", rating: "4.5" },
-        { time: "غداء", place: "مطعم مسمكة التراوت", details: "استمتع بسمك التراوت الطازج المصاد والمشوي مع زبدة الأعشاب، الخضار المحمصة، والخبز المحلي في مطعم مسمكة التراوت على البحيرة.", ticket_pricing: "100–200 درهم", rating: "4.7" },
-        { time: "بعد الزوال", place: "ركوب الخيل عبر الوديان", details: "اركب خيولاً بربرية لطيفة عبر مروج الزهور البرية وحقول الزيتون، متتبعًا مسارات البغال القديمة بين القرى الأمازيغية.", ticket_pricing: "250–400 درهم", rating: "4.7" },
-        { time: "مساءً", place: "مراسم الشاي المغربي في الإيكو لودج", details: "استرخ في إيكو لودج مع مراسم الشاي المغربي التقليدي، وتعلم فن الصب من الأعلى، مصحوبًا بحلويات اللوز اللذيذة.", ticket_pricing: "مجاني (مع الإقامة)", rating: "4.6" }
-      ]
-    ]
-  }
+const ACTIVITY_TEMPLATES = {
+  imperial: [
+    ["Morning", "Medina & Historic Souks", "Explore artisan alleys, spice stalls, and traditional architecture.", "Free", "4.7"],
+    ["Lunch", "Rooftop Moroccan Lunch", "Enjoy tagines, salads, mint tea, and a panoramic old-city view.", "80-150 MAD", "4.5"],
+    ["Afternoon", "Palace & Gardens", "Visit ornate courtyards, zellige tilework, and calm Andalusian gardens.", "70 MAD", "4.8"],
+    ["Evening", "Traditional Dinner", "End the day with couscous, grilled brochettes, pastries, and local music.", "200-350 MAD", "4.7"],
+  ],
+  desert: [
+    ["Morning", "Sunrise Camel Trek", "Cross golden dunes as the first light reaches the Sahara.", "250-400 MAD", "4.9"],
+    ["Lunch", "Berber Camp Lunch", "Share fresh bread, lentils, olives, and mint tea in a desert camp.", "100-180 MAD", "4.7"],
+    ["Afternoon", "Kasbah Visit", "Discover earthen architecture and desert trade-route history.", "50 MAD", "4.6"],
+    ["Evening", "Stargazing Bivouac", "Watch the desert sky from a quiet camp after dinner.", "300-600 MAD", "4.9"],
+  ],
+  beach: [
+    ["Morning", "Beach Walk", "Start with ocean air, coastal views, and relaxed seaside cafes.", "Free", "4.7"],
+    ["Lunch", "Seafood Lunch", "Taste grilled fish, calamari, Moroccan salads, and fresh juice.", "120-220 MAD", "4.6"],
+    ["Afternoon", "Surf or Boat Activity", "Choose a surf lesson, paddle session, or coastal excursion.", "200-400 MAD", "4.7"],
+    ["Evening", "Sunset Promenade", "Walk the corniche and settle into a terrace for sunset.", "Free", "4.8"],
+  ],
+  nature: [
+    ["Morning", "Mountain Trail", "Hike through valleys, cedar forests, or scenic canyon paths.", "Free", "4.8"],
+    ["Lunch", "Berber Village Meal", "Share a home-style lunch with bread, olives, tagine, and tea.", "80-150 MAD", "4.9"],
+    ["Afternoon", "Waterfalls & Viewpoints", "Cool off near natural pools and photograph the landscape.", "20 MAD", "4.7"],
+    ["Evening", "Eco-Lodge Dinner", "Relax by the fire with regional dishes and mountain views.", "150-280 MAD", "4.6"],
+  ],
 };
 
-const HOTEL_TEMPLATES = {
-  imperial: {
-    EN: [
-      { name: "Riad", suffix: "Palace", type: "riad", desc: "A stunning traditional riad featuring an ornate central courtyard with marble fountain, zellige tilework, and a rooftop terrace with medina views." },
-      { name: "", suffix: "Grand Medina Hotel", type: "hotel", desc: "A modern upscale hotel blending contemporary luxury with traditional Moroccan design — indoor pool, hammam spa, and fine dining restaurant." }
-    ],
-    FR: [
-      { name: "Riad", suffix: "Palace", type: "riad", desc: "Un magnifique riad traditionnel doté d'une cour centrale ornée avec fontaine en marbre, zelliges d'époque, et d'un toit-terrasse avec vue sur la médina." },
-      { name: "", suffix: "Grand Hôtel de la Médina", type: "hotel", desc: "Un hôtel moderne et luxueux alliant confort contemporain et design traditionnel marocain — piscine couverte, spa hammam et cuisine raffinée." }
-    ],
-    AR: [
-      { name: "رياض", suffix: "بالاس الفاخر", type: "riad", desc: "رياض تقليدي مذهل يتميز بفناء مركزي مزين بنافورة رخامية، وأعمال زليج عريقة، وشرفة سطح تطل على المدينة القديمة." },
-      { name: "فندق", suffix: "المدينة الكبير", type: "hotel", desc: "فندق حديث فاخر يمزج بين الرفاهية المعاصرة والتصميم المغربي التقليدي — مسبح داخلي، وحمام سبا، ومطعم فاخر." }
-    ]
-  },
-  desert: {
-    EN: [
-      { name: "Kasbah", suffix: "Desert Lodge", type: "hotel", desc: "A charming kasbah-style lodge on the edge of the dunes with panoramic desert views, a swimming pool, and traditional Berber decor." },
-      { name: "", suffix: "Luxury Desert Camp", type: "hotel", desc: "An exclusive luxury bivouac with premium tents, private terraces facing the dunes, en-suite bathrooms, and gourmet dining under the stars." }
-    ],
-    FR: [
-      { name: "Kasbah", suffix: "Desert Lodge", type: "hotel", desc: "Un charmant lodge de style kasbah en lisière des dunes avec vue panoramique sur le désert, piscine et décoration traditionnelle berbère." },
-      { name: "", suffix: "Bivouac de Luxe dans le Désert", type: "hotel", desc: "Un bivouac de luxe exclusif avec tentes haut de gamme, terrasses privées face aux dunes, salles de bains privatives et dîner gastronomique sous les étoiles." }
-    ],
-    AR: [
-      { name: "قصبة", suffix: "صحاري لودج", type: "hotel", desc: "نزل ساحر على طراز القصبة على حافة الكثبان الرملية مع إطلالات بانورامية على الصحراء، ومسبح، وديكور أمازيغي تقليدي." },
-      { name: "مخيم", suffix: "الصحراء الفاخر", type: "hotel", desc: "مخيم صحراوي فاخر حصري مع خيام ممتازة، وشرفات خاصة تواجه الكثبان الرملية، وحمامات داخلية، وعشاء فاخر تحت النجوم." }
-    ]
-  },
-  beach: {
-    EN: [
-      { name: "", suffix: "Beach Resort & Spa", type: "hotel", desc: "A beachfront resort with direct ocean access, infinity pool overlooking the sea, full-service spa, and sunset-view restaurant." },
-      { name: "", suffix: "Oceanview Boutique Hotel", type: "hotel", desc: "A stylish boutique hotel steps from the beach featuring ocean-facing rooms, a surf school partnership, and a rooftop seafood bar." }
-    ],
-    FR: [
-      { name: "", suffix: "Beach Resort & Spa", type: "hotel", desc: "Un complexe hôtelier en bord de mer avec accès direct à la plage, piscine à débordement avec vue sur l'océan, spa complet et restaurant face au coucher du soleil." },
-      { name: "", suffix: "Hôtel Boutique Vue Océan", type: "hotel", desc: "Un hôtel-boutique élégant à quelques pas de la plage proposant des chambres face à l'océan, un partenariat avec une école de surf et un bar de fruits de mer sur le toit." }
-    ],
-    AR: [
-      { name: "منتجع", suffix: "بيتش ريزورت وسبا", type: "hotel", desc: "منتجع مواجه للشاطئ مع وصول مباشر إلى المحيط، ومسبح لا متناهي يطل على البحر، وسبا متكامل الخدمات، ومطعم بإطلالة على الغروب." },
-      { name: "فندق", suffix: "أوشن فيو بوتيك", type: "hotel", desc: "فندق بوتيك أنيق على بعد خطوات من الشاطئ يتميز بغرف مواجهة للمحيط، وشراكة مع مدرسة لتعليم ركوب الأمواج، وبار مأكولات بحرية على السطح." }
-    ]
-  },
-  nature: {
-    EN: [
-      { name: "Eco-Lodge", suffix: "Valley Retreat", type: "hotel", desc: "A sustainable mountain eco-lodge built with local stone and wood, offering heated rooms, organic farm-to-table meals, and guided treks." },
-      { name: "", suffix: "High Atlas Mountain Retreat", type: "hotel", desc: "A cozy mountain retreat nestled among cedar forests with fireplaces, hot tubs, and a wellness center offering argan oil treatments." }
-    ],
-    FR: [
-      { name: "Éco-Lodge", suffix: "de la Vallée", type: "hotel", desc: "Un éco-lodge de montagne durable construit en pierre et bois locaux, proposant des chambres chauffées, des repas bio de la ferme à la table et des randonnées guidées." },
-      { name: "", suffix: "Refuge du Haut Atlas", type: "hotel", desc: "Un refuge de montagne chaleureux niché au cœur des forêts de cèdres avec cheminées, bains à remous et espace bien-être proposant des soins à l'huile d'argan." }
-    ],
-    AR: [
-      { name: "إيكو لودج", suffix: "ملاذ الوادي البيئي", type: "hotel", desc: "إيكو لودج جبلي مستدام مبني بالحجر والخشب المحليين، يوفر غرفاً دافئة، ووجبات عضوية من المزرعة إلى المائدة، ورحلات إرشادية." },
-      { name: "ملاذ", suffix: "جبال الأطلس الكبير", type: "hotel", desc: "ملاذ جبلي مريح يقع وسط غابات الأرز مع مداخن، وأحواض استحمام ساخنة، ومركز عافية يقدم علاجات بزيت الأركان للراحة والاسترخاء." }
-    ]
-  }
+const getLabel = (lang, en, fr, ar) => {
+  if (lang === "AR") return ar;
+  if (lang === "FR") return fr;
+  return en;
 };
+
+const getPriceRange = (budget, lang) => {
+  if (budget === "Luxury") return getLabel(lang, "1500-2500 MAD / night", "1500-2500 MAD / nuit", "1500-2500 MAD / nuit");
+  if (budget === "Cheap") return getLabel(lang, "250-450 MAD / night", "250-450 MAD / nuit", "250-450 MAD / nuit");
+  return getLabel(lang, "600-1000 MAD / night", "600-1000 MAD / nuit", "600-1000 MAD / nuit");
+};
+
+const withImage = (item, city, context) => ({
+  ...item,
+  image_url: item.image_url || getMoroccoImageByText(city, `${context} ${item.name}`),
+});
 
 export const buildMockTripData = (location, noOfDays, traveler, budget, lang = "FR") => {
-  const city = MOROCCO_CITIES.find(
-    (item) => item.toLowerCase() === (location || "").trim().toLowerCase()
-  ) || "Marrakech";
-
+  const city =
+    MOROCCO_CITIES.find((item) => item.toLowerCase() === (location || "").trim().toLowerCase()) ||
+    "Marrakech";
   const days = Number(noOfDays) > 0 ? Number(noOfDays) : 3;
-  const category = getCityCategory(city);
   const safeLang = ["FR", "EN", "AR"].includes(lang) ? lang : "FR";
+  const category = getCityCategory(city);
+  const activityPool = ACTIVITY_TEMPLATES[category] || ACTIVITY_TEMPLATES.imperial;
 
-  const pool = ACTIVITIES[category]?.[safeLang] || ACTIVITIES[category]?.["FR"] || ACTIVITIES[category]?.["EN"];
-  const hotelTemplates = HOTEL_TEMPLATES[category]?.[safeLang] || HOTEL_TEMPLATES[category]?.["FR"] || HOTEL_TEMPLATES[category]?.["EN"];
+  const hotelPrice = getPriceRange(budget, safeLang);
+  const address = getLabel(safeLang, `${city}, Morocco`, `${city}, Maroc`, `${city}, Maroc`);
 
-  const hotels = hotelTemplates.map((tmpl) => {
-    const hotelName = tmpl.name
-      ? `${tmpl.name} ${city} ${tmpl.suffix}`.trim()
-      : `${city} ${tmpl.suffix}`.trim();
+  const hotel_options = [
+    { name: `Riad ${city} Palace`, address, price: hotelPrice, rating: "4.8", description: `Traditional stay with courtyard charm in ${city}.` },
+    { name: `${city} Grand Hotel`, address, price: hotelPrice, rating: "4.6", description: `Comfortable hotel close to the main sights of ${city}.` },
+    { name: `${city} Boutique Retreat`, address, price: hotelPrice, rating: "4.7", description: `Stylish rooms, local design, and easy access to the city center.` },
+  ].map((item) => withImage(item, city, "hotel"));
 
-    let priceRange = "";
-    if (safeLang === "AR") {
-      priceRange = budget === "Luxury" ? "1500–2500 درهم / ليلة" : budget === "Cheap" ? "250–450 درهم / ليلة" : "600–1000 درهم / ليلة";
-    } else if (safeLang === "FR") {
-      priceRange = budget === "Luxury" ? "1500–2500 MAD / nuit" : budget === "Cheap" ? "250–450 MAD / nuit" : "600–1000 MAD / nuit";
-    } else {
-      priceRange = budget === "Luxury" ? "1500–2500 MAD / night" : budget === "Cheap" ? "250–450 MAD / night" : "600–1000 MAD / night";
-    }
+  const restaurant_options = [
+    { name: `Dar ${city} Restaurant`, address, price: "100-220 MAD", cuisine: "Moroccan", rating: "4.6", description: "Classic Moroccan dishes in a warm local setting." },
+    { name: `${city} Rooftop Kitchen`, address, price: "120-260 MAD", cuisine: "Moroccan Fusion", rating: "4.5", description: "Terrace dining with fresh salads, tagines, and city views." },
+    { name: `Cafe Central ${city}`, address, price: "60-140 MAD", cuisine: "Cafe", rating: "4.4", description: "Casual stop for mint tea, pastries, and light meals." },
+  ].map((item) => withImage(item, city, "restaurant"));
 
-    return {
-      name: hotelName,
-      address: safeLang === "AR" ? `${city}، المغرب` : `${city}, Morocco`,
-      price: priceRange,
-      image_url: getMoroccoImageByText(city, tmpl.type),
-      rating: "4." + (6 + Math.floor(Math.random() * 4)),
-      description: tmpl.desc,
-    };
-  });
+  const hostel_options = [
+    { name: `${city} Medina Hostel`, address, price: "120-250 MAD / night", rating: "4.3", description: "Friendly shared accommodation for budget travelers." },
+    { name: `${city} Backpackers Auberge`, address, price: "100-220 MAD / night", rating: "4.2", description: "Simple rooms, social spaces, and helpful local staff." },
+  ].map((item) => withImage(item, city, "hostel"));
 
-  const itinerary = Array.from({ length: days }, (_, index) => {
-    const dayActivities = pool[index % pool.length];
+  const camping_options = [
+    { name: `${city} Nature Camp`, address, price: "250-600 MAD / night", rating: "4.4", description: "Outdoor stay option near scenic landscapes around the destination." },
+  ].map((item) => withImage(item, city, "camping hiking"));
 
-    const plan = dayActivities.map((act) => ({
-      ...act,
-      place: act.place.includes(city) ? act.place : safeLang === "AR" ? `${act.place}، ${city}` : `${act.place}, ${city}`,
-      image_url: act.image_url || getMoroccoImageByText(city, act.place),
-    }));
-
-    let dayLabel = "";
-    if (safeLang === "AR") {
-      dayLabel = `اليوم ${index + 1}`;
-    } else if (safeLang === "FR") {
-      dayLabel = `Jour ${index + 1}`;
-    } else {
-      dayLabel = `Day ${index + 1}`;
-    }
-
-    return {
-      day: dayLabel,
-      plan,
-    };
-  });
+  const itinerary = Array.from({ length: days }, (_, dayIndex) => ({
+    day: getLabel(safeLang, `Day ${dayIndex + 1}`, `Jour ${dayIndex + 1}`, `Jour ${dayIndex + 1}`),
+    plan: activityPool.map(([time, place, details, ticket_pricing, rating]) => ({
+      time,
+      place: `${place}, ${city}`,
+      details,
+      ticket_pricing,
+      rating,
+      image_url: getMoroccoImageByText(city, place),
+    })),
+  }));
 
   return {
-    hotel_options: hotels,
+    hotel_options,
+    restaurant_options,
+    hostel_options,
+    camping_options,
     itinerary,
     metadata: {
       source: "mock",
       traveler,
       budget,
-      lang: safeLang
+      lang: safeLang,
     },
   };
 };
+
+const safeArray = (value) => (Array.isArray(value) ? value.filter(Boolean) : []);
 
 export const normalizeTripData = (rawData, fallbackArgs = {}) => {
   const fallback = buildMockTripData(
@@ -584,35 +701,35 @@ export const normalizeTripData = (rawData, fallbackArgs = {}) => {
     fallbackArgs.lang || "FR"
   );
 
-  if (!rawData || typeof rawData !== "object") {
-    return fallback;
-  }
+  if (!rawData || typeof rawData !== "object") return fallback;
 
-  const hotelOptions = Array.isArray(rawData.hotel_options) ? rawData.hotel_options : [];
-  const itinerary = Array.isArray(rawData.itinerary) ? rawData.itinerary : [];
-
-  if (hotelOptions.length === 0 || itinerary.length === 0) {
-    return fallback;
-  }
-
-  const safeItinerary = itinerary
+  const itinerary = safeArray(rawData.itinerary)
     .map((dayItem, dayIndex) => ({
-      day: dayItem?.day || (fallbackArgs.lang === "AR" ? `اليوم ${dayIndex + 1}` : fallbackArgs.lang === "FR" ? `Jour ${dayIndex + 1}` : `Day ${dayIndex + 1}`),
-      plan: Array.isArray(dayItem?.plan)
-        ? dayItem.plan.filter((place) => place && typeof place === "object")
-        : [],
+      day:
+        dayItem?.day ||
+        (fallbackArgs.lang === "EN" ? `Day ${dayIndex + 1}` : `Jour ${dayIndex + 1}`),
+      plan: safeArray(dayItem?.plan).filter((place) => place && typeof place === "object"),
     }))
     .filter((dayItem) => dayItem.plan.length > 0);
 
-  if (safeItinerary.length === 0) {
-    return fallback;
-  }
+  if (safeArray(rawData.hotel_options).length === 0 || itinerary.length === 0) return fallback;
 
   return {
     ...fallback,
     ...rawData,
-    hotel_options: hotelOptions,
-    itinerary: safeItinerary,
+    hotel_options: safeArray(rawData.hotel_options).map((item) =>
+      withImage(item, fallbackArgs.location || "Marrakech", "hotel")
+    ),
+    restaurant_options: safeArray(rawData.restaurant_options).map((item) =>
+      withImage(item, fallbackArgs.location || "Marrakech", "restaurant")
+    ),
+    hostel_options: safeArray(rawData.hostel_options).map((item) =>
+      withImage(item, fallbackArgs.location || "Marrakech", "hostel")
+    ),
+    camping_options: safeArray(rawData.camping_options).map((item) =>
+      withImage(item, fallbackArgs.location || "Marrakech", "camping hiking")
+    ),
+    itinerary,
     metadata: {
       ...(rawData.metadata || {}),
       source: rawData?.metadata?.source || "ai",
