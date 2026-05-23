@@ -29,7 +29,8 @@ return new class extends Migration
             $table->string('password');
 
             $table->enum('role', ['admin', 'user'])->default('user');
-
+            $table->string('provider')->nullable(); 
+            $table->string('provider_id')->nullable(); 
             $table->rememberToken();
             $table->timestamps();
         });
