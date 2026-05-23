@@ -27,7 +27,7 @@ import GoogleCallback from './components/auth/GoogleCallback';
 import ProtectedRoute from "./components/pages/ProtectedRoute"
 import Profile from "./components/pages/Profile";
 import Saved from "./components/pages/saved";
-
+import Pack from "./components/pages/pack";
 import Agadir from "./components/pages/destinations/Agadir";
 import Casablanca from "./components/pages/destinations/Casablanca";
 import Marrakech from "./components/pages/destinations/Marrakech";
@@ -43,11 +43,11 @@ function AppContent() {
         document.documentElement.classList.toggle("dark", savedDark);
     }, []);
 
-    const noMenuPages = ['/login', '/register', '/admin', '/forgot-password', '/reset-password', '/verify-code', '/auth/google/callback', '/auth/registration-success'];
+    const noMenuPages = ['/login', '/register', '/admin', '/forgot-password', '/reset-password', '/verify-code', '/auth/google/callback', '/auth/registration-success',];
     const noChatbotPages = ['/login', '/register', '/admin', '/forgot-password', '/reset-password', '/verify-code', '/auth/google/callback', '/auth/registration-success'];
 
-  const showMenu = !noMenuPages.includes(location.pathname);
-  const showChatbot = !noChatbotPages.includes(location.pathname);
+    const showMenu = !noMenuPages.includes(location.pathname);
+    const showChatbot = !noChatbotPages.includes(location.pathname);
 
 
   return (
@@ -71,6 +71,7 @@ function AppContent() {
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Login />} />
                 <Route path="/profile" element={<Profile />} />
+                <Route path="/pack" element={<Pack />} />
 
 
                 {/* Protected routes */}
