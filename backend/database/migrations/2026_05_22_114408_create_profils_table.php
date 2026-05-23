@@ -18,7 +18,6 @@ return new class extends Migration
           ->constrained('users')
           ->onDelete('cascade');
 
-    $table->string('profile')->nullable();
     $table->string('image')->nullable();
     $table->string('telephone')->nullable();
     $table->string('ville')->nullable();
