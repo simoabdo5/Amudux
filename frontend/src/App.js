@@ -17,8 +17,6 @@ import Destination from "./components/pages/destination";
 import Languages from "./components/pages/languages";
 import Login from "./components/pages/login";
 import Footer from "./components/accueil/Footer"
-import Profile from "./components/pages/Profile";
-import Saved from "./components/pages/saved";
 import Chatbot from "./components/Chatbot/Chatbot";
 import AdminDashboard from "./components/pages/adminDashboard";
 import EmailVerification from './components/auth/EmailVerification';
@@ -27,8 +25,9 @@ import ForgotPassword from './components/auth/ForgotPassword';
 import ResetPassword from './components/auth/ResetPassword';
 import GoogleCallback from './components/auth/GoogleCallback';
 import ProtectedRoute from "./components/pages/ProtectedRoute"
+import Profile from "./components/pages/Profile";
+import Saved from "./components/pages/saved";
 
-// Import des pages de destinations
 import Agadir from "./components/pages/destinations/Agadir";
 import Casablanca from "./components/pages/destinations/Casablanca";
 import Marrakech from "./components/pages/destinations/Marrakech";
@@ -47,8 +46,9 @@ function AppContent() {
     const noMenuPages = ['/login', '/register', '/admin', '/forgot-password', '/reset-password', '/verify-code', '/auth/google/callback', '/auth/registration-success'];
     const noChatbotPages = ['/login', '/register', '/admin', '/forgot-password', '/reset-password', '/verify-code', '/auth/google/callback', '/auth/registration-success'];
 
-    const showMenu = !noMenuPages.includes(location.pathname);
-    const showChatbot = !noChatbotPages.includes(location.pathname);
+  const showMenu = !noMenuPages.includes(location.pathname);
+  const showChatbot = !noChatbotPages.includes(location.pathname);
+
 
   return (
     <>
