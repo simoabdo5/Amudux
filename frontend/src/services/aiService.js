@@ -1,6 +1,6 @@
 import { buildMockTripData, normalizeTripData } from "./moroccoData";
 
-const TIMEOUT_MS = 30000;
+const TIMEOUT_MS = 45000;
 const OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions";
 
 export const generateTripData = async ({
@@ -31,7 +31,7 @@ export const generateTripData = async ({
     return buildMockTripData(safeLocation, safeDays, safeTraveler, safeBudget, lang);
   }
 
-  // Construct prompt requesting localized text based on the selected language
+  // Language instructions for localized output
   const languageInstructions = {
     FR: "Toutes les descriptions, noms de lieux, détails d'activités et titres doivent être rédigés en Français.",
     EN: "All descriptions, place names, activity details, and titles must be written in English.",
@@ -40,25 +40,82 @@ export const generateTripData = async ({
 
   const selectedLangInstruct = languageInstructions[lang] || languageInstructions["FR"];
 
-  const PROMPT = `
-Generate a travel itinerary plan for Morocco in JSON format.
-Destination: ${safeLocation}
-Duration: ${safeDays} Days
-Travel Group: ${safeTraveler}
-Budget Level: ${safeBudget}
+  // Budget guidance for AI to select appropriate price ranges
+  const budgetGuide = {
+    Cheap: "Budget/backpacker level — cheapest options available (hostels, budget riads, street food restaurants, free camping spots). Prices under 400 MAD/night for accommodation.",
+    Moderate: "Mid-range comfort — good quality 3-4 star hotels, well-rated restaurants, comfortable hostels. Prices 400-1200 MAD/night for accommodation.",
+    Luxury: "High-end luxury — 5-star hotels, luxury riads, fine dining restaurants, glamping. Prices above 1200 MAD/night for accommodation."
+  };
 
-Language constraint:
+  const budgetInstruction = budgetGuide[safeBudget] || budgetGuide["Moderate"];
+
+  const PROMPT = `
+You are a Morocco travel expert. Generate a REAL travel plan for ${safeLocation}, Morocco.
+
+CRITICAL RULES:
+1. ALL hotels, riads, restaurants, hostels, and camping sites MUST be REAL places that actually exist in ${safeLocation}, Morocco.
+2. Use their REAL names as they appear on Google Maps.
+3. Use their REAL addresses as they appear on Google Maps.
+4. Use REAL approximate prices in MAD (Moroccan Dirham).
+5. Use REAL ratings (approximate Google Maps ratings).
+6. Do NOT invent or fabricate any place names. Every single place must be a real, operating business that can be found on Google Maps.
+7. For itinerary activities, use REAL monuments, souks, museums, beaches, parks, and attractions that exist in ${safeLocation}.
+
+Trip Configuration:
+- Destination: ${safeLocation}, Morocco
+- Duration: ${safeDays} days
+- Travel Group: ${safeTraveler}
+- Budget Level: ${safeBudget} — ${budgetInstruction}
+
+Language:
 ${selectedLangInstruct}
 
-Return a JSON object conforming exactly to this schema:
+Return a JSON object with this EXACT schema:
 {
   "hotel_options": [
     {
-      "name": "Hotel/Riad Name",
-      "address": "Hotel/Riad Address",
-      "price": "Estimated price per night in MAD (e.g. 500 MAD)",
-      "rating": "Rating out of 5",
-      "description": "Short appealing description of the hotel/riad in the selected language"
+      "name": "REAL hotel or resort name as on Google Maps",
+      "address": "REAL full address, ${safeLocation}, Morocco",
+      "price": "Real price range per night in MAD",
+      "rating": "Real rating (e.g. 4.5)",
+      "description": "Brief appealing description of this real hotel"
+    }
+  ],
+  "riad_options": [
+    {
+      "name": "REAL traditional Riad/Ryad name as on Google Maps",
+      "address": "REAL full address, ${safeLocation}, Morocco",
+      "price": "Real price range per night in MAD",
+      "rating": "Real rating (e.g. 4.7)",
+      "description": "Brief appealing description of this real traditional Moroccan Riad"
+    }
+  ],
+  "restaurant_options": [
+    {
+      "name": "REAL restaurant name as on Google Maps",
+      "address": "REAL full address, ${safeLocation}, Morocco",
+      "price": "Average meal price range in MAD",
+      "cuisine": "Type of cuisine (e.g. Moroccan Traditional, Seafood, French-Moroccan)",
+      "rating": "Real rating (e.g. 4.3)",
+      "description": "Brief appealing description of this real restaurant"
+    }
+  ],
+  "hostel_options": [
+    {
+      "name": "REAL hostel/auberge name as on Google Maps",
+      "address": "REAL full address, ${safeLocation}, Morocco",
+      "price": "Real price per night in MAD",
+      "rating": "Real rating (e.g. 4.2)",
+      "description": "Brief description of this real hostel"
+    }
+  ],
+  "camping_options": [
+    {
+      "name": "REAL camping/glamping site name as on Google Maps",
+      "address": "REAL full address or location description",
+      "price": "Real price per night in MAD",
+      "rating": "Real rating (e.g. 4.0)",
+      "description": "Brief description of this real camping spot"
     }
   ],
   "itinerary": [
@@ -66,18 +123,26 @@ Return a JSON object conforming exactly to this schema:
       "day": "Day label (e.g. Day 1 / Jour 1 / اليوم 1)",
       "plan": [
         {
-          "time": "Time of day (Morning/Matin/صباحا, Lunch/Midi/غداء, Afternoon/Après-midi/بعد الزوال, Evening/Soir/مساء)",
-          "place": "Name of the place/monument/restaurant",
-          "details": "Engaging description of what to do there in the selected language",
-          "ticket_pricing": "Estimated ticket fee/cost in MAD (e.g. Free or 70 MAD)",
-          "rating": "Rating out of 5"
+          "time": "Time of day (Morning/Matin/صباحاً, Lunch/Midi/غداء, Afternoon/Après-midi/بعد الزوال, Evening/Soir/مساءً)",
+          "place": "REAL place/monument/restaurant name as on Google Maps",
+          "details": "Engaging description of what to do at this REAL place",
+          "ticket_pricing": "Real ticket/entry fee in MAD (e.g. Free / 70 MAD)",
+          "rating": "Real rating (e.g. 4.6)"
         }
       ]
     }
   ]
 }
 
-Make sure the output is strict JSON only, with NO wrapping markdown formatting, no code fences, no extra text. Only the raw JSON object.
+Provide:
+- At least 3 hotel/resort options matching the budget
+- At least 2 traditional Riad options matching the budget
+- At least 3 restaurant options matching the budget
+- At least 2 hostel options
+- At least 1 camping/glamping option (if available near ${safeLocation}, otherwise provide the closest option)
+- ${safeDays} days of itinerary with 4 activities per day (morning, lunch, afternoon, evening)
+
+IMPORTANT: Output ONLY raw JSON. No markdown, no code fences, no explanations. Just the JSON object.
   `;
 
   try {
@@ -100,15 +165,15 @@ Make sure the output is strict JSON only, with NO wrapping markdown formatting, 
           messages: [
             {
               role: "system",
-              content: "You are a professional Morocco travel planner AI. You return only valid JSON with no extra text or formatting."
+              content: "You are a professional Morocco travel expert AI. You have deep knowledge of REAL hotels, riads, restaurants, hostels, camping sites, and tourist attractions across all Moroccan cities. You ONLY recommend places that actually exist and can be verified on Google Maps. You return only valid JSON with no extra text or formatting."
             },
             {
               role: "user",
               content: PROMPT
             }
           ],
-          temperature: 0.7,
-          max_tokens: 4000
+          temperature: 0.4,
+          max_tokens: 8000
         })
       });
 

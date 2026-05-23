@@ -37,6 +37,7 @@ function AppContent() {
 
     const noChatbotPages = [
         '/login',
+        '/pack',
         '/admin',
         '/forgot-password',
         '/reset-password',

@@ -141,18 +141,20 @@
    ========================================================================== */
 
 .pack-container {
-  max-width: 1350px;
-  margin: -60px auto 0 auto;
-  padding: 0 24px;
+  max-width: 1240px;
+  margin: -48px auto 0 auto;
+  padding: 0 18px;
   position: relative;
   z-index: 3;
 }
 
 .pack-layout {
   display: grid;
-  grid-template-columns: 420px 1fr;
-  gap: 32px;
+  grid-template-columns: minmax(310px, 380px) minmax(0, 1fr);
+  gap: 24px;
   align-items: start;
+  width: 100%;
+  min-width: 0;
 }
 
 .pack-card {
@@ -173,8 +175,56 @@
 }
 
 /* ==========================================================================
-   LEFT SIDE CONFIGURATION FORM
+   LEFT SIDE CONFIGURATION FORM — INDEPENDENT SCROLL
    ========================================================================== */
+
+.pack-form-side {
+  position: sticky;
+  top: 24px;
+  height: calc(100vh - 48px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-width: 0;
+}
+
+.pack-form-scroll-wrapper {
+  overflow-y: auto;
+  overflow-x: hidden;
+  flex-grow: 1;
+  padding-right: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+
+  /* Custom scrollbar */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(var(--primary-rgb), 0.25) transparent;
+}
+
+.pack-form-scroll-wrapper::-webkit-scrollbar {
+  width: 5px;
+}
+
+.pack-form-scroll-wrapper::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 100px;
+}
+
+.pack-form-scroll-wrapper::-webkit-scrollbar-thumb {
+  background: rgba(var(--primary-rgb), 0.2);
+  border-radius: 100px;
+  transition: background 0.3s ease;
+}
+
+.pack-form-scroll-wrapper::-webkit-scrollbar-thumb:hover {
+  background: rgba(var(--primary-rgb), 0.45);
+}
+
+.pack-page.rtl .pack-form-scroll-wrapper {
+  padding-right: 0;
+  padding-left: 6px;
+}
 
 .form-card {
   display: flex;
@@ -434,6 +484,182 @@
   letter-spacing: 0.05em;
 }
 
+.date-range-panel {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  padding: 12px;
+  background: var(--bg-card-solid);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+}
+
+.date-range-panel.redesigned {
+  position: relative;
+  gap: 10px;
+  padding: 14px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.96), rgba(248,250,252,0.88));
+  border-color: rgba(var(--primary-rgb), 0.16);
+}
+
+.dark .date-range-panel.redesigned {
+  background: linear-gradient(180deg, rgba(15,23,42,0.9), rgba(15,23,42,0.7));
+}
+
+.date-range-panel.redesigned::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 26px;
+  bottom: 58px;
+  width: 2px;
+  transform: translateX(-50%);
+  background: linear-gradient(180deg, rgba(var(--primary-rgb), 0.1), rgba(var(--primary-rgb), 0.55), rgba(var(--primary-rgb), 0.1));
+  border-radius: 10px;
+}
+
+.date-field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  min-width: 0;
+  position: relative;
+  z-index: 1;
+}
+
+.date-field span {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.date-field input {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  padding: 12px 10px;
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  background: #ffffff;
+  color: var(--text-main);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.dark .date-field input {
+  background: rgba(15, 23, 42, 0.85);
+}
+
+.date-field input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px var(--primary-glow);
+  background: var(--bg-card-solid);
+}
+
+.date-duration-summary {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: #fff7ed;
+  border: 1px solid rgba(var(--primary-rgb), 0.14);
+  position: relative;
+  z-index: 1;
+}
+
+.dark .date-duration-summary {
+  background: rgba(var(--primary-rgb), 0.12);
+}
+
+.date-duration-summary .stepper-number {
+  font-size: 20px;
+}
+
+.date-duration-summary .stepper-label {
+  margin-top: 0;
+}
+
+.budget-segmented-control {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  padding: 7px;
+  border-radius: 16px;
+  background: var(--bg-card-solid);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
+}
+
+.budget-pill {
+  border: 0;
+  border-radius: 12px;
+  padding: 12px 8px;
+  background: transparent;
+  color: var(--text-main);
+  cursor: pointer;
+  font-family: inherit;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+  transition: transform 0.22s ease, background 0.22s ease, box-shadow 0.22s ease, color 0.22s ease;
+}
+
+.budget-pill:hover {
+  background: var(--bg-page);
+  transform: translateY(-1px);
+}
+
+.budget-pill.active {
+  background: var(--primary-gradient);
+  color: #ffffff;
+  box-shadow: 0 10px 20px rgba(var(--primary-rgb), 0.24);
+}
+
+.budget-pill .selector-emoji {
+  font-size: 20px;
+  margin: 0;
+}
+
+.budget-pill-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  min-width: 0;
+}
+
+.budget-pill h3 {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 800;
+  color: inherit;
+  line-height: 1.1;
+}
+
+.budget-pill small {
+  max-width: 100%;
+  color: currentColor;
+  opacity: 0.72;
+  font-size: 9px;
+  font-weight: 600;
+  line-height: 1.25;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
 /* Premium Card Selectors (Budget & Companion) */
 .card-selector-grid {
   display: grid;
@@ -638,6 +864,8 @@
 
 .pack-display-side {
   width: 100%;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .empty-planner-display {
@@ -646,8 +874,8 @@
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 80px 40px;
-  min-height: 520px;
+  padding: 56px 28px;
+  min-height: 360px;
 }
 
 .compass-icon {
@@ -657,18 +885,169 @@
 }
 
 .empty-planner-display h2 {
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 800;
   color: var(--text-main);
   margin: 0 0 12px 0;
 }
 
 .empty-planner-display p {
-  font-size: 15px;
+  font-size: 14px;
   line-height: 1.6;
   color: var(--text-muted);
   max-width: 480px;
   margin: 0;
+}
+
+.planner-preview-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.planner-waiting-card {
+  min-height: 430px;
+  display: grid;
+  grid-template-rows: 1fr auto auto;
+  gap: 24px;
+  overflow: hidden;
+  position: relative;
+  background:
+    radial-gradient(circle at 18% 16%, rgba(var(--primary-rgb), 0.13), transparent 28%),
+    linear-gradient(135deg, rgba(255,255,255,0.92), rgba(248,250,252,0.82));
+}
+
+.dark .planner-waiting-card {
+  background:
+    radial-gradient(circle at 18% 16%, rgba(var(--primary-rgb), 0.16), transparent 28%),
+    linear-gradient(135deg, rgba(15,23,42,0.86), rgba(2,6,23,0.82));
+}
+
+.waiting-map {
+  position: relative;
+  min-height: 180px;
+  border-radius: 18px;
+  background:
+    linear-gradient(90deg, rgba(148,163,184,0.08) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(148,163,184,0.08) 1px, transparent 1px),
+    rgba(255,255,255,0.46);
+  background-size: 34px 34px;
+  border: 1px solid rgba(var(--primary-rgb), 0.12);
+  overflow: hidden;
+}
+
+.dark .waiting-map {
+  background-color: rgba(15,23,42,0.5);
+}
+
+.map-line {
+  position: absolute;
+  height: 3px;
+  border-radius: 20px;
+  background: linear-gradient(90deg, transparent, rgba(var(--primary-rgb), 0.75), transparent);
+  transform-origin: left center;
+  animation: routePulse 2.8s ease-in-out infinite;
+}
+
+.line-one {
+  width: 45%;
+  left: 12%;
+  top: 34%;
+  transform: rotate(18deg);
+}
+
+.line-two {
+  width: 38%;
+  left: 44%;
+  top: 54%;
+  transform: rotate(-20deg);
+  animation-delay: 0.45s;
+}
+
+.line-three {
+  width: 34%;
+  left: 22%;
+  top: 72%;
+  transform: rotate(-8deg);
+  animation-delay: 0.9s;
+}
+
+.map-point {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--primary);
+  box-shadow: 0 0 0 8px rgba(var(--primary-rgb), 0.13);
+  animation: mapPointFloat 2.4s ease-in-out infinite;
+}
+
+.point-one { left: 14%; top: 29%; }
+.point-two { left: 52%; top: 43%; animation-delay: 0.35s; }
+.point-three { right: 16%; bottom: 30%; animation-delay: 0.7s; }
+
+.waiting-compass {
+  position: absolute;
+  right: 24px;
+  top: 24px;
+  color: var(--primary);
+  filter: drop-shadow(0 12px 20px rgba(var(--primary-rgb), 0.2));
+  animation: compassDrift 5s ease-in-out infinite;
+}
+
+.waiting-copy {
+  text-align: center;
+  max-width: 560px;
+  margin: 0 auto;
+}
+
+.waiting-kicker {
+  display: inline-flex;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: rgba(var(--primary-rgb), 0.1);
+  color: var(--primary);
+  font-size: 12px;
+  font-weight: 800;
+  margin-bottom: 12px;
+}
+
+.waiting-copy h2 {
+  margin: 0 0 10px;
+  font-size: 28px;
+  line-height: 1.15;
+  color: var(--text-main);
+}
+
+.waiting-copy p {
+  margin: 0;
+  color: var(--text-muted);
+  line-height: 1.6;
+  font-size: 15px;
+}
+
+.waiting-summary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.waiting-summary span,
+.waiting-summary strong {
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: var(--bg-card-solid);
+  border: 1px solid var(--border-color);
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.waiting-summary strong {
+  color: #ffffff;
+  background: var(--primary-gradient);
+  border-color: transparent;
 }
 
 /* State-of-the-art Glowing Loading Dashboard */
@@ -949,27 +1328,47 @@
 }
 
 /* ==========================================================================
-   HOTELS GRID CARDS
+   ACCOMMODATION SECTIONS — HORIZONTAL SCROLL SYSTEM
    ========================================================================== */
 
-.hotels-section h2, 
-.itinerary-timeline-section h2 {
+.accommodation-section {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.accommodation-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.section-title-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.section-icon {
+  color: var(--primary);
+}
+
+.section-title-row h2 {
   font-size: 22px;
   font-weight: 800;
-  margin: 0 0 24px 0;
+  margin: 0;
   position: relative;
   padding-left: 16px;
   letter-spacing: -0.01em;
+  color: var(--text-main);
 }
 
-.pack-page.rtl .hotels-section h2, 
-.pack-page.rtl .itinerary-timeline-section h2 {
+.pack-page.rtl .section-title-row h2 {
   padding-left: 0;
   padding-right: 16px;
 }
 
-.hotels-section h2::before, 
-.itinerary-timeline-section h2::before {
+.section-title-row h2::before {
   content: '';
   position: absolute;
   left: 0;
@@ -980,95 +1379,184 @@
   border-radius: 100px;
 }
 
-.pack-page.rtl .hotels-section h2::before, 
-.pack-page.rtl .itinerary-timeline-section h2::before {
+.pack-page.rtl .section-title-row h2::before {
   left: auto;
   right: 0;
 }
 
-.hotels-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 24px;
+/* Scroll Navigation Arrows */
+.scroll-nav-arrows {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-.hotel-item-card {
+.scroll-arrow-btn {
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--border-color);
+  border-radius: 50%;
+  background: var(--bg-card-solid);
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+  box-shadow: var(--shadow-sm);
+}
+
+.scroll-arrow-btn:hover {
+  background: var(--primary);
+  color: #ffffff;
+  border-color: var(--primary);
+  transform: scale(1.08);
+  box-shadow: 0 4px 12px rgba(var(--primary-rgb), 0.3);
+}
+
+.scroll-arrow-btn:active {
+  transform: scale(0.95);
+}
+
+/* Horizontal Scroll Track */
+.horizontal-scroll-track {
+  display: flex;
+  gap: 14px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-bottom: 12px;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  width: 100%;
+  max-width: 100%;
+
+  /* Custom scrollbar */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(var(--primary-rgb), 0.2) transparent;
+}
+
+.horizontal-scroll-track::-webkit-scrollbar {
+  height: 5px;
+}
+
+.horizontal-scroll-track::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 100px;
+}
+
+.horizontal-scroll-track::-webkit-scrollbar-thumb {
+  background: rgba(var(--primary-rgb), 0.18);
+  border-radius: 100px;
+}
+
+.horizontal-scroll-track::-webkit-scrollbar-thumb:hover {
+  background: rgba(var(--primary-rgb), 0.4);
+}
+
+/* Individual Horizontal Scroll Card */
+.h-scroll-card {
+  min-width: 310px;
+  max-width: 340px;
+  flex-shrink: 0;
   padding: 0 !important;
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  transform: translateY(30px);
+  scroll-snap-align: start;
   opacity: 0;
+  transform: translateY(30px);
   animation: packFadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   animation-delay: var(--delay);
 }
 
-.hotel-item-card:hover {
+.h-scroll-card:hover {
   transform: translateY(-6px);
   box-shadow: 0 25px 40px -10px rgba(0, 0, 0, 0.1);
 }
 
-.hotel-img-wrapper {
+.h-scroll-img-wrapper {
   position: relative;
-  height: 200px;
+  height: 190px;
   overflow: hidden;
 }
 
-.hotel-img-wrapper img {
+.h-scroll-img-wrapper img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   transition: transform 0.6s ease;
 }
 
-.hotel-item-card:hover .hotel-img-wrapper img {
+.h-scroll-card:hover .h-scroll-img-wrapper img {
   transform: scale(1.08);
 }
 
-.hotel-price-badge {
+.h-scroll-price-badge {
   position: absolute;
-  bottom: 16px;
-  right: 16px;
+  bottom: 14px;
+  right: 14px;
   background: rgba(15, 23, 42, 0.85);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   color: #fff;
-  padding: 6px 14px;
+  padding: 5px 12px;
   border-radius: 50px;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 700;
   border: 1px solid rgba(255, 255, 255, 0.15);
 }
 
-.pack-page.rtl .hotel-price-badge {
+.pack-page.rtl .h-scroll-price-badge {
   right: auto;
-  left: 16px;
+  left: 14px;
 }
 
-.hotel-info {
-  padding: 24px;
+.h-scroll-cuisine-badge {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  background: rgba(255, 122, 0, 0.9);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: #fff;
+  padding: 4px 12px;
+  border-radius: 50px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.pack-page.rtl .h-scroll-cuisine-badge {
+  left: auto;
+  right: 14px;
+}
+
+.h-scroll-info {
+  padding: 22px;
   display: flex;
   flex-direction: column;
   flex-grow: 1;
 }
 
-.hotel-title-row {
+.h-scroll-title-row {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  gap: 16px;
-  margin-bottom: 8px;
+  gap: 12px;
+  margin-bottom: 6px;
 }
 
-.hotel-title-row h3 {
-  font-size: 17px;
+.h-scroll-title-row h3 {
+  font-size: 16px;
   font-weight: 700;
   margin: 0;
   color: var(--text-main);
   line-height: 1.3;
 }
 
-.hotel-rating {
+.h-scroll-rating {
   display: flex;
   align-items: center;
   gap: 4px;
@@ -1081,21 +1569,25 @@
   flex-shrink: 0;
 }
 
-.hotel-address {
+.h-scroll-address {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 12.5px;
+  font-size: 12px;
   color: var(--text-muted);
-  margin: 0 0 14px 0;
+  margin: 0 0 12px 0;
 }
 
-.hotel-desc {
-  font-size: 13.5px;
-  line-height: 1.6;
+.h-scroll-desc {
+  font-size: 13px;
+  line-height: 1.55;
   color: var(--text-muted);
-  margin: 0 0 20px 0;
+  margin: 0 0 18px 0;
   flex-grow: 1;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 /* Universal Maps and Redirect Buttons */
@@ -1132,6 +1624,36 @@
 /* ==========================================================================
    DYNAMIC INTERACTIVE TIMELINE PLAN
    ========================================================================== */
+
+.itinerary-timeline-section h2 {
+  font-size: 22px;
+  font-weight: 800;
+  margin: 0 0 24px 0;
+  position: relative;
+  padding-left: 16px;
+  letter-spacing: -0.01em;
+}
+
+.pack-page.rtl .itinerary-timeline-section h2 {
+  padding-left: 0;
+  padding-right: 16px;
+}
+
+.itinerary-timeline-section h2::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 4px;
+  bottom: 4px;
+  width: 4px;
+  background: var(--primary-gradient);
+  border-radius: 100px;
+}
+
+.pack-page.rtl .itinerary-timeline-section h2::before {
+  left: auto;
+  right: 0;
+}
 
 .timeline-container {
   display: flex;
@@ -1467,6 +1989,21 @@
   50% { opacity: 1; transform: scale(1.05); }
 }
 
+@keyframes routePulse {
+  0%, 100% { opacity: 0.25; filter: blur(0); }
+  50% { opacity: 1; filter: blur(0.2px); }
+}
+
+@keyframes mapPointFloat {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-7px) scale(1.08); }
+}
+
+@keyframes compassDrift {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
+  50% { transform: translate3d(-8px, 8px, 0) rotate(12deg); }
+}
+
 /* ==========================================================================
    RESPONSIVE DESIGN BREAKPOINTS
    ========================================================================== */
@@ -1475,6 +2012,19 @@
   .pack-layout {
     grid-template-columns: 1fr;
   }
+
+  .pack-form-side {
+    position: relative;
+    top: 0;
+    height: auto;
+    max-height: none;
+  }
+
+  .pack-form-scroll-wrapper {
+    overflow-y: visible;
+    max-height: none;
+  }
+
   .pack-container {
     margin-top: -40px;
   }
@@ -1502,8 +2052,36 @@
     padding: 24px;
   }
 
-  .hotels-grid {
+  .date-range-panel {
     grid-template-columns: 1fr;
+  }
+
+  .date-range-panel.redesigned::before {
+    left: 24px;
+    top: 28px;
+    bottom: 64px;
+  }
+
+  .budget-segmented-control {
+    grid-template-columns: 1fr;
+  }
+
+  .planner-waiting-card {
+    min-height: 420px;
+    padding: 22px;
+  }
+
+  .waiting-copy h2 {
+    font-size: 23px;
+  }
+
+  .h-scroll-card {
+    min-width: 280px;
+    max-width: 300px;
+  }
+
+  .h-scroll-img-wrapper {
+    height: 160px;
   }
 
   .timeline-activities-list {
@@ -1542,5 +2120,10 @@
   .ai-loader-dashboard {
     min-height: 480px;
     padding: 40px 20px;
+  }
+
+  .accommodation-section-header {
+    flex-wrap: wrap;
+    gap: 12px;
   }
 }
