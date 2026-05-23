@@ -13,8 +13,11 @@ import UnlockCelebrationModal from "./UnlockCelebrationModal";
 
 // Import data & logic
 import { loadProgress, addXp, unlockAchievement, getRankByXp } from "./data/gamificationEngine";
+import { getDestinationContext } from "./data/destinationContext";
+import { useLanguage } from "../accueil/LanguageContext";
 
-const DarijaHub = ({ onBack }) => {
+const DarijaHub = ({ onBack, selectedDestination, onXpEarned }) => {
+  const { t } = useLanguage();
   const [activeTab, setActiveTab] = useState("lessons");
   
   // Global State
@@ -128,6 +131,9 @@ const DarijaHub = ({ onBack }) => {
         } catch (e) {}
       }
     }
+    if (onXpEarned) {
+      onXpEarned(amount);
+    }
   };
 
   const handleMarkLearned = (id) => {
@@ -171,8 +177,8 @@ const DarijaHub = ({ onBack }) => {
             <button onClick={onBack} className="btn-primary" style={{ padding: '10px', width: 'auto', borderRadius: '50%', background: 'rgba(255,255,255,0.08)', color: '#FFF' }}>
               <ArrowLeft size={24} />
             </button>
-            <h1 className="learn-title" style={{ background: 'linear-gradient(135deg, #FFF7EE, var(--amazigh-amber))', WebkitBackgroundClip: 'text' }}>
-              <span style={{ fontSize: '3.5rem', filter: `drop-shadow(0 0 20px var(--amazigh-amber-glow))` }}>{currentRank.badge}</span>
+            <h1 className="learn-title" style={{ background: 'linear-gradient(135deg, #FFF7EE, var(--amazigh-amber))', WebkitBackgroundClip: 'text', fontSize: '2rem' }}>
+              <span style={{ fontSize: '2.5rem', filter: `drop-shadow(0 0 20px var(--amazigh-amber-glow))` }}>{currentRank.badge}</span>
               Immersion Darija
             </h1>
           </div>
@@ -199,6 +205,21 @@ const DarijaHub = ({ onBack }) => {
           </div>
         </div>
 
+        {selectedDestination && (() => {
+          const destContext = getDestinationContext(selectedDestination);
+          if (!destContext) return null;
+          return (
+            <div className="destination-banner" style={{ background: destContext.accentColor, borderColor: destContext.accentColor, marginBottom: '20px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <span style={{ fontSize: '1.5rem' }}>{destContext.emoji}</span>
+                <h3 style={{ margin: 0, fontSize: '1.1rem', color: '#FFF' }}>
+                  Vocabulaire et scènes pour {t(destContext.nameKey)}
+                </h3>
+              </div>
+            </div>
+          );
+        })()}
+
         <div className="learn-tabs">
           <button className={`learn-tab-btn ${activeTab === 'lessons' ? 'active' : ''}`} onClick={() => setActiveTab('lessons')} style={activeTab === 'lessons' ? { borderColor: 'rgba(255, 122, 0, 0.35)', color: 'var(--amazigh-amber)', boxShadow: '0 0 20px rgba(255, 122, 0, 0.18)', background: 'rgba(255, 122, 0, 0.12)' } : {}}>
             <BookOpen size={18} /> Vocabulaire
@@ -218,6 +239,7 @@ const DarijaHub = ({ onBack }) => {
               onXpEarned={handleXpEarned} 
               learnedWords={learnedDarijaWords}
               onMarkLearned={handleMarkLearned}
+              selectedDestination={selectedDestination}
             />
           )}
           
@@ -227,6 +249,7 @@ const DarijaHub = ({ onBack }) => {
               unlockedAchievements={unlockedAchievements} 
               onAchievementUnlock={handleAchievementUnlock} 
               currentLevel={currentRank.level}
+              selectedDestination={selectedDestination}
             />
           )}
 

@@ -5,7 +5,7 @@ import React, { useState } from "react";
 import { MessageCircle, MapPin, Coffee, CheckCircle, XCircle, Lock, Store } from "lucide-react";
 import { darijaConversations } from "./data/darijaData";
 
-const DarijaConversations = ({ onXpEarned, unlockedAchievements, onAchievementUnlock, currentLevel = 1 }) => {
+const DarijaConversations = ({ onXpEarned, unlockedAchievements, onAchievementUnlock, currentLevel = 1, selectedDestination }) => {
   const [activeScenario, setActiveScenario] = useState(null);
   const [stepIndex, setStepIndex] = useState(0);
   const [feedback, setFeedback] = useState(null);
@@ -76,12 +76,14 @@ const DarijaConversations = ({ onXpEarned, unlockedAchievements, onAchievementUn
         <div className="quiz-modes">
           {darijaConversations.map((scenario) => {
             const isLocked = scenario.id === "petit_taxi" && currentLevel < 2; // Level 2 required for advanced scenarios
+            const isDestSpecific = selectedDestination && scenario.destinationRelevance && (scenario.destinationRelevance.includes('all') || scenario.destinationRelevance.includes(selectedDestination));
 
             return (
-              <div key={scenario.id} className={`quiz-mode-card ${isLocked ? 'locked-feature-card' : ''}`} onClick={() => !isLocked && startScenario(scenario)}>
+              <div key={scenario.id} className={`quiz-mode-card ${isLocked ? 'locked-feature-card' : ''}`} onClick={() => !isLocked && startScenario(scenario)} style={{ border: isDestSpecific ? '1px solid var(--amazigh-amber)' : '' }}>
                 <div className="quiz-mode-icon">
                   {scenario.id.includes('cafe') ? <Coffee size={48} color="var(--amazigh-amber)" /> : <MapPin size={48} color="var(--amazigh-amber)" />}
                 </div>
+                {isDestSpecific && <div style={{ fontSize: '0.7rem', color: 'var(--amazigh-amber)', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '5px' }}>Recommandé</div>}
                 <h3 style={{ fontSize: '1.5rem', marginBottom: '10px' }}>{scenario.title}</h3>
                 <p style={{ color: 'var(--text-muted)', marginBottom: '15px' }}>{scenario.description}</p>
                 

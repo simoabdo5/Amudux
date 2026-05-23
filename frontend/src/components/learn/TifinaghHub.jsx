@@ -17,8 +17,11 @@ import UnlockCelebrationModal from "./UnlockCelebrationModal";
 // Import data & logic
 import { loadProgress, addXp, markLetterLearned, unlockAchievement, getRankByXp } from "./data/gamificationEngine";
 import { tifinaghAlphabet } from "./data/tifnaghData";
+import { getDestinationContext } from "./data/destinationContext";
+import { useLanguage } from "../accueil/LanguageContext";
 
-const TifinaghHub = ({ onBack }) => {
+const TifinaghHub = ({ onBack, selectedDestination, onXpEarned: externalOnXpEarned }) => {
+  const { t } = useLanguage();
   const [activeTab, setActiveTab] = useState("alphabet");
   
   // Global State
@@ -131,6 +134,9 @@ const TifinaghHub = ({ onBack }) => {
         } catch (e) {}
       }
     }
+    if (externalOnXpEarned) {
+      externalOnXpEarned(amount);
+    }
   };
 
   const handleMarkLearned = (char) => {
@@ -199,10 +205,30 @@ const TifinaghHub = ({ onBack }) => {
           </div>
         </div>
 
+        {selectedDestination && (() => {
+          const destContext = getDestinationContext(selectedDestination);
+          if (!destContext) return null;
+          return (
+            <div className="destination-banner" style={{ background: destContext.accentColor, borderColor: destContext.accentColor, marginBottom: '20px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <span style={{ fontSize: '1.5rem' }}>{destContext.emoji}</span>
+                <h3 style={{ margin: 0, fontSize: '1.1rem', color: '#FFF' }}>
+                  Héritage Tifinagh à {t(destContext.nameKey)}
+                </h3>
+              </div>
+            </div>
+          );
+        })()}
+
         <div className="learn-tabs">
           <button className={`learn-tab-btn ${activeTab === 'alphabet' ? 'active' : ''}`} onClick={() => setActiveTab('alphabet')}>
             <BookOpen size={16} /> Alphabet
           </button>
+          {selectedDestination && (
+            <button className={`learn-tab-btn ${activeTab === 'city' ? 'active' : ''}`} onClick={() => setActiveTab('city')} style={{ color: activeTab === 'city' ? 'var(--amazigh-amber)' : '' }}>
+              <Globe size={16} /> Dans la ville
+            </button>
+          )}
           <button className={`learn-tab-btn ${activeTab === 'quiz' ? 'active' : ''}`} onClick={() => setActiveTab('quiz')}>
             Arène Quiz
           </button>
@@ -228,6 +254,26 @@ const TifinaghHub = ({ onBack }) => {
               <AlphabetSystem learnedLetters={learnedLetters} onMarkLearned={handleMarkLearned} />
             </div>
           )}
+
+          {activeTab === 'city' && selectedDestination && (() => {
+            const destContext = getDestinationContext(selectedDestination);
+            if (!destContext || !destContext.tifinaghSpots) return null;
+            return (
+              <div className="learn-glass-panel">
+                <h2 style={{ fontSize: '1.8rem', marginBottom: '10px', fontWeight: '500' }}>
+                  Où voir le Tifinagh à {t(destContext.nameKey)} ?
+                </h2>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '20px', marginTop: '20px' }}>
+                  {destContext.tifinaghSpots.map((spot, idx) => (
+                    <div key={idx} style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '16px', padding: '20px' }}>
+                      <h4 style={{ fontSize: '1.2rem', marginBottom: '10px', color: '#FFF' }}>{t(spot.titleKey)}</h4>
+                      <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem', lineHeight: '1.5' }}>{t(spot.descKey)}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            );
+          })()}
           
           {activeTab === 'quiz' && (
             <QuizArena 

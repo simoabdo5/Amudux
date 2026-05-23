@@ -6,17 +6,22 @@ import { Volume2, CheckCircle, Search, AlertCircle } from "lucide-react";
 import { darijaVocab } from "./data/darijaData";
 import { getWordMastery, recordWordAttempt } from "./data/gamificationEngine";
 
-const DarijaLessons = ({ onXpEarned, learnedWords = [], onMarkLearned }) => {
+const DarijaLessons = ({ onXpEarned, learnedWords = [], onMarkLearned, selectedDestination }) => {
   const [filter, setFilter] = useState('All');
   const [search, setSearch] = useState('');
   const [masteryData, setMasteryData] = useState(getWordMastery());
 
-  const categories = ['All', 'À Réviser', ...new Set(darijaVocab.map(v => v.category))];
+  const categories = ['All', 'Recommandés', 'À Réviser', ...new Set(darijaVocab.map(v => v.category))];
 
   const filteredVocab = darijaVocab.filter(v => {
     if (filter === 'À Réviser') {
       const stats = masteryData[v.id];
       return stats && (stats.attempts > 0 && (stats.correct / stats.attempts) < 0.5);
+    }
+    if (filter === 'Recommandés' && selectedDestination) {
+      return v.destinationRelevance && (v.destinationRelevance.includes('all') || v.destinationRelevance.includes(selectedDestination));
+    } else if (filter === 'Recommandés') {
+      return v.tags && v.tags.includes('essential');
     }
     const matchesCategory = filter === 'All' || v.category === filter;
     const matchesSearch = v.darija.toLowerCase().includes(search.toLowerCase()) || 
@@ -57,6 +62,20 @@ const DarijaLessons = ({ onXpEarned, learnedWords = [], onMarkLearned }) => {
         </div>
         
         <div style={{ display: 'flex', gap: '15px', flexWrap: 'wrap' }}>
+          {selectedDestination && (
+            <button 
+              className={`pill-btn ${filter === 'Recommandés' ? 'active' : ''}`}
+              onClick={() => setFilter('Recommandés')}
+              style={{
+                background: filter === 'Recommandés' ? 'rgba(255, 122, 0, 0.1)' : 'rgba(255,255,255,0.03)',
+                color: filter === 'Recommandés' ? '#FFF' : 'var(--text-muted)',
+                border: `1px solid ${filter === 'Recommandés' ? 'var(--amazigh-amber)' : 'rgba(255,255,255,0.1)'}`,
+                padding: '10px 20px', borderRadius: '30px', cursor: 'pointer', transition: 'all 0.3s'
+              }}
+            >
+              Recommandés
+            </button>
+          )}
           <div style={{ position: 'relative' }}>
             <Search size={20} color="var(--text-muted)" style={{ position: 'absolute', left: '15px', top: '50%', transform: 'translateY(-50%)' }} />
             <input 

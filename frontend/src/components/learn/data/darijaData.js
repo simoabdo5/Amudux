@@ -3,28 +3,48 @@
 
 export const darijaVocab = [
   // --- BEGINNER: GREETINGS & BASICS ---
-  { id: 'v1', darija: "Salam", french: "Bonjour", category: "Basiques", difficulty: 1 },
-  { id: 'v2', darija: "Labas?", french: "Comment ça va ?", category: "Basiques", difficulty: 1 },
-  { id: 'v3', darija: "Bslama", french: "Au revoir", category: "Basiques", difficulty: 1 },
-  { id: 'v4', darija: "Chokran", french: "Merci", category: "Basiques", difficulty: 1 },
-  { id: 'v5', darija: "Wakaha", french: "D'accord / OK", category: "Basiques", difficulty: 1 },
-  { id: 'v6', darija: "Afak", french: "S'il te plaît", category: "Basiques", difficulty: 1 },
+  { id: 'v1', darija: "Salam", french: "Bonjour", english: "Hello", category: "Basiques", difficulty: 1, tags: ['greeting', 'essential'], destinationRelevance: ['all'] },
+  { id: 'v2', darija: "Labas?", french: "Comment ça va ?", english: "How are you?", category: "Basiques", difficulty: 1, tags: ['greeting', 'essential'], destinationRelevance: ['all'] },
+  { id: 'v3', darija: "Bslama", french: "Au revoir", english: "Goodbye", category: "Basiques", difficulty: 1, tags: ['greeting', 'essential'], destinationRelevance: ['all'] },
+  { id: 'v4', darija: "Chokran", french: "Merci", english: "Thank you", category: "Basiques", difficulty: 1, tags: ['greeting', 'essential'], destinationRelevance: ['all'] },
+  { id: 'v5', darija: "Wakaha", french: "D'accord / OK", english: "OK / Alright", category: "Basiques", difficulty: 1, tags: ['essential'], destinationRelevance: ['all'] },
+  { id: 'v6', darija: "Afak", french: "S'il te plaît", english: "Please", category: "Basiques", difficulty: 1, tags: ['essential'], destinationRelevance: ['all'] },
   
-  // --- INTERMEDIATE: CAFE & RESTAURANT ---
-  { id: 'v7', darija: "Bghit", french: "Je voudrais", category: "Restaurant", difficulty: 2 },
-  { id: 'v8', darija: "Atini", french: "Donne-moi", category: "Restaurant", difficulty: 2 },
-  { id: 'v9', darija: "Qahwa k7la", french: "Café noir", category: "Restaurant", difficulty: 2 },
-  { id: 'v10', darija: "Atay b n3na3", french: "Thé à la menthe", category: "Restaurant", difficulty: 2 },
-  { id: 'v11', darija: "Bch7al?", french: "C'est combien ?", category: "Restaurant", difficulty: 2 },
-  { id: 'v12', darija: "L7sab 3afak", french: "L'addition s'il vous plaît", category: "Restaurant", difficulty: 2 },
+  // --- INTERMEDIATE: CAFÉ & RESTAURANT ---
+  { id: 'v7', darija: "Bghit", french: "Je voudrais", english: "I would like", category: "Restaurant", difficulty: 2, tags: ['cafe', 'restaurant', 'essential'], destinationRelevance: ['all'] },
+  { id: 'v8', darija: "Atini", french: "Donne-moi", english: "Give me", category: "Restaurant", difficulty: 2, tags: ['cafe', 'restaurant'], destinationRelevance: ['all'] },
+  { id: 'v9', darija: "Qahwa k7la", french: "Café noir", english: "Black coffee", category: "Restaurant", difficulty: 2, tags: ['cafe'], destinationRelevance: ['all'] },
+  { id: 'v10', darija: "Atay b n3na3", french: "Thé à la menthe", english: "Mint tea", category: "Restaurant", difficulty: 2, tags: ['cafe', 'essential'], destinationRelevance: ['all'] },
+  { id: 'v11', darija: "Bch7al?", french: "C'est combien ?", english: "How much?", category: "Restaurant", difficulty: 2, tags: ['souk', 'essential', 'bargaining'], destinationRelevance: ['all'] },
+  { id: 'v12', darija: "L7sab 3afak", french: "L'addition s'il vous plaît", english: "The bill please", category: "Restaurant", difficulty: 2, tags: ['restaurant', 'cafe'], destinationRelevance: ['all'] },
 
   // --- ADVANCED: STREET & SLANG ---
-  { id: 'v13', darija: "Safi", french: "C'est bon / Ça suffit", category: "Street", difficulty: 3 },
-  { id: 'v14', darija: "Bezzaf", french: "Beaucoup", category: "Street", difficulty: 3 },
-  { id: 'v15', darija: "Zwin", french: "Beau / Bien", category: "Street", difficulty: 3 },
-  { id: 'v16', darija: "Walo", french: "Rien", category: "Street", difficulty: 3 },
-  { id: 'v17', darija: "Daba", french: "Maintenant", category: "Street", difficulty: 3 },
-  { id: 'v18', darija: "Machi mouchkil", french: "Pas de problème", category: "Street", difficulty: 3 }
+  { id: 'v13', darija: "Safi", french: "C'est bon / Ça suffit", english: "That's enough / OK", category: "Street", difficulty: 3, tags: ['souk', 'street'], destinationRelevance: ['all'] },
+  { id: 'v14', darija: "Bezzaf", french: "Beaucoup", english: "A lot / Too much", category: "Street", difficulty: 3, tags: ['souk', 'bargaining'], destinationRelevance: ['all'] },
+  { id: 'v15', darija: "Zwin", french: "Beau / Bien", english: "Beautiful / Nice", category: "Street", difficulty: 3, tags: ['street'], destinationRelevance: ['all'] },
+  { id: 'v16', darija: "Walo", french: "Rien", english: "Nothing", category: "Street", difficulty: 3, tags: ['street'], destinationRelevance: ['all'] },
+  { id: 'v17', darija: "Daba", french: "Maintenant", english: "Now", category: "Street", difficulty: 3, tags: ['taxi', 'street', 'essential'], destinationRelevance: ['all'] },
+  { id: 'v18', darija: "Machi mouchkil", french: "Pas de problème", english: "No problem", category: "Street", difficulty: 3, tags: ['essential', 'street'], destinationRelevance: ['all'] },
+
+  // --- AIRPORT & TRAVEL ---
+  { id: 'v19', darija: "Fin kayn taxi?", french: "Où est le taxi ?", english: "Where is the taxi?", category: "Aéroport", difficulty: 1, tags: ['airport', 'taxi', 'essential'], destinationRelevance: ['all'] },
+  { id: 'v20', darija: "Bghit nmchi l...", french: "Je veux aller à...", english: "I want to go to...", category: "Aéroport", difficulty: 1, tags: ['taxi', 'essential'], destinationRelevance: ['all'] },
+  { id: 'v21', darija: "Khdem lcompteur", french: "Mets le compteur", english: "Turn on the meter", category: "Taxi", difficulty: 2, tags: ['taxi', 'essential'], destinationRelevance: ['marrakech', 'fes', 'casablanca'] },
+  { id: 'v22', darija: "Wqef hna 3afak", french: "Arrête-toi ici svp", english: "Stop here please", category: "Taxi", difficulty: 2, tags: ['taxi'], destinationRelevance: ['all'] },
+
+  // --- HOTEL ---
+  { id: 'v23', darija: "3andi réservation", french: "J'ai une réservation", english: "I have a reservation", category: "Hôtel", difficulty: 2, tags: ['hotel', 'essential'], destinationRelevance: ['all'] },
+  { id: 'v24', darija: "Fin kayn hammam?", french: "Où est le hammam ?", english: "Where is the hammam?", category: "Hôtel", difficulty: 2, tags: ['hotel'], destinationRelevance: ['marrakech', 'fes'] },
+  { id: 'v25', darija: "Bghit lmeftah", french: "Je veux la clé", english: "I want the key", category: "Hôtel", difficulty: 2, tags: ['hotel'], destinationRelevance: ['all'] },
+
+  // --- EMERGENCIES ---
+  { id: 'v26', darija: "3awnoni!", french: "Aidez-moi !", english: "Help me!", category: "Urgences", difficulty: 1, tags: ['emergency', 'essential'], destinationRelevance: ['all'] },
+  { id: 'v27', darija: "Fin kayn sbittar?", french: "Où est l'hôpital ?", english: "Where is the hospital?", category: "Urgences", difficulty: 1, tags: ['emergency', 'essential'], destinationRelevance: ['all'] },
+  { id: 'v28', darija: "Mrid / Mrida", french: "Je suis malade (m/f)", english: "I'm sick (m/f)", category: "Urgences", difficulty: 1, tags: ['emergency'], destinationRelevance: ['all'] },
+
+  // --- HUMOR ---
+  { id: 'v29', darija: "Lla, ghali bezzaf a khouya!", french: "Non, trop cher mon frère !", english: "No, too expensive my friend!", category: "Humour", difficulty: 3, tags: ['souk', 'bargaining', 'humor'], destinationRelevance: ['marrakech', 'fes'] },
+  { id: 'v30', darija: "Ana machi touriste, ana Mghribi!", french: "Je suis pas touriste, je suis Marocain !", english: "I'm not a tourist, I'm Moroccan!", category: "Humour", difficulty: 3, tags: ['humor', 'street'], destinationRelevance: ['all'] }
 ];
 
 export const darijaConversations = [
@@ -34,10 +54,12 @@ export const darijaConversations = [
     description: "Commandez un thé traditionnel à la Médina.",
     difficulty: "Facile",
     xpReward: 50,
+    tags: ['cafe', 'essential'],
+    destinationRelevance: ['marrakech', 'fes', 'essaouira'],
     steps: [
       {
         npcText: "Salam khouya, achnou bghiti tachrob?",
-        npcAudioLabel: "salam_cafe", // placeholder for speech synth
+        npcAudioLabel: "salam_cafe",
         translation: "Bonjour mon frère, que veux-tu boire ?",
         options: [
           { text: "Bghit atay b n3na3, 3afak.", isCorrect: true, feedback: "Excellent ! Le classique marocain." },
@@ -71,6 +93,8 @@ export const darijaConversations = [
     description: "Négociez et dirigez votre taxi.",
     difficulty: "Moyen",
     xpReward: 80,
+    tags: ['taxi', 'transport'],
+    destinationRelevance: ['marrakech', 'fes', 'casablanca'],
     steps: [
       {
         npcText: "Salam, fin ghadi?",
@@ -98,6 +122,8 @@ export const darijaConversations = [
     description: "Négociez le prix d'un tapis Zellige avec un vendeur coriace.",
     difficulty: "Avancé",
     xpReward: 150,
+    tags: ['souk', 'bargaining'],
+    destinationRelevance: ['marrakech', 'fes'],
     steps: [
       {
         npcText: "Marhaba! Zid a khouya, chouf had zrabi, sena3a dyal yedd!",
@@ -126,6 +152,34 @@ export const darijaConversations = [
         options: [
           { text: "Nqsamha flnass, 800 dirham w nakhoudha daba.", isCorrect: true, feedback: "'On coupe la poire en deux, 800 et je la prends de suite'. Magistral !", moodImpact: "Impressionné" },
           { text: "La, 200 dirham w safi.", isCorrect: false, feedback: "Tu forces trop, il va refuser de te la vendre.", moodImpact: "Fermé" }
+        ]
+      }
+    ]
+  },
+  {
+    id: "hotel_checkin",
+    title: "Arrivée au Riad",
+    description: "Faites votre check-in et découvrez les coutumes d'accueil.",
+    difficulty: "Facile",
+    xpReward: 60,
+    tags: ['hotel', 'essential'],
+    destinationRelevance: ['all'],
+    steps: [
+      {
+        npcText: "Marhaba! Ahlan w sahlan. 3andek réservation?",
+        translation: "Bienvenue ! Avez-vous une réservation ?",
+        options: [
+          { text: "Iyyeh, 3andi réservation b smiti.", isCorrect: true, feedback: "'Oui, j'ai une réservation à mon nom'. Parfait !" },
+          { text: "Bchhal lbit?", isCorrect: false, feedback: "Tu n'as pas encore confirmé ta réservation." },
+          { text: "Bslama.", isCorrect: false, feedback: "Tu viens d'arriver, ne repars pas !" }
+        ]
+      },
+      {
+        npcText: "Ah naam, marhaba bik! Tay7ou l babouche w dkhol, hana l bit dyalek. Bghiti atay?",
+        translation: "Ah oui, bienvenue ! Enlevez vos chaussures et entrez. Voici votre chambre. Voulez-vous du thé ?",
+        options: [
+          { text: "Iyyeh, chokran bezzaf. Zwin bezzaf hna!", isCorrect: true, feedback: "'Oui merci beaucoup. C'est très beau ici!' — Accepter le thé est un geste d'amitié !" },
+          { text: "La, mabghitch.", isCorrect: false, feedback: "Refuser le thé d'accueil n'est pas très poli au Maroc." }
         ]
       }
     ]
