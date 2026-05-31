@@ -44,7 +44,15 @@ function AppContent() {
         <Route path="/" element={<Home />} />
         <Route path="/card" element={<Card />} />
         <Route path="/destination" element={<Destination />} />
-        <Route path="/languages" element={<Languages />} />
+        
+        <Route path="/languages" element={<Languages />}>
+          <Route index element={<Languages />} />
+          <Route path="tifinagh" element={<Languages />} />
+          <Route path="darija" element={<Languages />} />
+          <Route path="culture" element={<Languages />} />
+          <Route path="quizzes" element={<Languages />} />
+          <Route path="progress" element={<Languages />} />
+        </Route>
 
         <Route path="/destination/agadir" element={<Agadir />} />
         <Route path="/destination/casablanca" element={<Casablanca />} />
