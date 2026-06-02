@@ -1,225 +1,299 @@
-/* ===============================
-   ACTIVITIES SECTION - STYLE BOUTON TEXTE "Explorer →"
+/* =============================== 
+   SECTION ACTIVITÉS - CARD HOVER ANIMATION
 ================================= */
-
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;800&display=swap');
-
-body {
-  font-family: 'Inter', 'Poppins', sans-serif;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-/* DARK MODE */
-.dark .activities-section {
-  background: #0f0f0f;
-}
-.dark .section-title {
-  color: white;
-}
-
-/* SECTION */
-.activities-section {
+.section-activite {
   width: 100%;
-  padding: 100px 7%;
-  background: #f7f8fc;
+  padding: 90px 7%;
+  background: linear-gradient(135deg, #f8f9fc, #eef2f7);
+  font-family: 'Poppins', sans-serif;
   transition: background 0.4s ease;
+  overflow: hidden;
 }
 
-/* HEADER : tout aligné à gauche */
-.activities-header {
+/* ================= DARK MODE ================= */
+.dark .section-activite {
+  background: linear-gradient(135deg, #0f0f0f, #1a1a1a);
+}
+
+.dark .activite-title {
+  color: #fff;
+}
+
+.dark .activite-mini {
+  color: #ffb36b;
+}
+
+.dark .activite-card {
+  background: rgba(20, 20, 20, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.dark .activite-card__lieu {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* ================= HEADER ================= */
+.activite-header {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 36px;
+  flex-wrap: wrap;
   gap: 15px;
-  margin-bottom: 50px;
 }
 
-.mini-badge {
-  font-size: 14px;
-  font-weight: 700;
+.activite-mini {
   color: #ff7a00;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 1px;
   text-transform: uppercase;
-  letter-spacing: 2px;
   margin-bottom: 8px;
 }
 
-.section-title {
+.activite-title {
   font-size: 42px;
-  font-weight: 800;
+  font-weight: 700;
   color: #111;
-  letter-spacing: -1px;
-  margin: 0;
+  line-height: 1.2;
   transition: color 0.4s ease;
 }
 
-/* ─── BOUTON "VOIR TOUT" (petit, à gauche) ─── */
-.view-all-btn {
+/* ================= BUTTON ================= */
+.activite-voir-tout {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 6px 14px;
-  border-radius: 30px;
-  background: rgba(255, 122, 0, 0.1);
+  gap: 10px;
+  padding: 14px 32px;
+  border-radius: 999px;
+  background: #fff3ec;
+  border: 1.5px solid #ff7a00;
   color: #ff7a00;
-  border: 1px solid rgba(255, 122, 0, 0.3);
-  font-size: 12px;
+  font-size: 15px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  white-space: nowrap;
-  width: fit-content;
+  box-shadow: 0 6px 18px rgba(255, 122, 0, 0.12);
 }
 
-.view-all-btn:hover {
-  background: linear-gradient(135deg, #ff7a00, #ff4d00);
-  color: white;
-  transform: translateY(-2px);
+.activite-voir-tout:hover {
+  background: linear-gradient(135deg, #ff7a00, #ff5100);
+  color: #fff;
   border-color: transparent;
-  box-shadow: 0 6px 12px rgba(255, 122, 0, 0.2);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 25px rgba(255, 122, 0, 0.25);
 }
 
-.view-all-btn .arrow {
-  font-size: 12px;
-  transition: transform 0.2s;
-}
-
-.view-all-btn:hover .arrow {
-  transform: translateX(3px);
-}
-
-/* GRID (4 colonnes) */
-.activities-grid {
+/* ================= GRID ================= */
+.activite-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 30px;
+  gap: 20px;
 }
 
-/* CARD */
-.activity-card {
-  height: 420px;
-  border-radius: 24px;
-  overflow: hidden;
+/* ================= CARD ================= */
+.activite-card {
   position: relative;
+  border-radius: 22px;
+  overflow: hidden;
   cursor: pointer;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-  background-size: cover;
-  background-position: center;
-  transition: transform 0.4s ease, box-shadow 0.4s ease;
-}
-.activity-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 20px 40px rgba(0,0,0,0.18);
+  height: 340px;
+  background: #111;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+  opacity: 0;
+  animation: fadeUp 0.7s ease forwards;
 }
 
-/* OVERLAY (gradient noir vers orange au hover) */
-.activity-overlay {
+.activite-card:hover {
+  transform: translateY(-10px) scale(1.03);
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.25);
+}
+
+/* SHADOW ALWAYS VISIBLE */
+.activite-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.9) 0%,
+    rgba(0, 0, 0, 0.4) 45%,
+    transparent 100%
+  );
+}
+
+/* ORANGE EFFECT FROM BOTTOM TO TOP */
+.activite-card::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 45%; /* زيدي أو نقصي هنا */
+
+  z-index: 2;
+  pointer-events: none;
+
+  background: linear-gradient(
+    to top,
+    #ff8c00 0%,
+    #ffb300 35%,
+    rgba(255, 215, 0, 0.55) 75%,
+    transparent 100%  
+  );
+
+  transform: translateY(100%);
+  transition: transform 0.55s ease;
+}
+
+.activite-card:hover::before {
+  transform: translateY(0);
+}
+
+/* ================= IMAGE ================= */
+.activite-card__img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.7s ease, filter 0.7s ease;
+  z-index: 0;
+}
+
+.activite-card:hover .activite-card__img {
+  transform: scale(1.12);
+  filter: brightness(0.65);
+}
+
+/* ================= BADGE ================= */
+.activite-card__badge {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  background: rgba(255, 122, 0, 0.25);
+  border: 1px solid rgba(255, 122, 0, 0.4);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 5px 12px;
+  border-radius: 50px;
+  backdrop-filter: blur(10px);
+  z-index: 5;
+}
+
+/* ================= INFO ================= */
+.activite-card__info {
   position: absolute;
   bottom: 0;
   left: 0;
   right: 0;
-  padding: 30px;
-  padding-top: 80px;
-  background: linear-gradient(
-    to top,
-    rgba(0,0,0,0.85) 0%,
-    rgba(0,0,0,0.4) 45%,
-    rgba(0,0,0,0.1) 80%,
-    transparent 100%
-  );
-  transition: all 0.4s ease;
-}
-.activity-card:hover .activity-overlay {
-  background: linear-gradient(
-    to top,
-    rgba(255,122,0,0.95) 0%,
-    rgba(255,122,0,0.6) 35%,
-    rgba(0,0,0,0.2) 80%,
-    transparent 100%
-  );
+  padding: 16px 18px 20px;
+  z-index: 5;
+  transition: transform 0.3s ease;
 }
 
-/* TEXTE (titre + localisation) */
-.activity-title {
-  font-size: 24px;
-  font-weight: 800;
-  color: white;
-  margin-bottom: 6px;
-  text-shadow: 0 2px 6px rgba(0,0,0,0.5);
-}
-.activity-location {
-  font-size: 14px;
-  color: rgba(255,255,255,0.85);
-  margin-bottom: 12px;
+.activite-card:hover .activite-card__info {
+  transform: translateY(-6px);
 }
 
-/* ─── BOUTON EXPLORER : STYLE TEXTE SIMPLE (comme "Explorer →") ─── */
-.explore-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: transparent;      /* pas de fond */
-  backdrop-filter: none;
-  padding: 0;                   /* pas de padding */
-  border: none;                /* pas de bordure */
-  color: white;
-  font-size: 14px;
+.activite-card__nom {
+  font-size: 17px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 4px;
+}
+
+.activite-card__lieu {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* ================= BUTTON ================= */
+.activite-card__btn {
+  margin-top: 12px;
+  padding: 8px 18px;
+  border-radius: 50px;
+  border: 1px solid rgba(255,255,255,0.2);
+  background: rgba(255,255,255,0.08);
+  backdrop-filter: blur(10px);
+  color: #fff;
+  font-size: 13px;
   font-weight: 600;
+  cursor: pointer;
   opacity: 0;
   transform: translateY(10px);
-  transition: all 0.3s ease;
-  cursor: pointer;
-  letter-spacing: 0.3px;
+  transition: 0.3s ease;
 }
 
-/* Flèche un peu plus grande */
-.explore-btn .arrow {
-  font-size: 16px;
-  transition: transform 0.2s;
-}
-
-/* Au hover de la carte : le texte apparaît */
-.activity-card:hover .explore-btn {
+.activite-card:hover .activite-card__btn {
   opacity: 1;
   transform: translateY(0);
 }
 
-/* Au hover du bouton lui-même : flèche bouge + léger soulignement si voulu */
-.explore-btn:hover {
-  color: #ffd6a8;
-}
-.explore-btn:hover .arrow {
-  transform: translateX(4px);
+.activite-card__btn:hover {
+  background: #fff;
+  color: #ff7a00;
+  border-color: transparent;
 }
 
-/* RESPONSIVE */
-@media (max-width: 1200px) {
-  .activities-grid {
-    grid-template-columns: repeat(3, 1fr);
+/* ================= ANIMATION ================= */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
   }
-}
-@media (max-width: 900px) {
-  .activities-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  .activity-card {
-    height: 350px;
-  }
-}
-@media (max-width: 600px) {
-  .activities-section {
-    padding: 60px 5%;
-  }
-  .activities-grid {
-    grid-template-columns: 1fr;
-  }
-  .section-title {
-    font-size: 32px;
-  }
-  .activity-card {
-    height: 300px;
-  }
-  /* Toujours visible sur mobile */
-  .explore-btn {
+  to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 1100px) {
+  .activite-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .activite-title {
+    font-size: 36px;
+  }
+}
+
+@media (max-width: 768px) {
+  .section-activite {
+    padding: 70px 5%;
+  }
+
+  .activite-title {
+    font-size: 30px;
+  }
+
+  .activite-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 550px) {
+  .activite-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .activite-title {
+    font-size: 26px;
+  }
+
+  .activite-card {
+    height: 300px;
   }
 }
