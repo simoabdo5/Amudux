@@ -29,6 +29,7 @@ import Saved from "./components/pages/saved";
 import AdminDashboard from "./components/pages/adminDashboard";
 import Pack from "./components/pages/pack";
 import Profile from "./components/pages/Profile";
+import Commentaire from "./components/accueil/Commentaire";
 
 
 
@@ -109,9 +110,8 @@ function AppContent() {
                 {/* Fallback */}
                 <Route path="*" element={<Navigate to="/" />} />
             </Routes>
-
-            {showChatbot && <Chatbot /> }
-            {showChatbot && <Footer /> }
+                {showChatbot && <Commentaire /> }
+                {showChatbot && <Footer /> }
         </>
     );
 }
