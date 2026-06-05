@@ -545,7 +545,6 @@ html.dark .readonly-field {
 /* Toast */
 .save-toast {
   position: fixed;
-
   bottom: 2rem;
   left: 50%;
 
