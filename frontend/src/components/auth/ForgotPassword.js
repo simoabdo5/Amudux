@@ -48,12 +48,15 @@ function ForgotPassword() {
 
     const t = lt[lang];
     const normalizedEmail = email.trim().toLowerCase();
-    const isWaitingForSameEmail = resendSeconds > 0 && normalizedEmail === lastSentEmail;
-    const resendText = {
-        ready: lang === 'FR' ? 'Vous pouvez demander un nouveau lien.' : lang === 'AR' ? 'يمكنك طلب رابط جديد.' : 'You can request a new link.',
-        waiting: lang === 'FR' ? 'Nouveau lien disponible dans' : lang === 'AR' ? 'رابط جديد متاح بعد' : 'New link available in',
-        waitError: lang === 'FR' ? 'Veuillez attendre la fin du minuteur avant de demander un nouveau lien.' : lang === 'AR' ? 'يرجى انتظار انتهاء المؤقت قبل طلب رابط جديد.' : 'Please wait for the timer to finish before requesting a new link.'
-    };
+
+    useEffect(() => {
+        if (success) {
+            const timer = setTimeout(() => {
+                setSuccess('');
+            }, 60000);
+            return () => clearTimeout(timer);
+        }
+    }, [success]);
 
     useEffect(() => {
         if (resendSeconds <= 0) {
@@ -81,8 +84,7 @@ function ForgotPassword() {
             return;
         }
 
-        if (isWaitingForSameEmail) {
-            setError(resendText.waitError);
+        if (resendSeconds > 0) {
             return;
         }
 
@@ -154,16 +156,17 @@ function ForgotPassword() {
                                 />
                             </div>
 
-                            {lastSentEmail && (
-                                <div className="auth-resend-timer">
-                                    {isWaitingForSameEmail
-                                        ? `${resendText.waiting} ${formatTimer(resendSeconds)}`
-                                        : resendText.ready}
-                                </div>
-                            )}
-
-                            <button type="submit" className="login-submit" disabled={loading || isWaitingForSameEmail}>
-                                {loading ? <span className="spinner"></span> : (
+                            <button type="submit" className="login-submit" disabled={loading || resendSeconds > 0}>
+                                {loading ? <span className="spinner"></span> : resendSeconds > 0 ? (
+                                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+                                        <span style={{ fontSize: '14px' }}>
+                                            {lang === 'FR' ? 'Veuillez patienter' : 
+                                             lang === 'AR' ? 'يرجى الانتظار' : 
+                                             'Please wait'}
+                                        </span>:                                    
+                                        <span>{formatTimer(resendSeconds)}</span>
+                                    </div>
+                                ) : (
                                     <>{t.send} <ArrowRight size={18} /></>
                                 )}
                             </button>

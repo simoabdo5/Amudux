@@ -14,7 +14,7 @@ function VerifyCode() {
     const location = useLocation();
     const userData = location.state || {};
     const email = userData.email || '';
-    const initialResendSeconds = Number(userData.resendWaitSeconds || 120);
+    const initialResendSeconds = 60;
     
     const [code, setCode] = useState('');
     const [loading, setLoading] = useState(false);
@@ -64,6 +64,15 @@ function VerifyCode() {
         waitError: lang === 'FR' ? 'Veuillez attendre la fin du minuteur avant de renvoyer le code.' : lang === 'AR' ? 'يرجى انتظار انتهاء المؤقت قبل اعادة الارسال.' : 'Please wait for the timer to finish before resending the code.',
         resent: lang === 'FR' ? 'Code renvoye !' : lang === 'AR' ? 'تمت اعادة ارسال الرمز!' : 'Code resent!'
     };
+
+    useEffect(() => {
+        if (success) {
+            const timer = setTimeout(() => {
+                setSuccess('');
+            }, 30000);
+            return () => clearTimeout(timer);
+        }
+    }, [success]);
 
     useEffect(() => {
         if (resendSeconds <= 0) {
@@ -153,7 +162,7 @@ function VerifyCode() {
                 password_confirmation: userData.password
             });
             setCode('');
-            setResendSeconds(response.data?.wait_seconds || 120);
+            setResendSeconds(60);
             
             setSuccess('Code renvoyé !');
         } catch (err) {
@@ -229,18 +238,25 @@ function VerifyCode() {
                                 </button>
                             </form>
 
-                            <p className="login-toggle">
-                                <span className="auth-resend-timer">
-                                    {resendSeconds > 0
-                                        ? `${resendText.waiting} ${formatTimer(resendSeconds)}`
-                                        : resendText.ready}
+                            <p className="login-toggle" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
+                                <span>
+                                    {lang === 'AR' ? 'لم تستلم الرمز؟' : 
+                                     lang === 'FR' ? 'Vous n\'avez pas reçu le code ?' : 
+                                     'Didn\'t receive the code?'}
                                 </span>
-                                <br />
-                                {lang === 'AR' ? 'لم تستلم الرمز؟' : 
-                                 lang === 'FR' ? 'Vous n\'avez pas reçu le code ?' : 
-                                 'Didn\'t receive the code?'}{' '}
                                 <button onClick={handleResend} className="toggle-btn" disabled={resending || resendSeconds > 0}>
-                                    {t.resend}
+                                    {resending ? <span className="spinner"></span> : resendSeconds > 0 ? (
+                                        <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+                                            <span style={{ fontSize: '13px' }}>
+                                                {lang === 'FR' ? 'Veuillez patienter' : 
+                                                 lang === 'AR' ? 'يرجى الانتظار' : 
+                                                 'Please wait'}
+                                            </span>
+                                            <span>{formatTimer(resendSeconds)}</span>
+                                        </span>
+                                    ) : (
+                                        t.resend
+                                    )}
                                 </button>
                             </p>
                         </div>
