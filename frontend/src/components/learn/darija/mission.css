@@ -858,3 +858,176 @@ html.dark .tifinagh-review-card-active {
     gap: 12px;
   }
 }
+
+/* ==============================
+   Culture Mission 2 — Markets
+   ============================== */
+.culture-card-override {
+  border: 1px solid rgba(21, 128, 61, 0.2);
+  transition: all 0.25s ease;
+}
+
+.culture-card-override:hover {
+  border-color: rgba(21, 128, 61, 0.45);
+  box-shadow: 0 12px 30px rgba(21, 128, 61, 0.1);
+}
+
+.culture-card-override.selected {
+  border-color: #15803d;
+  box-shadow: 0 12px 32px rgba(21, 128, 61, 0.18);
+  background: rgba(21, 128, 61, 0.04);
+}
+
+.culture-story-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.culture-story-pill {
+  background: var(--learn-card-bg);
+  border: 1px solid rgba(21, 128, 61, 0.2);
+  border-radius: 16px;
+  padding: 20px;
+  text-align: center;
+}
+
+.culture-story-pill-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(21, 128, 61, 0.1);
+  color: #15803d;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 12px;
+}
+
+.culture-neg-card {
+  background: var(--learn-card-bg);
+  border: 1px solid rgba(21, 128, 61, 0.2);
+  border-radius: 20px;
+  padding: 24px;
+  margin-bottom: 20px;
+}
+
+.culture-neg-compare {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.culture-neg-local,
+.culture-neg-tourist {
+  padding: 14px;
+  border-radius: 12px;
+  font-size: 0.88rem;
+  line-height: 1.55;
+}
+
+.culture-neg-local {
+  background: rgba(52, 199, 89, 0.08);
+  border: 1px solid rgba(52, 199, 89, 0.25);
+}
+
+.culture-neg-tourist {
+  background: rgba(255, 59, 48, 0.06);
+  border: 1px solid rgba(255, 59, 48, 0.2);
+}
+
+.culture-neg-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.culture-neg-local .culture-neg-label {
+  color: #15803d;
+}
+
+.culture-neg-tourist .culture-neg-label {
+  color: #ff3b30;
+}
+
+.culture-region-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.culture-challenge-progress {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.culture-challenge-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--learn-border);
+  transition: all 0.3s ease;
+}
+
+.culture-challenge-dot.active {
+  background: #15803d;
+  box-shadow: 0 0 8px rgba(21, 128, 61, 0.5);
+}
+
+.culture-challenge-dot.done {
+  background: #22c55e;
+}
+
+.culture-challenge-reward {
+  text-align: center;
+  padding: 20px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, rgba(21, 128, 61, 0.12), rgba(34, 197, 94, 0.06));
+  border: 2px solid rgba(21, 128, 61, 0.3);
+  margin-top: 16px;
+}
+
+.culture-mistake-why {
+  font-size: 0.88rem;
+  color: var(--learn-text-secondary);
+  margin-bottom: 12px;
+  line-height: 1.55;
+  font-style: italic;
+}
+
+.culture-price-tag {
+  display: inline-block;
+  background: rgba(21, 128, 61, 0.12);
+  color: #15803d;
+  font-weight: 700;
+  font-size: 1.3rem;
+  padding: 8px 20px;
+  border-radius: 12px;
+  border: 2px solid rgba(21, 128, 61, 0.25);
+  margin: 12px 0;
+}
+
+.culture-intro-hero {
+  background: linear-gradient(135deg, rgba(21, 128, 61, 0.08) 0%, rgba(34, 197, 94, 0.03) 100%);
+  border: 2px solid rgba(21, 128, 61, 0.2);
+  border-radius: 20px;
+  padding: 28px 24px;
+  margin-bottom: 24px;
+  text-align: center;
+  line-height: 1.7;
+  font-size: 1.05rem;
+  color: var(--learn-text);
+}
+
+@media (max-width: 600px) {
+  .culture-neg-compare {
+    grid-template-columns: 1fr;
+  }
+}

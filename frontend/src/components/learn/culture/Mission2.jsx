@@ -1,27 +1,43 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { X, ArrowRight, ArrowLeft, CheckCircle, XCircle, ShoppingBag, AlertTriangle, Award, Lock } from "lucide-react";
+import {
+  X, ArrowRight, ArrowLeft, CheckCircle, XCircle, ShoppingBag, AlertTriangle,
+  Award, Lock, Handshake, Tag, TrendingDown,
+  Footprints, MapPin, Palette, Gem, Store, Sparkles, Users, Globe
+} from "lucide-react";
 import { useLanguage } from "../../accueil/LanguageContext";
 import "../darija/mission.css";
 
-const STEPS = ["intro", "culture", "situations", "mistakes", "challenge", "quiz", "completion"];
+const STEPS = ["intro", "culture", "negotiation", "situations", "mistakes", "challenge", "discovery", "quiz", "completion"];
+
+const STEP_LABELS = {
+  intro: { FR: "Bienvenue au Souk", EN: "Welcome to the Souk", AR: "مرحباً في السوق" },
+  culture: { FR: "Culture du Marché", EN: "Market Culture", AR: "ثقافة السوق" },
+  negotiation: { FR: "Négociation", EN: "Negotiation Basics", AR: "أساسيات التفاوض" },
+  situations: { FR: "Scénarios", EN: "Market Scenarios", AR: "سيناريوهات السوق" },
+  mistakes: { FR: "Erreurs", EN: "Common Mistakes", AR: "أخطاء شائعة" },
+  challenge: { FR: "Défi", EN: "Bargaining Challenge", AR: "تحدي المساومة" },
+  discovery: { FR: "Découverte", EN: "Cultural Discovery", AR: "اكتشاف ثقافي" },
+  quiz: { FR: "Quiz Final", EN: "Final Quiz", AR: "الاختبار النهائي" },
+  completion: { FR: "Achèvement", EN: "Completion", AR: "اكتمال" }
+};
 
 function CultureMission2() {
   const { t, lang, isRTL } = useLanguage();
   const navigate = useNavigate();
 
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
+  const [selectedCultureCard, setSelectedCultureCard] = useState(0);
+  const [expandedMistake, setExpandedMistake] = useState(0);
 
-  // Situations State
   const [currentSituationIndex, setCurrentSituationIndex] = useState(0);
   const [situationFeedback, setSituationFeedback] = useState(null);
 
-  // Challenge State
   const [challengeIndex, setChallengeIndex] = useState(0);
   const [challengeFeedback, setChallengeFeedback] = useState(null);
+  const [challengeCompleted, setChallengeCompleted] = useState([]);
 
-  // Quiz State
   const [quizQuestionIndex, setQuizQuestionIndex] = useState(0);
   const [selectedOption, setSelectedOption] = useState(null);
   const [quizFeedback, setQuizFeedback] = useState(null);
@@ -33,100 +49,128 @@ function CultureMission2() {
   const step = STEPS[currentStepIndex];
   const progressPercent = (currentStepIndex / (STEPS.length - 1)) * 100;
 
+  const ui = (fr, en, ar) => (lang === "FR" ? fr : lang === "AR" ? ar : en);
+  const getStepLabel = (key) => STEP_LABELS[key]?.[lang] || STEP_LABELS[key]?.EN || key;
+
   const handleNext = () => {
-    if (currentStepIndex < STEPS.length - 1) {
-      setCurrentStepIndex(prev => prev + 1);
-    }
+    if (currentStepIndex < STEPS.length - 1) setCurrentStepIndex(prev => prev + 1);
   };
 
   const handleBack = () => {
-    if (currentStepIndex > 0) {
-      setCurrentStepIndex(prev => prev - 1);
-    }
+    if (currentStepIndex > 0) setCurrentStepIndex(prev => prev - 1);
   };
 
-  // ── Culture Cards ──
-  const cultureCards = [
-    { icon: "👋", title: t("cultureM2CultureCard1Title"), desc: t("cultureM2CultureCard1Desc") },
-    { icon: "⏳", title: t("cultureM2CultureCard2Title"), desc: t("cultureM2CultureCard2Desc") },
-    { icon: "💰", title: t("cultureM2CultureCard3Title"), desc: t("cultureM2CultureCard3Desc") },
-    { icon: "😊", title: t("cultureM2CultureCard4Title"), desc: t("cultureM2CultureCard4Desc") }
+  const introStories = [
+    { icon: <Store size={22} />, text: t("cultureM2IntroWhatIsSouk") },
+    { icon: <Tag size={22} />, text: t("cultureM2IntroWhyBargain") },
+    { icon: <Handshake size={22} />, text: t("cultureM2IntroSocialNotConflict") },
+    { icon: <Globe size={22} />, text: t("cultureM2IntroTouristVsLocal") }
   ];
 
-  // ── Situations Data ──
+  const cultureCards = [
+    { icon: "👋", title: t("cultureM2CultureCard1Title"), desc: t("cultureM2CultureCard1Desc"), context: t("cultureM2CultureCard1Context") },
+    { icon: "⏳", title: t("cultureM2CultureCard2Title"), desc: t("cultureM2CultureCard2Desc"), context: t("cultureM2CultureCard2Context") },
+    { icon: "💬", title: t("cultureM2CultureCard3Title"), desc: t("cultureM2CultureCard3Desc"), context: t("cultureM2CultureCard3Context") },
+    { icon: "🤝", title: t("cultureM2CultureCard4Title"), desc: t("cultureM2CultureCard4Desc"), context: t("cultureM2CultureCard4Context") },
+    { icon: "😊", title: t("cultureM2CultureCard5Title"), desc: t("cultureM2CultureCard5Desc"), context: t("cultureM2CultureCard5Context") }
+  ];
+
+  const negotiationData = [
+    { icon: <Tag size={22} />, title: t("cultureM2Neg1Title"), desc: t("cultureM2Neg1Desc"), locals: t("cultureM2Neg1Locals"), tourists: t("cultureM2Neg1Tourists") },
+    { icon: <TrendingDown size={22} />, title: t("cultureM2Neg2Title"), desc: t("cultureM2Neg2Desc"), locals: t("cultureM2Neg2Locals"), tourists: t("cultureM2Neg2Tourists") },
+    { icon: <Handshake size={22} />, title: t("cultureM2Neg3Title"), desc: t("cultureM2Neg3Desc"), locals: t("cultureM2Neg3Locals"), tourists: t("cultureM2Neg3Tourists") },
+    { icon: <Footprints size={22} />, title: t("cultureM2Neg4Title"), desc: t("cultureM2Neg4Desc"), locals: t("cultureM2Neg4Locals"), tourists: t("cultureM2Neg4Tourists") }
+  ];
+
   const situationsData = [
     {
+      emoji: "🧶",
+      price: "1500 DH",
       q: t("cultureM2Sit1Q"),
-      options: [t("cultureM2Sit1A1"), t("cultureM2Sit1A2")],
-      correctIdx: 0,
+      options: [t("cultureM2Sit1A1"), t("cultureM2Sit1A2"), t("cultureM2Sit1A3")],
+      correctIdx: 1,
       feedbackCorrect: t("cultureM2Sit1FeedbackCorrect"),
-      feedbackWrong: t("cultureM2Sit1FeedbackWrong"),
+      feedbackWrong: t("cultureM2Sit1FeedbackWrong")
     },
     {
+      emoji: "🎁",
       q: t("cultureM2Sit2Q"),
-      options: [t("cultureM2Sit2A1"), t("cultureM2Sit2A2")],
+      options: [t("cultureM2Sit2A1"), t("cultureM2Sit2A2"), t("cultureM2Sit2A3")],
       correctIdx: 1,
       feedbackCorrect: t("cultureM2Sit2FeedbackCorrect"),
-      feedbackWrong: t("cultureM2Sit2FeedbackWrong"),
+      feedbackWrong: t("cultureM2Sit2FeedbackWrong")
     },
     {
+      emoji: "🌶️",
+      price: "200 DH/g",
       q: t("cultureM2Sit3Q"),
-      options: [t("cultureM2Sit3A1"), t("cultureM2Sit3A2")],
+      options: [t("cultureM2Sit3A1"), t("cultureM2Sit3A2"), t("cultureM2Sit3A3")],
       correctIdx: 1,
       feedbackCorrect: t("cultureM2Sit3FeedbackCorrect"),
-      feedbackWrong: t("cultureM2Sit3FeedbackWrong"),
+      feedbackWrong: t("cultureM2Sit3FeedbackWrong")
+    },
+    {
+      emoji: "👗",
+      q: t("cultureM2Sit4Q"),
+      options: [t("cultureM2Sit4A1"), t("cultureM2Sit4A2"), t("cultureM2Sit4A3")],
+      correctIdx: 1,
+      feedbackCorrect: t("cultureM2Sit4FeedbackCorrect"),
+      feedbackWrong: t("cultureM2Sit4FeedbackWrong")
     }
   ];
 
-  // ── Mistakes Data ──
   const mistakesData = [
-    { title: t("cultureM2Mistake1Title"), bad: t("cultureM2Mistake1Bad"), good: t("cultureM2Mistake1Good") },
-    { title: t("cultureM2Mistake2Title"), bad: t("cultureM2Mistake2Bad"), good: t("cultureM2Mistake2Good") },
-    { title: t("cultureM2Mistake3Title"), bad: t("cultureM2Mistake3Bad"), good: t("cultureM2Mistake3Good") }
+    { title: t("cultureM2Mistake1Title"), why: t("cultureM2Mistake1Why"), bad: t("cultureM2Mistake1Bad"), good: t("cultureM2Mistake1Good") },
+    { title: t("cultureM2Mistake2Title"), why: t("cultureM2Mistake2Why"), bad: t("cultureM2Mistake2Bad"), good: t("cultureM2Mistake2Good") },
+    { title: t("cultureM2Mistake3Title"), why: t("cultureM2Mistake3Why"), bad: t("cultureM2Mistake3Bad"), good: t("cultureM2Mistake3Good") },
+    { title: t("cultureM2Mistake4Title"), why: t("cultureM2Mistake4Why"), bad: t("cultureM2Mistake4Bad"), good: t("cultureM2Mistake4Good") },
+    { title: t("cultureM2Mistake5Title"), why: t("cultureM2Mistake5Why"), bad: t("cultureM2Mistake5Bad"), good: t("cultureM2Mistake5Good") }
   ];
 
-  // ── Challenge Data ──
   const challengeData = [
     {
       q: t("cultureM2Ch1Q"),
       options: [t("cultureM2Ch1A1"), t("cultureM2Ch1A2"), t("cultureM2Ch1A3")],
       correctIdx: 0,
       feedbackCorrect: t("cultureM2Ch1FeedbackCorrect"),
-      feedbackWrong: t("cultureM2Ch1FeedbackWrong"),
+      feedbackWrong: t("cultureM2Ch1FeedbackWrong")
     },
     {
       q: t("cultureM2Ch2Q"),
       options: [t("cultureM2Ch2A1"), t("cultureM2Ch2A2"), t("cultureM2Ch2A3")],
       correctIdx: 0,
       feedbackCorrect: t("cultureM2Ch2FeedbackCorrect"),
-      feedbackWrong: t("cultureM2Ch2FeedbackWrong"),
+      feedbackWrong: t("cultureM2Ch2FeedbackWrong")
+    },
+    {
+      q: t("cultureM2Ch3Q"),
+      options: [t("cultureM2Ch3A1"), t("cultureM2Ch3A2"), t("cultureM2Ch3A3")],
+      correctIdx: 0,
+      feedbackCorrect: t("cultureM2Ch3FeedbackCorrect"),
+      feedbackWrong: t("cultureM2Ch3FeedbackWrong")
     }
   ];
 
-  // ── Quiz Data ──
+  const discoveryData = [
+    { icon: <Palette size={24} />, title: t("cultureM2DiscArtisanTitle"), desc: t("cultureM2DiscArtisanDesc") },
+    { icon: <Gem size={24} />, title: t("cultureM2DiscHandmadeTitle"), desc: t("cultureM2DiscHandmadeDesc") },
+    { icon: <MapPin size={24} />, title: t("cultureM2DiscMarrakechTitle"), desc: t("cultureM2DiscMarrakechDesc") },
+    { icon: <Store size={24} />, title: t("cultureM2DiscFesTitle"), desc: t("cultureM2DiscFesDesc") },
+    { icon: <Sparkles size={24} />, title: t("cultureM2DiscChefchaouenTitle"), desc: t("cultureM2DiscChefchaouenDesc") },
+    { icon: <Users size={24} />, title: t("cultureM2DiscAgadirTitle"), desc: t("cultureM2DiscAgadirDesc") }
+  ];
+
   const quizData = [
-    {
-      q: t("cultureM2QuizQ1"),
-      options: [t("cultureM2QuizQ1O1"), t("cultureM2QuizQ1O2"), t("cultureM2QuizQ1O3")],
-      answer: 0
-    },
-    {
-      q: t("cultureM2QuizQ2"),
-      options: [t("cultureM2QuizQ2O1"), t("cultureM2QuizQ2O2"), t("cultureM2QuizQ2O3")],
-      answer: 0
-    },
-    {
-      q: t("cultureM2QuizQ3"),
-      options: [t("cultureM2QuizQ3O1"), t("cultureM2QuizQ3O2"), t("cultureM2QuizQ3O3")],
-      answer: 0
-    }
+    { q: t("cultureM2QuizQ1"), options: [t("cultureM2QuizQ1O1"), t("cultureM2QuizQ1O2"), t("cultureM2QuizQ1O3")], answer: 0 },
+    { q: t("cultureM2QuizQ2"), options: [t("cultureM2QuizQ2O1"), t("cultureM2QuizQ2O2"), t("cultureM2QuizQ2O3")], answer: 0 },
+    { q: t("cultureM2QuizQ3"), options: [t("cultureM2QuizQ3O1"), t("cultureM2QuizQ3O2"), t("cultureM2QuizQ3O3")], answer: 0 },
+    { q: t("cultureM2QuizQ4"), options: [t("cultureM2QuizQ4O1"), t("cultureM2QuizQ4O2"), t("cultureM2QuizQ4O3")], answer: 0 },
+    { q: t("cultureM2QuizQ5"), options: [t("cultureM2QuizQ5O1"), t("cultureM2QuizQ5O2"), t("cultureM2QuizQ5O3")], answer: 0 }
   ];
 
-  // ── Handlers ──
   const handleSituationAnswer = (idx) => {
     if (situationFeedback) return;
-    const isCorrect = idx === situationsData[currentSituationIndex].correctIdx;
-    setSituationFeedback(isCorrect ? "correct" : "wrong");
+    setSituationFeedback(idx === situationsData[currentSituationIndex].correctIdx ? "correct" : "wrong");
   };
 
   const handleNextSituation = () => {
@@ -142,6 +186,9 @@ function CultureMission2() {
     if (challengeFeedback) return;
     const isCorrect = idx === challengeData[challengeIndex].correctIdx;
     setChallengeFeedback(isCorrect ? "correct" : "wrong");
+    if (isCorrect) {
+      setChallengeCompleted(prev => [...prev, challengeIndex]);
+    }
   };
 
   const handleNextChallenge = () => {
@@ -175,16 +222,58 @@ function CultureMission2() {
     }, 1500);
   };
 
+  const renderFeedback = (feedback, correctText, wrongText, onContinue, onRetry) => (
+    <AnimatePresence>
+      {feedback && (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0 }}
+          style={{
+            padding: "16px 20px", borderRadius: 16, marginTop: 16,
+            background: feedback === "correct" ? "rgba(52,199,89,0.1)" : "rgba(255,59,48,0.1)",
+            color: feedback === "correct" ? "#34c759" : "#ff3b30",
+            display: "flex", flexDirection: "column", gap: 12
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            {feedback === "correct" ? <CheckCircle size={22} /> : <XCircle size={22} />}
+            <span style={{ fontWeight: 600, lineHeight: 1.4 }}>
+              {feedback === "correct" ? correctText : wrongText}
+            </span>
+          </div>
+          {feedback === "correct" && (
+            <button className="mission-btn" style={{ alignSelf: "center", marginTop: 8 }} onClick={onContinue}>
+              {ui("Continuer", "Continue", "متابعة")}
+              <ArrowRight size={18} />
+            </button>
+          )}
+          {feedback === "wrong" && (
+            <button className="mission-btn secondary" style={{ alignSelf: "center", marginTop: 8 }} onClick={onRetry}>
+              {ui("Réessayer", "Retry", "حاول مرة أخرى")}
+            </button>
+          )}
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+
   return (
     <div className={`mission-container culture-theme ${isRTL ? "rtl" : "ltr"}`}>
-      {/* ── Header / Progress ── */}
       <div className="mission-header">
         <button className="mission-close" onClick={() => navigate("/languages")}>
           <X size={24} />
         </button>
         <div className="mission-progress-bar">
-          <div className="mission-progress-fill" style={{ width: `${progressPercent}%` }}></div>
+          <div className="mission-progress-fill" style={{ width: `${progressPercent}%` }} />
         </div>
+      </div>
+
+      <div className="step-indicator">
+        <span className="step-indicator-number">
+          {ui(`Étape ${currentStepIndex + 1}/${STEPS.length}`, `Step ${currentStepIndex + 1}/${STEPS.length}`, `الخطوة ${currentStepIndex + 1}/${STEPS.length}`)}
+        </span>
+        <span className="step-indicator-name">{getStepLabel(step)}</span>
       </div>
 
       <AnimatePresence mode="wait">
@@ -196,54 +285,134 @@ function CultureMission2() {
           transition={{ duration: 0.3 }}
           className="mission-content"
         >
-          {/* ══════════════════════════════════════════
-              STEP 1 — Welcome to the Souk
-              ══════════════════════════════════════════ */}
+          {/* STEP 1 — Welcome to the Souk */}
           {step === "intro" && (
             <div className="intro-step">
               <div className="intro-icon">
                 <ShoppingBag size={40} />
               </div>
               <h1 className="intro-title">{t("cultureM2Title")}</h1>
+              <div className="culture-intro-hero">
+                <Sparkles size={20} style={{ color: "#15803d", marginBottom: 8 }} />
+                <p style={{ margin: 0, fontStyle: "italic" }}>{t("cultureM2IntroStory")}</p>
+              </div>
               <p className="intro-desc">{t("cultureM2IntroDesc")}</p>
-              <button className="mission-btn" onClick={handleNext}>
-                {lang === "FR" ? "Commencer la mission" : lang === "AR" ? "ابدأ المهمة" : "Start Mission"}
+              <div className="culture-story-grid">
+                {introStories.map((item, idx) => (
+                  <motion.div
+                    key={idx}
+                    className="culture-story-pill"
+                    initial={{ opacity: 0, y: 15 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: idx * 0.1 }}
+                  >
+                    <div className="culture-story-pill-icon">{item.icon}</div>
+                    <p style={{ margin: 0, fontSize: "0.9rem", lineHeight: 1.55, color: "var(--learn-text-secondary)" }}>{item.text}</p>
+                  </motion.div>
+                ))}
+              </div>
+              <button className="mission-btn" style={{ marginTop: 32 }} onClick={handleNext}>
+                {ui("Commencer la mission", "Start Mission", "ابدأ المهمة")}
               </button>
             </div>
           )}
 
-          {/* ══════════════════════════════════════════
-              STEP 2 — Market Culture
-              ══════════════════════════════════════════ */}
+          {/* STEP 2 — Understanding Market Culture */}
           {step === "culture" && (
             <div>
               <h2 className="step-title">{t("cultureM2CultureTitle")}</h2>
               <p className="step-subtitle">{t("cultureM2CultureDesc")}</p>
 
-              <div className="vocab-grid">
+              <div style={{ display: "flex", gap: 10, flexWrap: "wrap", justifyContent: "center", marginBottom: 24 }}>
                 {cultureCards.map((card, idx) => (
-                  <div key={idx} className="vocab-card" style={{ alignItems: "center", textAlign: "center" }}>
-                    <div style={{
-                      width: 56, height: 56, borderRadius: "50%",
-                      background: "rgba(21,128,61,0.1)", display: "flex",
-                      alignItems: "center", justifyContent: "center",
-                      marginBottom: 16, fontSize: "1.8rem"
-                    }}>
-                      {card.icon}
+                  <button
+                    key={idx}
+                    className={`vocab-card culture-card-override ${selectedCultureCard === idx ? "selected" : ""}`}
+                    style={{ flex: "1 1 90px", maxWidth: 110, padding: 16, cursor: "pointer", textAlign: "center" }}
+                    onClick={() => setSelectedCultureCard(idx)}
+                  >
+                    <span style={{ fontSize: "1.8rem" }}>{card.icon}</span>
+                    <div style={{ fontSize: "0.75rem", fontWeight: 600, marginTop: 8, color: selectedCultureCard === idx ? "#15803d" : "var(--learn-text-secondary)" }}>
+                      {card.title}
                     </div>
-                    <div className="vocab-word" style={{ fontSize: "1.1rem", marginBottom: 8 }}>{card.title}</div>
-                    <p style={{ color: "var(--learn-text-secondary)", fontSize: "0.9rem", lineHeight: 1.6, margin: 0 }}>
-                      {card.desc}
-                    </p>
-                  </div>
+                  </button>
                 ))}
               </div>
+
+              <motion.div
+                key={selectedCultureCard}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="vocab-card culture-card-override"
+                style={{ padding: 28 }}
+              >
+                <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 16 }}>
+                  <div style={{
+                    width: 56, height: 56, borderRadius: "50%",
+                    background: "rgba(21,128,61,0.1)", display: "flex",
+                    alignItems: "center", justifyContent: "center", fontSize: "1.8rem"
+                  }}>
+                    {cultureCards[selectedCultureCard].icon}
+                  </div>
+                  <h3 style={{ margin: 0, fontSize: "1.25rem", fontWeight: 700, color: "#15803d" }}>
+                    {cultureCards[selectedCultureCard].title}
+                  </h3>
+                </div>
+                <p style={{ lineHeight: 1.65, margin: "0 0 16px", color: "var(--learn-text)" }}>
+                  {cultureCards[selectedCultureCard].desc}
+                </p>
+                <div style={{
+                  padding: "14px 18px", borderRadius: 12,
+                  background: "rgba(21,128,61,0.06)", border: "1px solid rgba(21,128,61,0.2)"
+                }}>
+                  <div style={{ fontSize: "0.75rem", fontWeight: 700, color: "#15803d", marginBottom: 6, textTransform: "uppercase" }}>
+                    {ui("En voyage", "While traveling", "أثناء السفر")}
+                  </div>
+                  <p style={{ margin: 0, fontSize: "0.92rem", lineHeight: 1.6, color: "var(--learn-text-secondary)" }}>
+                    {cultureCards[selectedCultureCard].context}
+                  </p>
+                </div>
+              </motion.div>
             </div>
           )}
 
-          {/* ══════════════════════════════════════════
-              STEP 3 — Real Situations
-              ══════════════════════════════════════════ */}
+          {/* STEP 3 — Price Negotiation Basics */}
+          {step === "negotiation" && (
+            <div>
+              <h2 className="step-title">{t("cultureM2NegTitle")}</h2>
+              <p className="step-subtitle">{t("cultureM2NegDesc")}</p>
+
+              {negotiationData.map((item, idx) => (
+                <motion.div
+                  key={idx}
+                  className="culture-neg-card"
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: idx * 0.08 }}
+                >
+                  <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 10 }}>
+                    <div style={{ color: "#15803d", background: "rgba(21,128,61,0.1)", padding: 10, borderRadius: 12 }}>
+                      {item.icon}
+                    </div>
+                    <h3 style={{ margin: 0, fontSize: "1.1rem", fontWeight: 700, color: "#15803d" }}>{item.title}</h3>
+                  </div>
+                  <p style={{ margin: "0 0 4px", lineHeight: 1.6, color: "var(--learn-text)" }}>{item.desc}</p>
+                  <div className="culture-neg-compare">
+                    <div className="culture-neg-local">
+                      <span className="culture-neg-label">{ui("Les locaux", "How locals do it", "ما يفعله المحليون")}</span>
+                      {item.locals}
+                    </div>
+                    <div className="culture-neg-tourist">
+                      <span className="culture-neg-label">{ui("Les touristes", "What tourists often do", "ما يفعله السياح غالباً")}</span>
+                      {item.tourists}
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          )}
+
+          {/* STEP 4 — Real Market Scenarios */}
           {step === "situations" && (() => {
             const currentSit = situationsData[currentSituationIndex];
             return (
@@ -253,19 +422,18 @@ function CultureMission2() {
                   {t("cultureM2SitDesc")} ({currentSituationIndex + 1}/{situationsData.length})
                 </p>
 
-                <div style={{
-                  background: "var(--learn-card-bg)", borderRadius: 20,
-                  padding: "32px 24px", border: "2px solid var(--learn-border)",
-                  maxWidth: 600, margin: "0 auto"
-                }}>
+                <div className="vocab-card culture-card-override" style={{ padding: "32px 24px", maxWidth: 600, margin: "0 auto" }}>
+                  <div style={{ textAlign: "center", marginBottom: 16 }}>
+                    <span style={{ fontSize: "3rem" }}>{currentSit.emoji}</span>
+                    {currentSit.price && <div className="culture-price-tag">{currentSit.price}</div>}
+                  </div>
                   <div className="quiz-question">{currentSit.q}</div>
-
                   <div className="quiz-options">
                     {currentSit.options.map((opt, idx) => {
                       let btnClass = "quiz-option";
                       if (situationFeedback) {
                         if (idx === currentSit.correctIdx) btnClass += " correct";
-                        else btnClass += " wrong";
+                        else if (situationFeedback === "wrong") btnClass += " wrong";
                       }
                       return (
                         <button
@@ -274,105 +442,81 @@ function CultureMission2() {
                           onClick={() => handleSituationAnswer(idx)}
                           disabled={situationFeedback !== null}
                         >
+                          <span style={{ fontWeight: 700, marginRight: 8 }}>{String.fromCharCode(65 + idx)}.</span>
                           {opt}
                         </button>
                       );
                     })}
                   </div>
-
-                  <AnimatePresence>
-                    {situationFeedback && (
-                      <motion.div
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0 }}
-                        style={{
-                          padding: "16px 20px", borderRadius: 16, marginTop: 16,
-                          background: situationFeedback === "correct" ? "rgba(52,199,89,0.1)" : "rgba(255,59,48,0.1)",
-                          color: situationFeedback === "correct" ? "#34c759" : "#ff3b30",
-                          display: "flex", flexDirection: "column", gap: 12
-                        }}
-                      >
-                        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                          {situationFeedback === "correct" ? <CheckCircle size={22} /> : <XCircle size={22} />}
-                          <span style={{ fontWeight: 600, lineHeight: 1.4 }}>
-                            {situationFeedback === "correct" ? currentSit.feedbackCorrect : currentSit.feedbackWrong}
-                          </span>
-                        </div>
-                        {situationFeedback === "correct" && (
-                          <button className="mission-btn" style={{ alignSelf: "center", marginTop: 8 }} onClick={handleNextSituation}>
-                            {lang === "FR" ? "Continuer" : lang === "AR" ? "متابعة" : "Continue"}
-                            <ArrowRight size={18} />
-                          </button>
-                        )}
-                        {situationFeedback === "wrong" && (
-                          <button
-                            className="mission-btn secondary"
-                            style={{ alignSelf: "center", marginTop: 8 }}
-                            onClick={() => setSituationFeedback(null)}
-                          >
-                            {lang === "FR" ? "Réessayer" : lang === "AR" ? "حاول مرة أخرى" : "Retry"}
-                          </button>
-                        )}
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
+                  {renderFeedback(
+                    situationFeedback,
+                    currentSit.feedbackCorrect,
+                    currentSit.feedbackWrong,
+                    handleNextSituation,
+                    () => setSituationFeedback(null)
+                  )}
                 </div>
               </div>
             );
           })()}
 
-          {/* ══════════════════════════════════════════
-              STEP 4 — Common Mistakes
-              ══════════════════════════════════════════ */}
+          {/* STEP 5 — Common Mistakes */}
           {step === "mistakes" && (
             <div>
               <h2 className="step-title" style={{ textAlign: "center" }}>
-                <AlertTriangle size={24} style={{ display: "inline", verticalAlign: "middle", marginRight: 8 }} />
+                <AlertTriangle size={24} style={{ display: "inline", verticalAlign: "middle", marginRight: 8, color: "#15803d" }} />
                 {t("cultureM2MistakesTitle")}
               </h2>
               <p className="step-subtitle" style={{ textAlign: "center" }}>{t("cultureM2MistakesDesc")}</p>
 
-              <div style={{ display: "flex", flexDirection: "column", gap: 24, maxWidth: 600, margin: "0 auto" }}>
+              <div style={{ display: "flex", gap: 8, flexWrap: "wrap", justifyContent: "center", marginBottom: 20 }}>
                 {mistakesData.map((m, idx) => (
-                  <div key={idx} style={{
-                    background: "var(--learn-card-bg)", borderRadius: 20,
-                    padding: "24px", border: "1px solid var(--learn-border)"
-                  }}>
-                    <h3 style={{ fontWeight: 700, fontSize: "1.1rem", marginBottom: 16, color: "var(--learn-text)" }}>
-                      {m.title}
-                    </h3>
-
-                    {/* Bad example */}
-                    <div style={{
-                      display: "flex", alignItems: "flex-start", gap: 12, marginBottom: 12,
-                      padding: "12px 16px", borderRadius: 12,
-                      background: "rgba(255,59,48,0.08)", border: "1px solid rgba(255,59,48,0.2)"
-                    }}>
-                      <XCircle size={20} style={{ color: "#ff3b30", flexShrink: 0, marginTop: 2 }} />
-                      <span style={{ color: "#ff3b30", fontWeight: 500, lineHeight: 1.5 }}>{m.bad}</span>
-                    </div>
-
-                    {/* Good example */}
-                    <div style={{
-                      display: "flex", alignItems: "flex-start", gap: 12,
-                      padding: "12px 16px", borderRadius: 12,
-                      background: "rgba(52,199,89,0.08)", border: "1px solid rgba(52,199,89,0.2)"
-                    }}>
-                      <CheckCircle size={20} style={{ color: "#34c759", flexShrink: 0, marginTop: 2 }} />
-                      <span style={{ color: "#34c759", fontWeight: 500, lineHeight: 1.5 }}>{m.good}</span>
-                    </div>
-                  </div>
+                  <button
+                    key={idx}
+                    className={`mission-btn ${expandedMistake === idx ? "" : "secondary"}`}
+                    style={{ padding: "10px 16px", fontSize: "0.85rem" }}
+                    onClick={() => setExpandedMistake(idx)}
+                  >
+                    {m.title}
+                  </button>
                 ))}
               </div>
+
+              <motion.div
+                key={expandedMistake}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="vocab-card culture-card-override"
+                style={{ padding: 24, maxWidth: 600, margin: "0 auto" }}
+              >
+                <h3 style={{ fontWeight: 700, fontSize: "1.15rem", marginBottom: 12, color: "#15803d" }}>
+                  {mistakesData[expandedMistake].title}
+                </h3>
+                <p className="culture-mistake-why">{mistakesData[expandedMistake].why}</p>
+                <div style={{
+                  display: "flex", alignItems: "flex-start", gap: 12, marginBottom: 12,
+                  padding: "12px 16px", borderRadius: 12,
+                  background: "rgba(255,59,48,0.08)", border: "1px solid rgba(255,59,48,0.2)"
+                }}>
+                  <XCircle size={20} style={{ color: "#ff3b30", flexShrink: 0, marginTop: 2 }} />
+                  <span style={{ color: "#ff3b30", fontWeight: 500, lineHeight: 1.5 }}>{mistakesData[expandedMistake].bad}</span>
+                </div>
+                <div style={{
+                  display: "flex", alignItems: "flex-start", gap: 12,
+                  padding: "12px 16px", borderRadius: 12,
+                  background: "rgba(52,199,89,0.08)", border: "1px solid rgba(52,199,89,0.2)"
+                }}>
+                  <CheckCircle size={20} style={{ color: "#34c759", flexShrink: 0, marginTop: 2 }} />
+                  <span style={{ color: "#34c759", fontWeight: 500, lineHeight: 1.5 }}>{mistakesData[expandedMistake].good}</span>
+                </div>
+              </motion.div>
             </div>
           )}
 
-          {/* ══════════════════════════════════════════
-              STEP 5 — Interactive Bargaining Challenge
-              ══════════════════════════════════════════ */}
+          {/* STEP 6 — Bargaining Challenge */}
           {step === "challenge" && (() => {
             const ch = challengeData[challengeIndex];
+            const allDone = challengeCompleted.length === challengeData.length && challengeIndex === challengeData.length - 1 && challengeFeedback === "correct";
             return (
               <div>
                 <h2 className="step-title" style={{ textAlign: "center" }}>{t("cultureM2ChallengeTitle")}</h2>
@@ -380,13 +524,17 @@ function CultureMission2() {
                   {t("cultureM2ChallengeDesc")} ({challengeIndex + 1}/{challengeData.length})
                 </p>
 
-                <div style={{
-                  background: "var(--learn-card-bg)", borderRadius: 20,
-                  padding: "32px 24px", border: "2px solid var(--learn-border)",
-                  maxWidth: 600, margin: "0 auto"
-                }}>
-                  <div className="quiz-question">{ch.q}</div>
+                <div className="culture-challenge-progress">
+                  {challengeData.map((_, idx) => (
+                    <div
+                      key={idx}
+                      className={`culture-challenge-dot ${challengeCompleted.includes(idx) ? "done" : idx === challengeIndex ? "active" : ""}`}
+                    />
+                  ))}
+                </div>
 
+                <div className="vocab-card culture-card-override" style={{ padding: "32px 24px", maxWidth: 600, margin: "0 auto" }}>
+                  <div className="quiz-question">{ch.q}</div>
                   <div className="quiz-options">
                     {ch.options.map((opt, idx) => {
                       let btnClass = "quiz-option";
@@ -406,64 +554,62 @@ function CultureMission2() {
                       );
                     })}
                   </div>
-
-                  <AnimatePresence>
-                    {challengeFeedback && (
-                      <motion.div
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0 }}
-                        style={{
-                          padding: "16px 20px", borderRadius: 16, marginTop: 16,
-                          background: challengeFeedback === "correct" ? "rgba(52,199,89,0.1)" : "rgba(255,59,48,0.1)",
-                          color: challengeFeedback === "correct" ? "#34c759" : "#ff3b30",
-                          display: "flex", flexDirection: "column", gap: 12
-                        }}
-                      >
-                        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                          {challengeFeedback === "correct" ? <CheckCircle size={22} /> : <XCircle size={22} />}
-                          <span style={{ fontWeight: 600, lineHeight: 1.4 }}>
-                            {challengeFeedback === "correct" ? ch.feedbackCorrect : ch.feedbackWrong}
-                          </span>
-                        </div>
-                        {challengeFeedback === "correct" && (
-                          <button className="mission-btn" style={{ alignSelf: "center", marginTop: 8 }} onClick={handleNextChallenge}>
-                            {lang === "FR" ? "Continuer" : lang === "AR" ? "متابعة" : "Continue"}
-                            <ArrowRight size={18} />
-                          </button>
-                        )}
-                        {challengeFeedback === "wrong" && (
-                          <button
-                            className="mission-btn secondary"
-                            style={{ alignSelf: "center", marginTop: 8 }}
-                            onClick={() => setChallengeFeedback(null)}
-                          >
-                            {lang === "FR" ? "Réessayer" : lang === "AR" ? "حاول مرة أخرى" : "Retry"}
-                          </button>
-                        )}
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
+                  {renderFeedback(
+                    challengeFeedback,
+                    ch.feedbackCorrect,
+                    ch.feedbackWrong,
+                    handleNextChallenge,
+                    () => setChallengeFeedback(null)
+                  )}
+                  {allDone && (
+                    <div className="culture-challenge-reward">
+                      <Award size={32} style={{ color: "#15803d", marginBottom: 8 }} />
+                      <p style={{ margin: 0, fontWeight: 600, color: "#15803d" }}>{t("cultureM2ChallengeSuccess")}</p>
+                    </div>
+                  )}
                 </div>
               </div>
             );
           })()}
 
-          {/* ══════════════════════════════════════════
-              STEP 6 — Cultural Quiz
-              ══════════════════════════════════════════ */}
+          {/* STEP 7 — Cultural Discovery */}
+          {step === "discovery" && (
+            <div>
+              <h2 className="step-title">{t("cultureM2DiscTitle")}</h2>
+              <p className="step-subtitle">{t("cultureM2DiscDesc")}</p>
+              <div className="culture-region-grid">
+                {discoveryData.map((item, idx) => (
+                  <motion.div
+                    key={idx}
+                    className="vocab-card culture-card-override"
+                    style={{ padding: 24 }}
+                    initial={{ opacity: 0, y: 15 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: idx * 0.06 }}
+                  >
+                    <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 14 }}>
+                      <div style={{ color: "#15803d", background: "rgba(21,128,61,0.1)", padding: 10, borderRadius: 12 }}>
+                        {item.icon}
+                      </div>
+                      <h3 style={{ margin: 0, fontSize: "1.1rem", fontWeight: 700, color: "#15803d" }}>{item.title}</h3>
+                    </div>
+                    <p style={{ margin: 0, lineHeight: 1.65, fontSize: "0.92rem", color: "var(--learn-text-secondary)" }}>{item.desc}</p>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* STEP 8 — Final Quiz */}
           {step === "quiz" && (
             <div>
               <h2 className="step-title" style={{ textAlign: "center" }}>{t("cultureM2QuizTitle")}</h2>
               <p className="step-subtitle" style={{ textAlign: "center" }}>
-                {lang === "FR" ? `Question ${quizQuestionIndex + 1} sur ${quizData.length}` :
-                  lang === "AR" ? `السؤال ${quizQuestionIndex + 1} من ${quizData.length}` :
-                  `Question ${quizQuestionIndex + 1} of ${quizData.length}`}
+                {ui(`Question ${quizQuestionIndex + 1} sur ${quizData.length}`, `Question ${quizQuestionIndex + 1} of ${quizData.length}`, `السؤال ${quizQuestionIndex + 1} من ${quizData.length}`)}
               </p>
 
-              <div className="quiz-card" style={{ maxWidth: 600, margin: "0 auto" }}>
+              <div className="quiz-card culture-card-override" style={{ maxWidth: 600, margin: "0 auto" }}>
                 <div className="quiz-question">{quizData[quizQuestionIndex].q}</div>
-
                 <div className="quiz-options">
                   {quizData[quizQuestionIndex].options.map((opt, idx) => {
                     let btnClass = "quiz-option";
@@ -474,7 +620,6 @@ function CultureMission2() {
                     } else if (selectedOption !== null && idx === quizData[quizQuestionIndex].answer && quizFeedback === "wrong") {
                       btnClass += " correct";
                     }
-
                     return (
                       <button
                         key={idx}
@@ -487,18 +632,15 @@ function CultureMission2() {
                     );
                   })}
                 </div>
-
                 <div className={`quiz-feedback ${quizFeedback ? (quizFeedback === "correct" ? "correct-text" : "wrong-text") : ""}`}>
-                  {quizFeedback === "correct" && (lang === "FR" ? "Excellent !" : lang === "AR" ? "ممتاز!" : "Excellent!")}
-                  {quizFeedback === "wrong" && (lang === "FR" ? "Oops, essayez encore." : lang === "AR" ? "عفوا، حاول مرة أخرى." : "Oops, try again.")}
+                  {quizFeedback === "correct" && ui("Excellent !", "Excellent!", "ممتاز!")}
+                  {quizFeedback === "wrong" && ui("Oops, essayez encore.", "Oops, try again.", "عفواً، حاول مرة أخرى.")}
                 </div>
               </div>
             </div>
           )}
 
-          {/* ══════════════════════════════════════════
-              STEP 7 — Completion
-              ══════════════════════════════════════════ */}
+          {/* STEP 9 — Completion */}
           {step === "completion" && (
             <div className="completion-step">
               <div className="completion-icon">
@@ -507,21 +649,31 @@ function CultureMission2() {
               <h1 className="intro-title">{t("cultureM2CompleteTitle")}</h1>
               <p className="intro-desc">{t("cultureM2CompleteDesc")}</p>
 
-              {/* Progression */}
-              <div style={{ marginTop: '30px', textAlign: 'left', background: 'var(--learn-surface)', padding: '20px', borderRadius: '16px', border: '1px solid var(--learn-border)', width: '100%', maxWidth: '400px' }}>
-                <h4 style={{ marginBottom: '16px', fontSize: '1.1rem', fontWeight: 600 }}>
-                  {lang === "FR" ? "Progression" : lang === "AR" ? "التقدم" : "Progression"}
+              <div style={{
+                marginTop: 24, padding: 20, borderRadius: 16, width: "100%", maxWidth: 400,
+                background: "linear-gradient(135deg, rgba(21,128,61,0.1), rgba(34,197,94,0.05))",
+                border: "2px solid rgba(21,128,61,0.25)", textAlign: "center"
+              }}>
+                <Sparkles size={24} style={{ color: "#15803d", marginBottom: 8 }} />
+                <div style={{ fontWeight: 700, color: "#15803d", fontSize: "1.05rem" }}>
+                  {ui("Débloqué", "Unlocked", "تم الفتح")}: {t("cultureM2NextUnlock")}
+                </div>
+              </div>
+
+              <div style={{ marginTop: 30, textAlign: "left", background: "var(--learn-surface)", padding: 20, borderRadius: 16, border: "1px solid var(--learn-border)", width: "100%", maxWidth: 400 }}>
+                <h4 style={{ marginBottom: 16, fontSize: "1.1rem", fontWeight: 600 }}>
+                  {ui("Progression", "Progression", "التقدم")}
                 </h4>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', color: '#10b981' }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 12, color: "#10b981" }}>
                     <CheckCircle size={20} />
-                    <span style={{ fontWeight: 500 }}>{lang === "FR" ? "Mission 1 : Hospitalité Marocaine" : lang === "AR" ? "المهمة 1: الضيافة المغربية" : "Mission 1: Moroccan Hospitality"} ✅</span>
+                    <span style={{ fontWeight: 500 }}>{ui("Mission 1 : Hospitalité Marocaine", "Mission 1: Moroccan Hospitality", "المهمة 1: الضيافة المغربية")} ✅</span>
                   </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', color: '#10b981' }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 12, color: "#10b981" }}>
                     <CheckCircle size={20} />
-                    <span style={{ fontWeight: 500 }}>{lang === "FR" ? "Mission 2 : Marchés & Négociation" : lang === "AR" ? "المهمة 2: الأسواق والمساومة" : "Mission 2: Markets & Bargaining"} ✅</span>
+                    <span style={{ fontWeight: 500 }}>{ui("Mission 2 : Marchés & Négociation", "Mission 2: Markets & Bargaining", "المهمة 2: الأسواق والمساومة")} ✅</span>
                   </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', color: 'var(--learn-text-secondary)', opacity: 0.7 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 12, color: "var(--learn-text-secondary)", opacity: 0.7 }}>
                     <Lock size={20} />
                     <span>{t("cultureM2NextUnlock")} 🔒</span>
                   </div>
@@ -530,22 +682,21 @@ function CultureMission2() {
 
               <button className="mission-btn" style={{ marginTop: 40 }} onClick={() => navigate("/languages")}>
                 <CheckCircle size={20} />
-                {lang === "FR" ? "Retour à l'accueil" : lang === "AR" ? "العودة للرئيسية" : "Return to Hub"}
+                {ui("Retour à l'accueil", "Return to Hub", "العودة للرئيسية")}
               </button>
             </div>
           )}
         </motion.div>
       </AnimatePresence>
 
-      {/* ── Footer Navigation (visible on culture & mistakes steps) ── */}
-      {(step === "culture" || step === "mistakes") && (
+      {(step === "culture" || step === "negotiation" || step === "mistakes" || step === "discovery") && (
         <div className="mission-footer">
           <button className="mission-btn secondary" onClick={handleBack}>
             <ArrowLeft size={18} />
-            {lang === "FR" ? "Précédent" : lang === "AR" ? "السابق" : "Back"}
+            {ui("Précédent", "Back", "السابق")}
           </button>
           <button className="mission-btn" onClick={handleNext}>
-            {lang === "FR" ? "Continuer" : lang === "AR" ? "متابعة" : "Continue"}
+            {ui("Continuer", "Continue", "متابعة")}
             <ArrowRight size={18} />
           </button>
         </div>
