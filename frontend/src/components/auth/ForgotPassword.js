@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Mail, ArrowRight, AlertCircle, CheckCircle, Loader } from 'lucide-react';
+import { Mail, ArrowRight, AlertCircle, CheckCircle } from 'lucide-react';
 import { useLanguage } from '../accueil/LanguageContext';
 import api from '../../services/api';
 import '../css/Login.css';
@@ -13,6 +13,8 @@ function ForgotPassword() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
+    const [resendSeconds, setResendSeconds] = useState(0);
+    const [lastSentEmail, setLastSentEmail] = useState('');
 
     const lt = {
         FR: {
@@ -45,6 +47,32 @@ function ForgotPassword() {
     };
 
     const t = lt[lang];
+    const normalizedEmail = email.trim().toLowerCase();
+    const isWaitingForSameEmail = resendSeconds > 0 && normalizedEmail === lastSentEmail;
+    const resendText = {
+        ready: lang === 'FR' ? 'Vous pouvez demander un nouveau lien.' : lang === 'AR' ? 'يمكنك طلب رابط جديد.' : 'You can request a new link.',
+        waiting: lang === 'FR' ? 'Nouveau lien disponible dans' : lang === 'AR' ? 'رابط جديد متاح بعد' : 'New link available in',
+        waitError: lang === 'FR' ? 'Veuillez attendre la fin du minuteur avant de demander un nouveau lien.' : lang === 'AR' ? 'يرجى انتظار انتهاء المؤقت قبل طلب رابط جديد.' : 'Please wait for the timer to finish before requesting a new link.'
+    };
+
+    useEffect(() => {
+        if (resendSeconds <= 0) {
+            return undefined;
+        }
+
+        const timer = setInterval(() => {
+            setResendSeconds((seconds) => Math.max(0, seconds - 1));
+        }, 1000);
+
+        return () => clearInterval(timer);
+    }, [resendSeconds]);
+
+    const formatTimer = (seconds) => {
+        const minutes = Math.floor(seconds / 60);
+        const remainingSeconds = seconds % 60;
+
+        return `${minutes}:${String(remainingSeconds).padStart(2, '0')}`;
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -53,14 +81,26 @@ function ForgotPassword() {
             return;
         }
 
+        if (isWaitingForSameEmail) {
+            setError(resendText.waitError);
+            return;
+        }
+
         setLoading(true);
         setError('');
         setSuccess('');
 
         try {
-            await api.post('/forgot-password', { email });
+            const response = await api.post('/forgot-password', { email });
+            setLastSentEmail(normalizedEmail);
+            setResendSeconds(response.data?.wait_seconds || 120);
             setSuccess(t.success);
         } catch (err) {
+            const waitSeconds = err.response?.data?.wait_seconds;
+            if (waitSeconds) {
+                setLastSentEmail(normalizedEmail);
+                setResendSeconds(waitSeconds);
+            }
             setError(err.response?.data?.message || t.error);
         } finally {
             setLoading(false);
@@ -114,7 +154,15 @@ function ForgotPassword() {
                                 />
                             </div>
 
-                            <button type="submit" className="login-submit" disabled={loading}>
+                            {lastSentEmail && (
+                                <div className="auth-resend-timer">
+                                    {isWaitingForSameEmail
+                                        ? `${resendText.waiting} ${formatTimer(resendSeconds)}`
+                                        : resendText.ready}
+                                </div>
+                            )}
+
+                            <button type="submit" className="login-submit" disabled={loading || isWaitingForSameEmail}>
                                 {loading ? <span className="spinner"></span> : (
                                     <>{t.send} <ArrowRight size={18} /></>
                                 )}

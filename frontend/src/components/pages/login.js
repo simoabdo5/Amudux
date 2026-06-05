@@ -84,7 +84,7 @@ function Login() {
         
         try {
             if (isRegister) {
-                await api.post('/register-send-code', {
+                const response = await api.post('/register-send-code', {
                     name: formData.name,
                     email: formData.email,
                     password: formData.password,
@@ -96,7 +96,8 @@ function Login() {
                         email: formData.email,
                         name: formData.name,
                         password: formData.password,
-                        fromRegister: true
+                        fromRegister: true,
+                        resendWaitSeconds: response.data?.wait_seconds || 120
                     }
                 });
                 

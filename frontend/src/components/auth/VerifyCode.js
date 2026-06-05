@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { CheckCircle, AlertCircle, Loader, ArrowRight } from 'lucide-react';
+import { CheckCircle, AlertCircle, ArrowRight } from 'lucide-react';
 import { useLanguage } from '../accueil/LanguageContext';
 import { useAuth } from '../../context/AuthContext';
 import api from '../../services/api';
@@ -12,15 +12,17 @@ function VerifyCode() {
     const { login } = useAuth();
     const navigate = useNavigate();
     const location = useLocation();
+    const userData = location.state || {};
+    const email = userData.email || '';
+    const initialResendSeconds = Number(userData.resendWaitSeconds || 120);
     
     const [code, setCode] = useState('');
     const [loading, setLoading] = useState(false);
+    const [resending, setResending] = useState(false);
+    const [resendSeconds, setResendSeconds] = useState(initialResendSeconds);
     const [authSuccess, setAuthSuccess] = useState(false);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
-    
-    const userData = location.state || {};
-    const email = userData.email || '';
 
     const lt = {
         FR: {
@@ -56,6 +58,31 @@ function VerifyCode() {
     };
 
     const t = lt[lang];
+    const resendText = {
+        ready: lang === 'FR' ? 'Vous pouvez renvoyer un nouveau code.' : lang === 'AR' ? 'يمكنك اعادة ارسال رمز جديد.' : 'You can resend a new code.',
+        waiting: lang === 'FR' ? 'Nouveau code disponible dans' : lang === 'AR' ? 'رمز جديد متاح بعد' : 'New code available in',
+        waitError: lang === 'FR' ? 'Veuillez attendre la fin du minuteur avant de renvoyer le code.' : lang === 'AR' ? 'يرجى انتظار انتهاء المؤقت قبل اعادة الارسال.' : 'Please wait for the timer to finish before resending the code.',
+        resent: lang === 'FR' ? 'Code renvoye !' : lang === 'AR' ? 'تمت اعادة ارسال الرمز!' : 'Code resent!'
+    };
+
+    useEffect(() => {
+        if (resendSeconds <= 0) {
+            return undefined;
+        }
+
+        const timer = setInterval(() => {
+            setResendSeconds((seconds) => Math.max(0, seconds - 1));
+        }, 1000);
+
+        return () => clearInterval(timer);
+    }, [resendSeconds]);
+
+    const formatTimer = (seconds) => {
+        const minutes = Math.floor(seconds / 60);
+        const remainingSeconds = seconds % 60;
+
+        return `${minutes}:${String(remainingSeconds).padStart(2, '0')}`;
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -110,22 +137,33 @@ function VerifyCode() {
     };
 
     const handleResend = async () => {
-        setLoading(true);
+        if (resendSeconds > 0) {
+            setError(resendText.waitError);
+            return;
+        }
+
+        setResending(true);
         setError('');
         
         try {
-            await api.post('/register-send-code', {
+            const response = await api.post('/register-send-code', {
                 name: userData.name,
                 email: userData.email,
                 password: userData.password,
                 password_confirmation: userData.password
             });
+            setCode('');
+            setResendSeconds(response.data?.wait_seconds || 120);
             
             setSuccess('Code renvoyé !');
         } catch (err) {
+            const waitSeconds = err.response?.data?.wait_seconds;
+            if (waitSeconds) {
+                setResendSeconds(waitSeconds);
+            }
             setError(err.response?.data?.message || 'Erreur');
         } finally {
-            setLoading(false);
+            setResending(false);
         }
     };
 
@@ -192,10 +230,16 @@ function VerifyCode() {
                             </form>
 
                             <p className="login-toggle">
+                                <span className="auth-resend-timer">
+                                    {resendSeconds > 0
+                                        ? `${resendText.waiting} ${formatTimer(resendSeconds)}`
+                                        : resendText.ready}
+                                </span>
+                                <br />
                                 {lang === 'AR' ? 'لم تستلم الرمز؟' : 
                                  lang === 'FR' ? 'Vous n\'avez pas reçu le code ?' : 
                                  'Didn\'t receive the code?'}{' '}
-                                <button onClick={handleResend} className="toggle-btn" disabled={loading}>
+                                <button onClick={handleResend} className="toggle-btn" disabled={resending || resendSeconds > 0}>
                                     {t.resend}
                                 </button>
                             </p>
