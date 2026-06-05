@@ -1,63 +1,59 @@
-import React from 'react';
-import { BarChart3, Crown, LogOut, Shield } from 'lucide-react';
+import React from "react";
+import { Crown, LogOut } from "lucide-react";
 
-function AdminSidebar({ user, currentLang, onLogout }) {
-    return (
-        <aside className="admin-sidebar">
-            <div className="sidebar-gradient"></div>
+function AdminSidebar({
+  user,
+  sections,
+  activeSection,
+  collections,
+  onSectionChange,
+  onLogout,
+}) {
+  return (
+    <aside className="admin-sidebar">
+      <div className="admin-brand">
+        <div className="admin-brand-icon">
+          <Crown size={24} />
+        </div>
+        <div>
+          <strong>AMUDUX</strong>
+          <span>Admin Panel</span>
+        </div>
+      </div>
 
-            <div className="admin-logo">
-                <div className="logo-icon">
-                    <Crown size={28} />
-                </div>
+      <nav className="admin-nav" aria-label="Admin navigation">
+        {sections.map((section) => {
+          const Icon = section.icon;
 
-                <div className="logo-text">
-                    <span className="logo-brand">AMUDUX</span>
-                    <span className="logo-tag">
-                        {currentLang.adminPanel}
-                    </span>
-                </div>
-            </div>
+          return (
+            <button
+              type="button"
+              key={section.key}
+              className={`admin-nav-item ${activeSection === section.key ? "active" : ""}`}
+              onClick={() => onSectionChange(section.key)}
+            >
+              <Icon size={18} />
+              <span>{section.label}</span>
+              <b>{collections[section.key]?.length || 0}</b>
+            </button>
+          );
+        })}
+      </nav>
 
-            <nav className="admin-nav">
-                <button className="nav-item active">
-                    <div className="nav-icon">
-                        <BarChart3 size={18} />
-                    </div>
+      <div className="admin-sidebar-user">
+        <div className="admin-avatar large">{user?.name?.[0]?.toUpperCase() || "A"}</div>
+        <div>
+          <strong>{user?.name}</strong>
+          <span>{user?.role}</span>
+        </div>
+      </div>
 
-                    <span>{currentLang.dashboard}</span>
-                </button>
-
-                <div className="nav-divider"></div>
-
-                <button
-                    className="nav-item logout-item"
-                    onClick={onLogout}
-                >
-                    <div className="nav-icon">
-                        <LogOut size={18} />
-                    </div>
-
-                    <span>{currentLang.logout}</span>
-                </button>
-            </nav>
-
-            <div className="sidebar-user">
-                <div className="user-avatar">
-                    {user?.name?.[0]?.toUpperCase()}
-                </div>
-
-                <div className="user-info">
-                    <span className="user-name">{user?.name}</span>
-
-                    <span className="user-role">
-                        <Shield size={12} />
-                        {user?.role}
-                    </span>
-                </div>
-            </div>
-        </aside>
-    );
+      <button type="button" className="admin-logout" onClick={onLogout}>
+        <LogOut size={18} />
+        Log out
+      </button>
+    </aside>
+  );
 }
 
 export default AdminSidebar;

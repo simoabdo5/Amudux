@@ -1,33 +1,42 @@
-import React from 'react';
+import React from "react";
+import { BarChart3, RefreshCw } from "lucide-react";
 
-function AdminHeader({ user, currentLang, lang }) {
-    return (
-        <header className="admin-header">
-            <div className="header-title">
-                <h1>{currentLang.dashboard}</h1>
+const getLocale = (lang) => {
+  if (lang === "FR") return "fr-FR";
+  if (lang === "AR") return "ar-SA";
+  return "en-US";
+};
 
-                <p>
-                    {currentLang.welcome}, {user?.name}
-                </p>
-            </div>
+function AdminHeader({ lang, refreshing, onRefresh }) {
+  const formattedDate = new Date().toLocaleDateString(getLocale(lang), {
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
 
-            <div className="header-date">
-                {new Date().toLocaleDateString(
-                    lang === 'FR'
-                        ? 'fr-FR'
-                        : lang === 'AR'
-                        ? 'ar-SA'
-                        : 'en-US',
-                    {
-                        weekday: 'long',
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric'
-                    }
-                )}
-            </div>
-        </header>
-    );
+  return (
+    <header className="admin-topbar">
+      <div>
+        <span className="admin-kicker">
+          <BarChart3 size={16} />
+          Admin Dashboard
+        </span>
+        <h1>Manage travel content</h1>
+        <p>{formattedDate}</p>
+      </div>
+
+      <button
+        type="button"
+        className="admin-secondary-btn"
+        onClick={onRefresh}
+        disabled={refreshing}
+      >
+        <RefreshCw size={17} className={refreshing ? "spin" : ""} />
+        Refresh
+      </button>
+    </header>
+  );
 }
 
 export default AdminHeader;

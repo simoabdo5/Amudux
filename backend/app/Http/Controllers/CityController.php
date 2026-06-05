@@ -24,10 +24,10 @@ class CityController extends Controller
     public function show($slug)
     {
         $city = City::with([
-            'activities',
-            'restaurants',
-            'places',
-            'hiddenGems'
+            'activities' => fn ($query) => $query->latest(),
+            'restaurants' => fn ($query) => $query->latest(),
+            'places' => fn ($query) => $query->latest(),
+            'hiddenGems' => fn ($query) => $query->latest(),
         ])->where('slug', $slug)->first();
 
         if (!$city) {

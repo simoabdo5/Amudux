@@ -25,7 +25,7 @@ import ForgotPassword from './components/auth/ForgotPassword';
 import ResetPassword from './components/auth/ResetPassword';
 import GoogleCallback from './components/auth/GoogleCallback';
 import ProtectedRoute from "./components/pages/ProtectedRoute";
-import Saved from "./components/pages/saved";
+import Saved from "./components/pages/favorite";
 import AdminDashboard from "./pageadmin/AdminDashboard";
 import Pack from "./components/pages/pack";
 import Profile from "./components/pages/Profile";
@@ -46,6 +46,7 @@ function AppContent() {
 
     const showMenu = !noMenuPages.includes(location.pathname);
     const showChatbot = !noChatbotPages.includes(location.pathname);
+    const showFooter = location.pathname !== '/admin';
 
 
   return (
@@ -100,7 +101,7 @@ function AppContent() {
             </Routes>
 
             {showChatbot && <Chatbot /> }
-            <Footer />
+            {showFooter && <Footer />}
         </>
     );
 }

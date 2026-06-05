@@ -1,60 +1,28 @@
-import React from 'react';
-import {
-    Users,
-    Crown,
-    UserPlus,
-    TrendingUp
-} from 'lucide-react';
+import React from "react";
 
-function StatsCards({ stats, currentLang }) {
-    return (
-        <div className="stats-grid">
-            <div className="stat-card total-card">
-                <div className="stat-icon-bg">
-                    <Users size={22} />
-                </div>
+import { adminStatCards } from "./config/adminDashboardConfig";
 
-                <div className="stat-info">
-                    <h3>{stats.total_users || 0}</h3>
-                    <p>{currentLang.totalUsers}</p>
-                </div>
+function StatsCards({ stats, collections }) {
+  return (
+    <section className="admin-stats-grid" aria-label="Dashboard stats">
+      {adminStatCards.map((card) => {
+        const Icon = card.icon;
+        const value = stats[card.key] ?? collections[card.collection]?.length ?? 0;
 
-                <div className="stat-trend">
-                    <TrendingUp size={14} />
-                </div>
+        return (
+          <article className={`admin-stat-card ${card.tone}`} key={card.key}>
+            <div className="admin-stat-icon">
+              <Icon size={20} />
             </div>
-
-            <div className="stat-card admin-card">
-                <div className="stat-icon-bg">
-                    <Crown size={22} />
-                </div>
-
-                <div className="stat-info">
-                    <h3>{stats.total_admins || 0}</h3>
-                    <p>{currentLang.admins}</p>
-                </div>
-
-                <div className="stat-trend">
-                    <TrendingUp size={14} />
-                </div>
+            <div>
+              <strong>{value}</strong>
+              <span>{card.label}</span>
             </div>
-
-            <div className="stat-card user-card">
-                <div className="stat-icon-bg">
-                    <UserPlus size={22} />
-                </div>
-
-                <div className="stat-info">
-                    <h3>{stats.total_regular_users || 0}</h3>
-                    <p>{currentLang.regularUsers}</p>
-                </div>
-
-                <div className="stat-trend">
-                    <TrendingUp size={14} />
-                </div>
-            </div>
-        </div>
-    );
+          </article>
+        );
+      })}
+    </section>
+  );
 }
 
 export default StatsCards;
