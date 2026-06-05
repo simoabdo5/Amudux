@@ -2,7 +2,7 @@ import { useEffect } from "react";
 
 const PATHS = {
   darija: { total: 7 },
-  tifinagh: { total: 5 },
+  tifinagh: { total: 6 },
   culture: { total: 6 }
 };
 
@@ -117,7 +117,8 @@ export const MISSION_NAMES = {
     2: { en: "Write Your First Tifinagh Word", fr: "Écrire votre premier mot en tifinagh", ar: "اكتب أول كلمة لك بتيفيناغ" },
     3: { en: "Reading Common Signs", fr: "Lire les Panneaux", ar: "قراءة اللافتات" },
     4: { en: "Everyday Words", fr: "Mots du Quotidien", ar: "كلمات يومية" },
-    5: { en: "Amazigh Culture & Symbols", fr: "Culture & Symboles Amazighs", ar: "الثقافة والرموز الأمازيغية" }
+    5: { en: "Amazigh Culture & Symbols", fr: "Culture & Symboles Amazighs", ar: "الثقافة والرموز الأمازيغية" },
+    6: { en: "Complete Tifinagh Alphabet", fr: "Alphabet Complet Tifinagh", ar: "أبجدية تيفيناغ الكاملة" }
   },
   culture: {
     1: { en: "Moroccan Hospitality", fr: "L'hospitalité Marocaine", ar: "الضيافة المغربية" },

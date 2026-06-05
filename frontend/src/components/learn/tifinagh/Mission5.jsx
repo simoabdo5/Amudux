@@ -591,7 +591,8 @@ function Mission5() {
                     { fr: "Mission 2 : Écrire Votre Premier Mot", ar: "المهمة 2: كتابة كلمتك الأولى", en: "Mission 2: Write Your First Word" },
                     { fr: "Mission 3 : Lire les Panneaux", ar: "المهمة 3: قراءة اللافتات", en: "Mission 3: Reading Common Signs" },
                     { fr: "Mission 4 : Mots du Quotidien", ar: "المهمة 4: كلمات يومية", en: "Mission 4: Everyday Words" },
-                    { fr: "Mission 5 : Culture & Symboles", ar: "المهمة 5: الثقافة والرموز", en: "Mission 5: Culture & Symbols" }
+                    { fr: "Mission 5 : Culture & Symboles", ar: "المهمة 5: الثقافة والرموز", en: "Mission 5: Culture & Symbols" },
+                    { fr: "Mission 6 : Alphabet Complet", ar: "المهمة 6: الأبجدية الكاملة", en: "Mission 6: Complete Alphabet" }
                   ].map((mission, idx) => (
                     <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '14px', color: 'var(--learn-success)', padding: '10px 12px', background: 'rgba(16, 185, 129, 0.06)', borderRadius: '10px', border: '1px solid rgba(16, 185, 129, 0.15)' }}>
                       <CheckCircle size={22} fill="currentColor" color="white" />
@@ -604,14 +605,14 @@ function Mission5() {
                 <div style={{ textAlign: 'center', marginTop: '20px', padding: '12px', background: 'rgba(59,130,246,0.06)', borderRadius: '12px', border: '1px dashed var(--learn-primary)' }}>
                   <span style={{ fontSize: '0.95rem', color: 'var(--learn-primary)', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 6 }}>
                     <Trophy size={20} />
-                    {lang === "FR" ? "5 missions complétées — Prêt pour la suite !" : lang === "AR" ? "5 مهام مكتملة — جاهز للخطوة التالية!" : "5 missions completed — Ready for what's next!"}
+                    {lang === "FR" ? "5 missions complétées — Continuez vers la mission finale !" : lang === "AR" ? "5 مهام مكتملة — تابع إلى المهمة النهائية!" : "5 missions completed — Continue to the final mission!"}
                   </span>
                 </div>
               </div>
 
               <div style={{ display: 'flex', gap: '16px', marginTop: '40px', flexWrap: 'wrap', justifyContent: 'center' }}>
-                <button className="mission-btn" onClick={() => navigate("/languages/darija/mission-1")}>
-                  {lang === "FR" ? "Continuer vers la Mission suivante" : lang === "AR" ? "تابع إلى المهمة التالية" : "Continue to Next Mission"}
+                <button className="mission-btn" onClick={() => navigate("/languages/tifinagh/mission-6")}>
+                  {lang === "FR" ? "Aller à la Mission 6" : lang === "AR" ? "انتقل إلى المهمة 6" : "Go to Mission 6"}
                   <ArrowRight size={20} />
                 </button>
                 <button className="mission-btn secondary" onClick={() => navigate("/languages")}>

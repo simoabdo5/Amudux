@@ -14,6 +14,7 @@ import TifinaghMission2 from "../learn/tifinagh/Mission2";
 import TifinaghMission3 from "../learn/tifinagh/Mission3";
 import TifinaghMission4 from "../learn/tifinagh/Mission4";
 import TifinaghMission5 from "../learn/tifinagh/Mission5";
+import TifinaghMission6 from "../learn/tifinagh/Mission6";
 import CultureMission1 from "../learn/culture/Mission1";
 import CultureMission2 from "../learn/culture/Mission2";
 import CultureMission3 from "../learn/culture/Mission3";
@@ -36,6 +37,7 @@ function Languages() {
       <Route path="tifinagh/mission-3" element={<TifinaghMission3 />} />
       <Route path="tifinagh/mission-4" element={<TifinaghMission4 />} />
       <Route path="tifinagh/mission-5" element={<TifinaghMission5 />} />
+      <Route path="tifinagh/mission-6" element={<TifinaghMission6 />} />
       <Route path="culture/mission-1" element={<CultureMission1 />} />
       <Route path="culture/mission-2" element={<CultureMission2 />} />
       <Route path="culture/mission-3" element={<CultureMission3 />} />
