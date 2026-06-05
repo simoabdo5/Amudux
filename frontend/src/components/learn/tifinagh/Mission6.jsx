@@ -4,10 +4,12 @@ import { useNavigate } from "react-router-dom";
 import { X, ArrowRight, ArrowLeft, CheckCircle, Copy, Book, Type, Search, Shuffle, Sparkles, Trophy, FileText, PenLine, RefreshCw } from "lucide-react";
 import { useLanguage } from "../../accueil/LanguageContext";
 import { useAuth } from "../../../context/AuthContext";
+import { AudioButton } from "../common/AudioButton";
 import "../darija/mission.css";
 import { useAutoProgress, canAccessMission } from "../../../utils/progress";
 import LockedScreen from "../common/LockedScreen";
 import FavoriteButton from "../common/FavoriteButton";
+import SaveVocabButton from "../common/SaveVocabButton";
 
 const tff = '"Noto Sans Tifinagh", "Segoe UI Symbol", "Arial Unicode MS", sans-serif';
 
@@ -394,7 +396,7 @@ function Mission6() {
     return <LockedScreen track={currentTrack} />;
   }
 
-  const renderQuizQuestion = (q, idx, total, selected, feedback, onAnswer, onNext, isComplete, restartFn, score) => {
+  const renderQuizQuestion = (q, idx, total, selected, feedback, onAnswer, onNext, isComplete, restartFn, score, onContinue) => {
     if (isComplete) {
       return (
         <div className="completion-step" style={{ padding: "40px 20px" }}>
@@ -416,12 +418,19 @@ function Mission6() {
             <p style={{ fontSize: "1.2rem", color: "var(--learn-text-secondary)", margin: "12px 0 24px" }}>
               {lang === "FR" ? `Score : ${score}/${total}` : lang === "AR" ? `النتيجة: ${score}/${total}` : `Score: ${score}/${total}`}
             </p>
-            <button className="mission-btn secondary" onClick={restartFn} style={{ marginBottom: "12px" }}>
-              <RefreshCw size={18} />
-              <span style={{ marginLeft: "8px" }}>
-                {lang === "FR" ? "Recommencer" : lang === "AR" ? "إعادة المحاولة" : "Try Again"}
-              </span>
-            </button>
+            <div style={{ display: "flex", gap: "12px", justifyContent: "center", flexWrap: "wrap" }}>
+              <button className="mission-btn secondary" onClick={restartFn}>
+                <RefreshCw size={18} />
+                <span style={{ marginLeft: "8px" }}>
+                  {lang === "FR" ? "Recommencer" : lang === "AR" ? "إعادة المحاولة" : "Try Again"}
+                </span>
+              </button>
+              {onContinue && (
+                <button className="mission-btn" onClick={onContinue}>
+                  {lang === "FR" ? "Continuer" : lang === "AR" ? "متابعة" : "Continue"} <ArrowRight size={18} />
+                </button>
+              )}
+            </div>
           </div>
         </div>
       );
@@ -558,11 +567,11 @@ function Mission6() {
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.2, delay: idx * 0.02 }}
-                    className={`vocab-card tifinagh-card-override ${selectedSymbol === idx ? "selected" : ""}`}
-                    onClick={() => setSelectedSymbol(selectedSymbol === idx ? null : idx)}
+                    className={`vocab-card tifinagh-card-override ${selectedSymbol === item.symbol ? "selected" : ""}`}
+                    onClick={() => setSelectedSymbol(selectedSymbol === item.symbol ? null : item.symbol)}
                     style={{
-                      padding: "14px 8px", border: selectedSymbol === idx ? "2px solid var(--learn-primary)" : "2px solid transparent",
-                      cursor: "pointer", background: selectedSymbol === idx ? "rgba(3,105,161,0.08)" : "var(--learn-surface)",
+                      padding: "14px 8px", border: selectedSymbol === item.symbol ? "2px solid var(--learn-primary)" : "2px solid transparent",
+                      cursor: "pointer", background: selectedSymbol === item.symbol ? "rgba(3,105,161,0.08)" : "var(--learn-surface)",
                       textAlign: "center", display: "flex", flexDirection: "column", alignItems: "center", gap: "6px",
                       transition: "all 0.2s ease"
                     }}
@@ -581,34 +590,44 @@ function Mission6() {
               )}
 
               <AnimatePresence>
-                {selectedSymbol !== null && FULL_ALPHABET[selectedSymbol] && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    className="vocab-card tifinagh-card-override"
-                    style={{ marginTop: "20px", padding: "24px" }}
-                  >
-                    <div style={{ display: "flex", alignItems: "center", gap: "20px", marginBottom: "16px" }}>
-                      <div style={{ fontSize: "4rem", fontFamily: tff, color: "var(--learn-primary)", lineHeight: 1, textShadow: "0 4px 12px rgba(3,105,161,0.3)" }}>
-                        {FULL_ALPHABET[selectedSymbol].symbol}
+                {selectedSymbol !== null && (() => {
+                  const selectedItem = FULL_ALPHABET.find(a => a.symbol === selectedSymbol);
+                  if (!selectedItem) return null;
+                  return (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      className="vocab-card tifinagh-card-override"
+                      style={{ marginTop: "20px", padding: "24px" }}
+                    >
+                      <div style={{ display: "flex", alignItems: "center", gap: "20px", marginBottom: "16px" }}>
+                        <div style={{ fontSize: "4rem", fontFamily: tff, color: "var(--learn-primary)", lineHeight: 1, textShadow: "0 4px 12px rgba(3,105,161,0.3)" }}>
+                          {selectedItem.symbol}
+                        </div>
+                        <div>
+                          <div style={{ fontSize: "1.5rem", fontWeight: 700, color: "var(--learn-text)" }}>{selectedItem.name}</div>
+                          <div style={{ fontSize: "1rem", color: "var(--learn-primary)", fontWeight: 600, display: "flex", alignItems: "center", gap: "8px" }}>
+                            {selectedItem.latin} — {selectedItem.pron}
+                            <AudioButton text={selectedItem.pron} ttsText={selectedItem.pron} overrideLang="FR" />
+                          </div>
+                        </div>
                       </div>
-                      <div>
-                        <div style={{ fontSize: "1.5rem", fontWeight: 700, color: "var(--learn-text)" }}>{FULL_ALPHABET[selectedSymbol].name}</div>
-                        <div style={{ fontSize: "1rem", color: "var(--learn-primary)", fontWeight: 600 }}>{FULL_ALPHABET[selectedSymbol].latin} — {FULL_ALPHABET[selectedSymbol].pron}</div>
+                      <div style={{ color: "var(--learn-text-secondary)", lineHeight: "1.6", fontSize: "0.95rem" }}>
+                        {getLangProp(selectedItem, "explanation")}
                       </div>
-                    </div>
-                    <div style={{ color: "var(--learn-text-secondary)", lineHeight: "1.6", fontSize: "0.95rem" }}>
-                      {getLangProp(FULL_ALPHABET[selectedSymbol], "explanation")}
-                    </div>
-                    <div style={{ marginTop: "12px", padding: "12px 16px", background: "rgba(3,105,161,0.05)", borderRadius: "10px", borderLeft: "3px solid var(--learn-primary)" }}>
-                      <span style={{ fontWeight: 600, color: "var(--learn-primary)", fontSize: "0.9rem" }}>
-                        {lang === "FR" ? "Exemple" : lang === "AR" ? "مثال" : "Example"}:
-                      </span>
-                      <span style={{ marginLeft: "8px", fontFamily: tff, fontSize: "1.2rem" }}> {FULL_ALPHABET[selectedSymbol].example}</span>
-                    </div>
-                  </motion.div>
-                )}
+                      <div style={{ marginTop: "12px", padding: "12px 16px", background: "rgba(3,105,161,0.05)", borderRadius: "10px", borderLeft: "3px solid var(--learn-primary)" }}>
+                        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                          <span style={{ fontWeight: 600, color: "var(--learn-primary)", fontSize: "0.9rem" }}>
+                            {lang === "FR" ? "Exemple" : lang === "AR" ? "مثال" : "Example"}:
+                          </span>
+                          <SaveVocabButton id={'tifinagh_6_a_' + selectedItem.symbol} word={selectedItem.example} track="tifinagh" missionNum={6} type="vocab" />
+                        </div>
+                        <span style={{ marginLeft: "8px", fontFamily: tff, fontSize: "1.2rem" }}> {selectedItem.example}</span>
+                      </div>
+                    </motion.div>
+                  );
+                })()}
               </AnimatePresence>
             </div>
           )}
@@ -622,25 +641,26 @@ function Mission6() {
               </p>
 
               <div style={{ display: "flex", gap: "10px", justifyContent: "center", marginBottom: "24px", flexWrap: "wrap" }}>
-                {FULL_ALPHABET.filter(a => a.symbol.length === 2).slice(0, 16).map((item, idx) => (
+                {FULL_ALPHABET.filter(a => a.symbol.length === 1).slice(0, 16).map((item, idx) => (
                   <button
                     key={item.symbol}
-                    className={`vocab-card tifinagh-card-override ${selectedSymbol === idx ? "selected" : ""}`}
+                    className={`vocab-card tifinagh-card-override ${selectedSymbol === item.symbol ? "selected" : ""}`}
                     style={{
                       width: "64px", height: "64px", display: "flex", justifyContent: "center", alignItems: "center",
-                      padding: "0", border: selectedSymbol === idx ? "2px solid var(--learn-primary)" : "2px solid transparent",
-                      cursor: "pointer", background: selectedSymbol === idx ? "rgba(3,105,161,0.08)" : "transparent",
+                      padding: "0", border: selectedSymbol === item.symbol ? "2px solid var(--learn-primary)" : "2px solid transparent",
+                      cursor: "pointer", background: selectedSymbol === item.symbol ? "rgba(3,105,161,0.08)" : "transparent",
                       borderRadius: "12px"
                     }}
-                    onClick={() => setSelectedSymbol(selectedSymbol === idx ? null : idx)}
+                    onClick={() => setSelectedSymbol(selectedSymbol === item.symbol ? null : item.symbol)}
                   >
-                    <span style={{ fontSize: "2rem", fontFamily: tff, color: selectedSymbol === idx ? "var(--learn-primary)" : "var(--learn-text-secondary)" }}>{item.symbol}</span>
+                    <span style={{ fontSize: "2rem", fontFamily: tff, color: selectedSymbol === item.symbol ? "var(--learn-primary)" : "var(--learn-text-secondary)" }}>{item.symbol}</span>
                   </button>
                 ))}
               </div>
 
-              {selectedSymbol !== null && FULL_ALPHABET[selectedSymbol] && (() => {
-                const item = FULL_ALPHABET[selectedSymbol];
+              {selectedSymbol !== null && (() => {
+                const item = FULL_ALPHABET.find(a => a.symbol === selectedSymbol);
+                if (!item) return null;
                 return (
                   <motion.div
                     key={selectedSymbol}
@@ -649,8 +669,11 @@ function Mission6() {
                     className="vocab-card tifinagh-card-override"
                     style={{ padding: "28px", textAlign: "center", maxWidth: "450px", margin: "0 auto" }}
                   >
-                    <div style={{ fontSize: "5rem", fontFamily: tff, color: "var(--learn-primary)", marginBottom: "8px", textShadow: "0 4px 12px rgba(3,105,161,0.3)" }}>
-                      {item.symbol}
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "12px", marginBottom: "16px" }}>
+                      <div style={{ fontSize: "5rem", fontFamily: tff, color: "var(--learn-primary)", textShadow: "0 4px 12px rgba(3,105,161,0.3)" }}>
+                        {item.symbol}
+                      </div>
+                      <AudioButton text={item.pron} ttsText={item.pron} overrideLang="FR" />
                     </div>
                     <div style={{ fontSize: "1.6rem", fontWeight: 700, color: "var(--learn-text)", marginBottom: "4px" }}>
                       {lang === "FR" ? "Prononciation" : lang === "AR" ? "النطق" : "Pronunciation"}:
@@ -659,9 +682,12 @@ function Mission6() {
                       {item.pron.toUpperCase()}
                     </div>
                     <div style={{ padding: "16px", background: "rgba(3,105,161,0.05)", borderRadius: "12px", border: "1px solid rgba(3,105,161,0.15)" }}>
-                      <span style={{ fontWeight: 600, color: "var(--learn-primary)", fontSize: "0.9rem" }}>
-                        {lang === "FR" ? "Exemple" : lang === "AR" ? "مثال" : "Example"}:
-                      </span>
+                      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                        <span style={{ fontWeight: 600, color: "var(--learn-primary)", fontSize: "0.9rem" }}>
+                          {lang === "FR" ? "Exemple" : lang === "AR" ? "مثال" : "Example"}:
+                        </span>
+                        <SaveVocabButton id={'tifinagh_6_ex_' + item.symbol} word={item.example} track="tifinagh" missionNum={6} type="vocab" />
+                      </div>
                       <div style={{ fontSize: "2rem", fontFamily: tff, marginTop: "8px", color: "var(--learn-text)" }}>{item.example}</div>
                     </div>
                   </motion.div>
@@ -728,6 +754,7 @@ function Mission6() {
 
                 {nameInput && (
                   <div style={{ marginTop: "16px", display: "flex", gap: "12px", justifyContent: "center" }}>
+                    <SaveVocabButton id={'tifinagh_6_conv_' + nameInput.toLowerCase().replace(/\s/g, '_')} word={transliterate(nameInput)} translation={nameInput} track="tifinagh" missionNum={6} type="vocab" />
                     <button className="mission-btn secondary" onClick={() => { navigator.clipboard.writeText(transliterate(nameInput)); }}>
                       <Copy size={16} />
                       <span style={{ marginLeft: "6px" }}>{lang === "FR" ? "Copier" : lang === "AR" ? "نسخ" : "Copy"}</span>
@@ -795,6 +822,7 @@ function Mission6() {
                     </div>
 
                     <div style={{ marginTop: "16px", display: "flex", gap: "12px", justifyContent: "center" }}>
+                      <SaveVocabButton id={'tifinagh_6_wordconv_' + converterInput.toLowerCase().replace(/\s/g, '_')} word={transliterate(converterInput)} translation={converterInput} track="tifinagh" missionNum={6} type="vocab" />
                       <button className="mission-btn secondary" onClick={() => { navigator.clipboard.writeText(transliterate(converterInput)); }}>
                         <Copy size={16} />
                         <span style={{ marginLeft: "6px" }}>{lang === "FR" ? "Copier" : lang === "AR" ? "نسخ" : "Copy"}</span>
@@ -809,15 +837,17 @@ function Mission6() {
                   </p>
                   <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
                     {TIFINAGH_WORDS.slice(0, 6).map((w, idx) => (
-                      <button
-                        key={idx}
-                        className="mission-btn secondary"
-                        style={{ padding: "8px 14px", fontSize: "0.85rem" }}
-                        onClick={() => setConverterInput(w.latin)}
-                      >
-                        <span style={{ fontFamily: tff, marginRight: "6px" }}>{w.tifinagh}</span>
-                        {w.latin}
-                      </button>
+                      <div key={idx} style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+                        <button
+                          className="mission-btn secondary"
+                          style={{ padding: "8px 14px", fontSize: "0.85rem" }}
+                          onClick={() => setConverterInput(w.latin)}
+                        >
+                          <span style={{ fontFamily: tff, marginRight: "6px" }}>{w.tifinagh}</span>
+                          {w.latin}
+                        </button>
+                        <SaveVocabButton id={'tifinagh_6_' + w.latin} word={w.tifinagh} translation={w.latin} track="tifinagh" missionNum={6} type="vocab" />
+                      </div>
                     ))}
                   </div>
                 </div>
@@ -855,7 +885,8 @@ function Mission6() {
                     handleQuizNext,
                     quizComplete,
                     handleRestartQuiz,
-                    quizScore
+                    quizScore,
+                    quizComplete ? handleNext : null
                   )
                 )}
               </div>
@@ -892,7 +923,8 @@ function Mission6() {
                     handleAssessmentNext,
                     assessmentComplete,
                     handleRestartAssessment,
-                    assessmentScore
+                    assessmentScore,
+                    assessmentComplete ? handleNext : null
                   )
                 )}
               </div>
@@ -906,48 +938,61 @@ function Mission6() {
                 <Trophy size={64} />
               </div>
               <h1 className="intro-title" style={{ fontSize: '2.5rem', marginTop: '20px' }}>
-                {lang === "FR" ? "Félicitations !" : lang === "AR" ? "مبروك!" : "Congratulations!"}
+                {lang === "FR" ? "Mission Accomplie !" : lang === "AR" ? "المهمة مكتملة!" : "Mission Completed!"}
               </h1>
-              <p className="intro-desc" style={{ fontSize: '1.2rem', marginBottom: '40px' }}>
+              <p className="intro-desc" style={{ fontSize: '1.2rem', marginBottom: '32px' }}>
                 {lang === "FR"
-                  ? "Vous avez terminé le parcours complet d'apprentissage du Tifinagh. Vous connaissez maintenant les 33 lettres de l'alphabet tifinagh et pouvez les lire et les écrire."
+                  ? "Vous avez terminé avec succès : Alphabet Complet Tifinagh"
                   : lang === "AR"
-                  ? "لقد أكملت مسار تعلم تيفيناغ بالكامل. تعرفت على الحروف الـ 33 لأبجدية تيفيناغ ويمكنك قراءتها وكتابتها."
-                  : "You have completed the full Tifinagh Learning Path. You now know all 33 letters of the Tifinagh alphabet and can read and write them."}
+                  ? "لقد أكملت بنجاح: الأبجدية الكاملة لتيفيناغ"
+                  : "You successfully completed: Complete Tifinagh Alphabet"}
               </p>
 
-              <div style={{ textAlign: 'left', background: 'var(--learn-surface)', padding: '28px', borderRadius: '20px', border: '2px solid var(--learn-primary)', width: '100%', maxWidth: '460px', boxShadow: '0 20px 40px rgba(0,0,0,0.1)' }}>
-                <div style={{ marginBottom: '20px', textAlign: 'center' }}>
-                  <span style={{ fontSize: '2.5rem', fontFamily: tff, color: 'var(--learn-primary)' }}>ⵣ</span>
-                  <h4 style={{ fontSize: '1.3rem', fontWeight: 700, color: 'var(--learn-primary)', textAlign: 'center', marginTop: '8px' }}>
-                    {lang === "FR" ? "Parcours Tifinagh Terminé" : lang === "AR" ? "تم إكمال مسار تيفيناغ" : "Tifinagh Path Completed"}
-                  </h4>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', width: '100%', maxWidth: '500px' }}>
+
+                {/* Score Card */}
+                <div style={{ textAlign: 'center', background: 'var(--learn-surface)', padding: '20px 28px', borderRadius: '16px', border: '2px solid var(--learn-border)' }}>
+                  <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--learn-text)', marginBottom: '8px' }}>
+                    {lang === "FR" ? "Résultat du Quiz Final" : lang === "AR" ? "نتيجة الاختبار النهائي" : "Final Quiz Score"}
+                  </h3>
+                  <p style={{ fontSize: '2.5rem', fontWeight: 800, color: 'var(--learn-primary)' }}>
+                    {assessmentScore}/{assessmentQuestions.length || 10}
+                  </p>
                 </div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                  {TIFINAGH_MISSIONS.map((mission, idx) => (
-                    <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '14px', color: 'var(--learn-success)', padding: '10px 12px', background: 'rgba(16, 185, 129, 0.06)', borderRadius: '10px', border: '1px solid rgba(16, 185, 129, 0.15)' }}>
-                      <CheckCircle size={22} fill="currentColor" color="white" />
-                      <span style={{ fontWeight: 600, fontSize: '1rem' }}>
-                        {lang === "FR" ? mission.fr : lang === "AR" ? mission.ar : mission.en}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-                <div style={{ textAlign: 'center', marginTop: '20px', padding: '12px', background: 'rgba(3,105,161,0.06)', borderRadius: '12px', border: '1px dashed var(--learn-primary)' }}>
-                  <span style={{ fontSize: '0.95rem', color: 'var(--learn-primary)', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-                    <Trophy size={20} />
-                    {lang === "FR" ? "6 missions complétées — Parcours Tifinagh terminé !" : lang === "AR" ? "6 مهام مكتملة — تم إكمال مسار تيفيناغ!" : "6 missions completed — Tifinagh Path complete!"}
-                  </span>
+
+                {/* Path Completed Card */}
+                <div style={{ textAlign: 'left', background: 'var(--learn-surface)', padding: '28px', borderRadius: '20px', border: '2px solid var(--learn-primary)', boxShadow: '0 20px 40px rgba(0,0,0,0.1)' }}>
+                  <div style={{ marginBottom: '20px', textAlign: 'center' }}>
+                    <span style={{ fontSize: '2.5rem', fontFamily: tff, color: 'var(--learn-primary)' }}>ⵣ</span>
+                    <h4 style={{ fontSize: '1.3rem', fontWeight: 700, color: 'var(--learn-primary)', textAlign: 'center', marginTop: '8px' }}>
+                      {lang === "FR" ? "Parcours Tifinagh Terminé" : lang === "AR" ? "تم إكمال مسار تيفيناغ" : "Tifinagh Path Completed"}
+                    </h4>
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                    {TIFINAGH_MISSIONS.map((mission, idx) => (
+                      <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '14px', color: 'var(--learn-success)', padding: '10px 12px', background: 'rgba(16, 185, 129, 0.06)', borderRadius: '10px', border: '1px solid rgba(16, 185, 129, 0.15)' }}>
+                        <CheckCircle size={22} fill="currentColor" color="white" />
+                        <span style={{ fontWeight: 600, fontSize: '1rem' }}>
+                          {lang === "FR" ? mission.fr : lang === "AR" ? mission.ar : mission.en}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
 
               <div style={{ display: 'flex', gap: '16px', marginTop: '40px', flexWrap: 'wrap', justifyContent: 'center' }}>
-                <button className="mission-btn" onClick={() => navigate("/languages/culture/mission-1")}>
-                  {lang === "FR" ? "Explorer le Parcours Culture" : lang === "AR" ? "استكشف مسار الثقافة" : "Explore Culture Path"}
+                <button className="mission-btn" onClick={() => navigate("/languages")}>
+                  {lang === "FR" ? "Retour au Hub d'Apprentissage" : lang === "AR" ? "العودة إلى لوحة التعلم" : "Return to Learning Hub"}
                   <ArrowRight size={20} />
                 </button>
-                <button className="mission-btn secondary" onClick={() => navigate("/languages")}>
-                  {lang === "FR" ? "Retour au Hub d'Apprentissage" : lang === "AR" ? "العودة إلى لوحة التعلم" : "Return to Learning Hub"}
+                <button className="mission-btn secondary" onClick={() => navigate("/languages/darija/mission-1")}>
+                  {lang === "FR" ? "Explorer le Darija" : lang === "AR" ? "استكشف الدراجة" : "Explore Darija"}
+                  <ArrowRight size={20} />
+                </button>
+                <button className="mission-btn secondary" onClick={() => navigate("/languages/culture/mission-1")}>
+                  {lang === "FR" ? "Explorer la Culture" : lang === "AR" ? "استكشف الثقافة" : "Explore Culture"}
+                  <ArrowRight size={20} />
                 </button>
               </div>
             </div>
@@ -955,7 +1000,9 @@ function Mission6() {
         </motion.div>
       </AnimatePresence>
 
-      {step !== "intro" && step !== "completion" && step !== "quiz" && step !== "assessment" && (
+      {step !== "intro" && step !== "completion" && (
+        (step !== "quiz" || quizComplete) && (step !== "assessment" || assessmentComplete)
+      ) && (
         <div className="mission-footer">
           <button className="mission-btn secondary" onClick={handleBack} disabled={currentStepIndex === 0}>
             <ArrowLeft size={18} /> {lang === "FR" ? "Précédent" : lang === "AR" ? "السابق" : "Back"}

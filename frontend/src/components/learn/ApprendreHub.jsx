@@ -494,7 +494,7 @@ const ApprendreHub = () => {
             </div>
             <div style={{ flex: 1 }}>
               <div style={{ fontSize: "0.9rem", fontWeight: 700, color: "var(--apprendre-text-primary)" }}>
-                {isRTL ? "مفرداتي" : "My Vocabulary"}
+                {isRTL ? "مجموعتي التعليمية" : "My Learning Collection"}
               </div>
               <div style={{ fontSize: "0.8rem", fontWeight: 500, color: "var(--apprendre-text-secondary)" }}>
                 {getSavedVocabCount()} {isRTL ? "كلمة محفوظة" : "word" + (getSavedVocabCount() !== 1 ? "s" : "")} {isRTL ? "" : "saved"}

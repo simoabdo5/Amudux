@@ -12,6 +12,7 @@ import "../darija/mission.css";
 import { useAutoProgress, canAccessMission } from "../../../utils/progress";
 import LockedScreen from "../common/LockedScreen";
 import FavoriteButton from "../common/FavoriteButton";
+import SaveVocabButton from "../common/SaveVocabButton";
 
 const STEPS = ["intro", "dishes", "etiquette", "situations", "mistakes", "journey", "challenge", "quiz", "completion"];
 
@@ -405,6 +406,7 @@ function CultureMission3() {
                     {currentEtiq.icon}
                   </div>
                   <h3 style={{ margin: 0, fontSize: "1.2rem", fontWeight: 700, color: "var(--learn-accent)" }}>{currentEtiq.title}</h3>
+                  <SaveVocabButton id={'culture_3_' + selectedEtiquette} word={currentEtiq.title} translation={currentEtiq.desc} track="culture" missionNum={3} type="tip" />
                 </div>
                 <p style={{ lineHeight: 1.65, margin: "0 0 16px", color: "var(--learn-text)" }}>{currentEtiq.desc}</p>
                 <div style={{

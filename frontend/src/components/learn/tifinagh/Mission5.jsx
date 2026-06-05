@@ -8,6 +8,7 @@ import "../darija/mission.css";
 import { useAutoProgress, canAccessMission } from "../../../utils/progress";
 import LockedScreen from "../common/LockedScreen";
 import FavoriteButton from "../common/FavoriteButton";
+import SaveVocabButton from "../common/SaveVocabButton";
 
 const symbolsData = [
   {
@@ -457,6 +458,7 @@ function Mission5() {
                   <div className="tifinagh-script" style={{ fontSize: '4rem', color: 'var(--learn-primary)', marginBottom: '8px', fontFamily: '"Noto Sans Tifinagh", "Segoe UI Symbol", "Arial Unicode MS", sans-serif' }}>{symbolsData[selectedInteractiveSymbol].symbol}</div>
                   <div style={{ fontSize: '1.5rem', fontWeight: 700 }}>{symbolsData[selectedInteractiveSymbol].name}</div>
                   <div style={{ fontSize: '1.1rem', color: 'var(--learn-primary)', fontWeight: 600 }}>{getLangProp(symbolsData[selectedInteractiveSymbol], 'title')}</div>
+                  <SaveVocabButton id={'tifinagh_5_' + symbolsData[selectedInteractiveSymbol].symbol} word={symbolsData[selectedInteractiveSymbol].symbol} translation={getLangProp(symbolsData[selectedInteractiveSymbol], 'title')} track="tifinagh" missionNum={5} type="vocab" />
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>

@@ -13,6 +13,7 @@ import "../darija/mission.css";
 import { useAutoProgress, canAccessMission } from "../../../utils/progress";
 import LockedScreen from "../common/LockedScreen";
 import FavoriteButton from "../common/FavoriteButton";
+import SaveVocabButton from "../common/SaveVocabButton";
 
 const STEPS = ["intro", "aware", "transport", "scams", "emergency", "scenarios", "challenge", "quiz", "completion"];
 
@@ -343,6 +344,7 @@ function CultureMission6() {
                     <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 16 }}>
                       <div style={{ color: "var(--learn-accent)", background: "rgba(var(--learn-accent-rgb),0.1)", padding: 12, borderRadius: 12 }}>{card.icon}</div>
                       <h3 style={{ margin: 0, fontSize: "1.2rem", fontWeight: 700, color: "var(--learn-accent)" }}>{card.title}</h3>
+                      <SaveVocabButton id={'culture_6_aware_' + selectedAware} word={card.title} translation={card.desc} track="culture" missionNum={6} type="tip" />
                     </div>
                     <p style={{ lineHeight: 1.65, margin: 0, color: "var(--learn-text)" }}>{card.desc}</p>
                   </>
@@ -364,6 +366,7 @@ function CultureMission6() {
                     <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 16 }}>
                       <div style={{ color: "var(--learn-accent)", background: "rgba(var(--learn-accent-rgb),0.1)", padding: 12, borderRadius: 12 }}>{card.icon}</div>
                       <h3 style={{ margin: 0, fontSize: "1.2rem", fontWeight: 700, color: "var(--learn-accent)" }}>{card.title}</h3>
+                      <SaveVocabButton id={'culture_6_transport_' + selectedTransport} word={card.title} translation={card.desc} track="culture" missionNum={6} type="tip" />
                     </div>
                     <p style={{ lineHeight: 1.65, margin: 0, color: "var(--learn-text)" }}>{card.desc}</p>
                   </>
@@ -385,6 +388,7 @@ function CultureMission6() {
                     <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 16 }}>
                       <div style={{ color: "var(--learn-danger)", background: "rgba(var(--learn-danger-rgb),0.1)", padding: 12, borderRadius: 12 }}>{card.icon}</div>
                       <h3 style={{ margin: 0, fontSize: "1.2rem", fontWeight: 700, color: "var(--learn-danger)" }}>{card.title}</h3>
+                      <SaveVocabButton id={'culture_6_scams_' + selectedScam} word={card.title} translation={card.desc} track="culture" missionNum={6} type="tip" />
                     </div>
                     <p style={{ lineHeight: 1.65, margin: 0, color: "var(--learn-text)" }}>{card.desc}</p>
                   </>
@@ -406,6 +410,7 @@ function CultureMission6() {
                     <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 16 }}>
                       <div style={{ color: "var(--learn-accent)", background: "rgba(var(--learn-accent-rgb),0.1)", padding: 12, borderRadius: 12 }}>{card.icon}</div>
                       <h3 style={{ margin: 0, fontSize: "1.2rem", fontWeight: 700, color: "var(--learn-accent)" }}>{card.title}</h3>
+                      <SaveVocabButton id={'culture_6_emergency_' + selectedEmergency} word={card.title} translation={card.desc} track="culture" missionNum={6} type="tip" />
                     </div>
                     <p style={{ lineHeight: 1.65, margin: 0, color: "var(--learn-text)" }}>{card.desc}</p>
                   </>

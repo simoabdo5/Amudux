@@ -18,6 +18,7 @@ import "../darija/mission.css";
 import { useAutoProgress, canAccessMission } from "../../../utils/progress";
 import LockedScreen from "../common/LockedScreen";
 import FavoriteButton from "../common/FavoriteButton";
+import SaveVocabButton from "../common/SaveVocabButton";
 
 const STEPS = [
   "intro",
@@ -412,6 +413,7 @@ function TifinaghMission2() {
                     <div className="tifinagh-symbol-chip tifinagh-script">{item.symbol}</div>
                     <div className="vocab-word">{item.latin}</div>
                     <div className="tifinagh-inline-note">{getText(item.title)}</div>
+                    <SaveVocabButton id={'tifinagh_2_' + item.symbol} word={item.symbol} translation={item.latin} track="tifinagh" missionNum={2} type="vocab" />
                   </button>
                 ))}
               </div>
@@ -460,6 +462,7 @@ function TifinaghMission2() {
                       <div className="tifinagh-break-latin">{item.latin}</div>
                     </div>
                     <div className="exp-context">{getText(item.note)}</div>
+                    <SaveVocabButton id={'tifinagh_2_' + item.symbol} word={item.symbol} translation={item.latin} track="tifinagh" missionNum={2} type="vocab" />
                   </div>
                 ))}
               </div>

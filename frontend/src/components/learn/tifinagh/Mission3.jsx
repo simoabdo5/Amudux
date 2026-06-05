@@ -8,6 +8,7 @@ import "../darija/mission.css"; // Reuse styling, but with tifinagh-theme class
 import { useAutoProgress, canAccessMission } from "../../../utils/progress";
 import LockedScreen from "../common/LockedScreen";
 import FavoriteButton from "../common/FavoriteButton";
+import SaveVocabButton from "../common/SaveVocabButton";
 
 const signsData = [
   { 
@@ -268,6 +269,7 @@ function Mission3() {
                         <span>{getLangProp(sign, 'context')}</span>
                       </div>
                     </div>
+                    <SaveVocabButton id={'tifinagh_3_' + sign.tifinagh} word={sign.tifinagh} translation={getLangProp(sign, 'meaning')} track="tifinagh" missionNum={3} type="vocab" />
                   </div>
                 ))}
               </div>

@@ -9,6 +9,7 @@ import "../darija/mission.css"; // Reuse the mission styling system
 import { useAutoProgress, canAccessMission } from "../../../utils/progress";
 import LockedScreen from "../common/LockedScreen";
 import FavoriteButton from "../common/FavoriteButton";
+import SaveVocabButton from "../common/SaveVocabButton";
 
 const tifinaghSymbols = [
   { symbol: "ⴰ", pronunciation: "a", name: "Yaz", ar: "أ", context: { en: "The sound 'a'. It often looks like a circle.", fr: "Le son 'a'. Ressemble souvent à un cercle.", ar: "صوت 'أ'. غالباً ما يشبه الدائرة." } },
@@ -205,6 +206,7 @@ function TifinaghMission1() {
                     <div className="chat-trans" style={{marginTop: '16px', color: 'var(--learn-text-secondary)', fontSize: '0.9rem', lineHeight: '1.5'}}>
                       {getLangProp(sym, 'context')}
                     </div>
+                    <SaveVocabButton id={'tifinagh_1_' + sym.symbol} word={sym.symbol} translation={sym.pronunciation} track="tifinagh" missionNum={1} type="vocab" />
                   </div>
                 ))}
               </div>

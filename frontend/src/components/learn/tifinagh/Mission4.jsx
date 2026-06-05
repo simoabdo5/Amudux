@@ -8,6 +8,7 @@ import "../darija/mission.css"; // Reuse styling, but with tifinagh-theme class
 import { useAutoProgress, canAccessMission } from "../../../utils/progress";
 import LockedScreen from "../common/LockedScreen";
 import FavoriteButton from "../common/FavoriteButton";
+import SaveVocabButton from "../common/SaveVocabButton";
 
 const vocabData = [
   { tifinagh: "ⴰⵣⵓⵍ", latin: "Azul", meaning: { en: "Hello / Welcome", fr: "Bonjour / Bienvenue", ar: "مرحباً / أهلاً" }, context: { en: "The most common Amazigh greeting.", fr: "La salutation amazighe la plus courante.", ar: "التحية الأمازيغية الأكثر شيوعاً." } },
@@ -295,6 +296,7 @@ function Mission4() {
                       <MessageCircle size={14} style={{ display: 'inline', marginRight: '6px', verticalAlign: 'middle', color: 'var(--learn-primary)' }}/>
                       {getLangProp(word, 'context')}
                     </div>
+                    <SaveVocabButton id={'tifinagh_4_' + word.tifinagh} word={word.tifinagh} translation={getLangProp(word, 'meaning')} track="tifinagh" missionNum={4} type="vocab" />
                   </div>
                 ))}
               </div>

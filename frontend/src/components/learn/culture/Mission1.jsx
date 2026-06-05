@@ -10,6 +10,7 @@ import "../darija/mission.css";
 import { useAutoProgress, canAccessMission } from "../../../utils/progress";
 import LockedScreen from "../common/LockedScreen";
 import FavoriteButton from "../common/FavoriteButton";
+import SaveVocabButton from "../common/SaveVocabButton";
 
 const STEPS = ["intro", "tea", "situations", "etiquette", "quiz", "completion"];
 
@@ -332,6 +333,7 @@ function CultureMission1() {
                     <div style={{ display: 'flex', alignItems: 'flex-start', textAlign: 'left', gap: '8px' }}>
                       <AudioButton text={item.text} style={{ position: 'static', flexShrink: 0, width: 32, height: 32 }} />
                       <p style={{ fontWeight: 500, lineHeight: 1.5, margin: 0 }}>{item.text}</p>
+                      <SaveVocabButton id={'culture_1_' + idx} word={item.text} track="culture" missionNum={1} type="tip" />
                     </div>
                   </div>
                 ))}

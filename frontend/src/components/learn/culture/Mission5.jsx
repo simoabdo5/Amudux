@@ -13,6 +13,7 @@ import "../darija/mission.css";
 import { useAutoProgress, canAccessMission } from "../../../utils/progress";
 import LockedScreen from "../common/LockedScreen";
 import FavoriteButton from "../common/FavoriteButton";
+import SaveVocabButton from "../common/SaveVocabButton";
 
 const STEPS = ["intro", "mosques", "friday", "ramadan", "scenarios", "mistakes", "challenge", "quiz", "completion"];
 
@@ -364,6 +365,7 @@ function CultureMission5() {
                     <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 16 }}>
                       <div style={{ color: "var(--learn-accent)", background: "rgba(21,128,61,0.1)", padding: 12, borderRadius: 12 }}>{card.icon}</div>
                       <h3 style={{ margin: 0, fontSize: "1.2rem", fontWeight: 700, color: "var(--learn-accent)" }}>{card.title}</h3>
+                      <SaveVocabButton id={'culture_5_' + selectedMosque} word={card.title} translation={card.desc} track="culture" missionNum={5} type="tip" />
                     </div>
                     <p style={{ lineHeight: 1.65, margin: "0 0 16px", color: "var(--learn-text)" }}>{card.desc}</p>
                     <div style={{ padding: "14px 18px", borderRadius: 12, background: "rgba(21,128,61,0.06)", border: "1px solid rgba(21,128,61,0.2)" }}>
