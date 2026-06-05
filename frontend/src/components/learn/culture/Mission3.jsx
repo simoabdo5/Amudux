@@ -2,34 +2,34 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import {
-  X, ArrowRight, ArrowLeft, CheckCircle, XCircle, ShoppingBag, AlertTriangle,
-  Award, Handshake, Tag, TrendingDown,
-  Footprints, MapPin, Palette, Gem, Store, Sparkles, Users, Globe
+  X, ArrowRight, ArrowLeft, CheckCircle, XCircle, UtensilsCrossed, AlertTriangle,
+  Award, Users, Hand, Share2, Heart, MapPin, Sparkles, Coffee, ChefHat
 } from "lucide-react";
 import { useLanguage } from "../../accueil/LanguageContext";
 import CultureCompletion from "./CultureCompletion";
 import "../darija/mission.css";
 
-const STEPS = ["intro", "culture", "negotiation", "situations", "mistakes", "challenge", "discovery", "quiz", "completion"];
+const STEPS = ["intro", "dishes", "etiquette", "situations", "mistakes", "journey", "challenge", "quiz", "completion"];
 
 const STEP_LABELS = {
-  intro: { FR: "Bienvenue au Souk", EN: "Welcome to the Souk", AR: "مرحباً في السوق" },
-  culture: { FR: "Culture du Marché", EN: "Market Culture", AR: "ثقافة السوق" },
-  negotiation: { FR: "Négociation", EN: "Negotiation Basics", AR: "أساسيات التفاوض" },
-  situations: { FR: "Scénarios", EN: "Market Scenarios", AR: "سيناريوهات السوق" },
+  intro: { FR: "Bienvenue", EN: "Welcome", AR: "مرحباً" },
+  dishes: { FR: "Plats Emblématiques", EN: "Iconic Dishes", AR: "أطباق شهيرة" },
+  etiquette: { FR: "Étiquette", EN: "Dining Etiquette", AR: "آداب الطعام" },
+  situations: { FR: "Scénarios", EN: "Dining Scenarios", AR: "سيناريوهات" },
   mistakes: { FR: "Erreurs", EN: "Common Mistakes", AR: "أخطاء شائعة" },
-  challenge: { FR: "Défi", EN: "Bargaining Challenge", AR: "تحدي المساومة" },
-  discovery: { FR: "Découverte", EN: "Cultural Discovery", AR: "اكتشاف ثقافي" },
+  journey: { FR: "Voyage Culinaire", EN: "Food Journey", AR: "رحلة غذائية" },
+  challenge: { FR: "Défi", EN: "Food Challenge", AR: "تحدي الطعام" },
   quiz: { FR: "Quiz Final", EN: "Final Quiz", AR: "الاختبار النهائي" },
   completion: { FR: "Achèvement", EN: "Completion", AR: "اكتمال" }
 };
 
-function CultureMission2() {
+function CultureMission3() {
   const { t, lang, isRTL } = useLanguage();
   const navigate = useNavigate();
 
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
-  const [selectedCultureCard, setSelectedCultureCard] = useState(0);
+  const [selectedDish, setSelectedDish] = useState(0);
+  const [selectedEtiquette, setSelectedEtiquette] = useState(0);
   const [expandedMistake, setExpandedMistake] = useState(0);
 
   const [currentSituationIndex, setCurrentSituationIndex] = useState(0);
@@ -62,111 +62,98 @@ function CultureMission2() {
   };
 
   const introStories = [
-    { icon: <Store size={22} />, text: t("cultureM2IntroWhatIsSouk") },
-    { icon: <Tag size={22} />, text: t("cultureM2IntroWhyBargain") },
-    { icon: <Handshake size={22} />, text: t("cultureM2IntroSocialNotConflict") },
-    { icon: <Globe size={22} />, text: t("cultureM2IntroTouristVsLocal") }
+    { icon: <ChefHat size={22} />, text: t("cultureM3IntroFoodCulture") },
+    { icon: <Users size={22} />, text: t("cultureM3IntroFamilyMeals") },
+    { icon: <Share2 size={22} />, text: t("cultureM3IntroSharing") },
+    { icon: <MapPin size={22} />, text: t("cultureM3IntroRegional") }
   ];
 
-  const cultureCards = [
-    { icon: "👋", title: t("cultureM2CultureCard1Title"), desc: t("cultureM2CultureCard1Desc"), context: t("cultureM2CultureCard1Context") },
-    { icon: "⏳", title: t("cultureM2CultureCard2Title"), desc: t("cultureM2CultureCard2Desc"), context: t("cultureM2CultureCard2Context") },
-    { icon: "💬", title: t("cultureM2CultureCard3Title"), desc: t("cultureM2CultureCard3Desc"), context: t("cultureM2CultureCard3Context") },
-    { icon: "🤝", title: t("cultureM2CultureCard4Title"), desc: t("cultureM2CultureCard4Desc"), context: t("cultureM2CultureCard4Context") },
-    { icon: "😊", title: t("cultureM2CultureCard5Title"), desc: t("cultureM2CultureCard5Desc"), context: t("cultureM2CultureCard5Context") }
+  const dishesData = [
+    { emoji: "🍲", title: t("cultureM3Dish1Title"), desc: t("cultureM3Dish1Desc"), significance: t("cultureM3Dish1Significance"), region: t("cultureM3Dish1Region") },
+    { emoji: "🥘", title: t("cultureM3Dish2Title"), desc: t("cultureM3Dish2Desc"), significance: t("cultureM3Dish2Significance"), region: t("cultureM3Dish2Region") },
+    { emoji: "🥧", title: t("cultureM3Dish3Title"), desc: t("cultureM3Dish3Desc"), significance: t("cultureM3Dish3Significance"), region: t("cultureM3Dish3Region") },
+    { emoji: "🍜", title: t("cultureM3Dish4Title"), desc: t("cultureM3Dish4Desc"), significance: t("cultureM3Dish4Significance"), region: t("cultureM3Dish4Region") },
+    { emoji: "🍖", title: t("cultureM3Dish5Title"), desc: t("cultureM3Dish5Desc"), significance: t("cultureM3Dish5Significance"), region: t("cultureM3Dish5Region") },
+    { emoji: "🍵", title: t("cultureM3Dish6Title"), desc: t("cultureM3Dish6Desc"), significance: t("cultureM3Dish6Significance"), region: t("cultureM3Dish6Region") }
   ];
 
-  const negotiationData = [
-    { icon: <Tag size={22} />, title: t("cultureM2Neg1Title"), desc: t("cultureM2Neg1Desc"), locals: t("cultureM2Neg1Locals"), tourists: t("cultureM2Neg1Tourists") },
-    { icon: <TrendingDown size={22} />, title: t("cultureM2Neg2Title"), desc: t("cultureM2Neg2Desc"), locals: t("cultureM2Neg2Locals"), tourists: t("cultureM2Neg2Tourists") },
-    { icon: <Handshake size={22} />, title: t("cultureM2Neg3Title"), desc: t("cultureM2Neg3Desc"), locals: t("cultureM2Neg3Locals"), tourists: t("cultureM2Neg3Tourists") },
-    { icon: <Footprints size={22} />, title: t("cultureM2Neg4Title"), desc: t("cultureM2Neg4Desc"), locals: t("cultureM2Neg4Locals"), tourists: t("cultureM2Neg4Tourists") }
+  const etiquetteCards = [
+    { icon: <Hand size={22} />, title: t("cultureM3Etiq1Title"), desc: t("cultureM3Etiq1Desc"), context: t("cultureM3Etiq1Context") },
+    { icon: <Share2 size={22} />, title: t("cultureM3Etiq2Title"), desc: t("cultureM3Etiq2Desc"), context: t("cultureM3Etiq2Context") },
+    { icon: <UtensilsCrossed size={22} />, title: t("cultureM3Etiq3Title"), desc: t("cultureM3Etiq3Desc"), context: t("cultureM3Etiq3Context") },
+    { icon: <Heart size={22} />, title: t("cultureM3Etiq4Title"), desc: t("cultureM3Etiq4Desc"), context: t("cultureM3Etiq4Context") }
   ];
 
   const situationsData = [
     {
-      emoji: "🧶",
-      price: "1500 DH",
-      q: t("cultureM2Sit1Q"),
-      options: [t("cultureM2Sit1A1"), t("cultureM2Sit1A2"), t("cultureM2Sit1A3")],
+      emoji: "🏠",
+      q: t("cultureM3Sit1Q"),
+      options: [t("cultureM3Sit1A1"), t("cultureM3Sit1A2"), t("cultureM3Sit1A3")],
       correctIdx: 1,
-      feedbackCorrect: t("cultureM2Sit1FeedbackCorrect"),
-      feedbackWrong: t("cultureM2Sit1FeedbackWrong")
+      feedbackCorrect: t("cultureM3Sit1FeedbackCorrect"),
+      feedbackWrong: t("cultureM3Sit1FeedbackWrong")
     },
     {
-      emoji: "🎁",
-      q: t("cultureM2Sit2Q"),
-      options: [t("cultureM2Sit2A1"), t("cultureM2Sit2A2"), t("cultureM2Sit2A3")],
+      emoji: "🍵",
+      q: t("cultureM3Sit2Q"),
+      options: [t("cultureM3Sit2A1"), t("cultureM3Sit2A2"), t("cultureM3Sit2A3")],
       correctIdx: 1,
-      feedbackCorrect: t("cultureM2Sit2FeedbackCorrect"),
-      feedbackWrong: t("cultureM2Sit2FeedbackWrong")
+      feedbackCorrect: t("cultureM3Sit2FeedbackCorrect"),
+      feedbackWrong: t("cultureM3Sit2FeedbackWrong")
     },
     {
-      emoji: "🌶️",
-      price: "200 DH/g",
-      q: t("cultureM2Sit3Q"),
-      options: [t("cultureM2Sit3A1"), t("cultureM2Sit3A2"), t("cultureM2Sit3A3")],
+      emoji: "🥘",
+      q: t("cultureM3Sit3Q"),
+      options: [t("cultureM3Sit3A1"), t("cultureM3Sit3A2"), t("cultureM3Sit3A3")],
       correctIdx: 1,
-      feedbackCorrect: t("cultureM2Sit3FeedbackCorrect"),
-      feedbackWrong: t("cultureM2Sit3FeedbackWrong")
-    },
-    {
-      emoji: "👗",
-      q: t("cultureM2Sit4Q"),
-      options: [t("cultureM2Sit4A1"), t("cultureM2Sit4A2"), t("cultureM2Sit4A3")],
-      correctIdx: 1,
-      feedbackCorrect: t("cultureM2Sit4FeedbackCorrect"),
-      feedbackWrong: t("cultureM2Sit4FeedbackWrong")
+      feedbackCorrect: t("cultureM3Sit3FeedbackCorrect"),
+      feedbackWrong: t("cultureM3Sit3FeedbackWrong")
     }
   ];
 
   const mistakesData = [
-    { title: t("cultureM2Mistake1Title"), why: t("cultureM2Mistake1Why"), bad: t("cultureM2Mistake1Bad"), good: t("cultureM2Mistake1Good") },
-    { title: t("cultureM2Mistake2Title"), why: t("cultureM2Mistake2Why"), bad: t("cultureM2Mistake2Bad"), good: t("cultureM2Mistake2Good") },
-    { title: t("cultureM2Mistake3Title"), why: t("cultureM2Mistake3Why"), bad: t("cultureM2Mistake3Bad"), good: t("cultureM2Mistake3Good") },
-    { title: t("cultureM2Mistake4Title"), why: t("cultureM2Mistake4Why"), bad: t("cultureM2Mistake4Bad"), good: t("cultureM2Mistake4Good") },
-    { title: t("cultureM2Mistake5Title"), why: t("cultureM2Mistake5Why"), bad: t("cultureM2Mistake5Bad"), good: t("cultureM2Mistake5Good") }
+    { title: t("cultureM3Mistake1Title"), why: t("cultureM3Mistake1Why"), bad: t("cultureM3Mistake1Bad"), good: t("cultureM3Mistake1Good") },
+    { title: t("cultureM3Mistake2Title"), why: t("cultureM3Mistake2Why"), bad: t("cultureM3Mistake2Bad"), good: t("cultureM3Mistake2Good") },
+    { title: t("cultureM3Mistake3Title"), why: t("cultureM3Mistake3Why"), bad: t("cultureM3Mistake3Bad"), good: t("cultureM3Mistake3Good") }
+  ];
+
+  const journeyData = [
+    { icon: <MapPin size={24} />, title: t("cultureM3JourneyMarrakechTitle"), desc: t("cultureM3JourneyMarrakechDesc") },
+    { icon: <ChefHat size={24} />, title: t("cultureM3JourneyFesTitle"), desc: t("cultureM3JourneyFesDesc") },
+    { icon: <Coffee size={24} />, title: t("cultureM3JourneyTangierTitle"), desc: t("cultureM3JourneyTangierDesc") },
+    { icon: <UtensilsCrossed size={24} />, title: t("cultureM3JourneyAgadirTitle"), desc: t("cultureM3JourneyAgadirDesc") }
   ];
 
   const challengeData = [
     {
-      q: t("cultureM2Ch1Q"),
-      options: [t("cultureM2Ch1A1"), t("cultureM2Ch1A2"), t("cultureM2Ch1A3")],
-      correctIdx: 0,
-      feedbackCorrect: t("cultureM2Ch1FeedbackCorrect"),
-      feedbackWrong: t("cultureM2Ch1FeedbackWrong")
+      q: t("cultureM3Ch1Q"),
+      options: [t("cultureM3Ch1A1"), t("cultureM3Ch1A2"), t("cultureM3Ch1A3")],
+      correctIdx: 1,
+      feedbackCorrect: t("cultureM3Ch1FeedbackCorrect"),
+      feedbackWrong: t("cultureM3Ch1FeedbackWrong")
     },
     {
-      q: t("cultureM2Ch2Q"),
-      options: [t("cultureM2Ch2A1"), t("cultureM2Ch2A2"), t("cultureM2Ch2A3")],
+      q: t("cultureM3Ch2Q"),
+      options: [t("cultureM3Ch2A1"), t("cultureM3Ch2A2"), t("cultureM3Ch2A3")],
       correctIdx: 0,
-      feedbackCorrect: t("cultureM2Ch2FeedbackCorrect"),
-      feedbackWrong: t("cultureM2Ch2FeedbackWrong")
+      feedbackCorrect: t("cultureM3Ch2FeedbackCorrect"),
+      feedbackWrong: t("cultureM3Ch2FeedbackWrong")
     },
     {
-      q: t("cultureM2Ch3Q"),
-      options: [t("cultureM2Ch3A1"), t("cultureM2Ch3A2"), t("cultureM2Ch3A3")],
-      correctIdx: 0,
-      feedbackCorrect: t("cultureM2Ch3FeedbackCorrect"),
-      feedbackWrong: t("cultureM2Ch3FeedbackWrong")
+      q: t("cultureM3Ch3Q"),
+      options: [t("cultureM3Ch3A1"), t("cultureM3Ch3A2"), t("cultureM3Ch3A3")],
+      correctIdx: 1,
+      feedbackCorrect: t("cultureM3Ch3FeedbackCorrect"),
+      feedbackWrong: t("cultureM3Ch3FeedbackWrong")
     }
   ];
 
-  const discoveryData = [
-    { icon: <Palette size={24} />, title: t("cultureM2DiscArtisanTitle"), desc: t("cultureM2DiscArtisanDesc") },
-    { icon: <Gem size={24} />, title: t("cultureM2DiscHandmadeTitle"), desc: t("cultureM2DiscHandmadeDesc") },
-    { icon: <MapPin size={24} />, title: t("cultureM2DiscMarrakechTitle"), desc: t("cultureM2DiscMarrakechDesc") },
-    { icon: <Store size={24} />, title: t("cultureM2DiscFesTitle"), desc: t("cultureM2DiscFesDesc") },
-    { icon: <Sparkles size={24} />, title: t("cultureM2DiscChefchaouenTitle"), desc: t("cultureM2DiscChefchaouenDesc") },
-    { icon: <Users size={24} />, title: t("cultureM2DiscAgadirTitle"), desc: t("cultureM2DiscAgadirDesc") }
-  ];
-
   const quizData = [
-    { q: t("cultureM2QuizQ1"), options: [t("cultureM2QuizQ1O1"), t("cultureM2QuizQ1O2"), t("cultureM2QuizQ1O3")], answer: 0 },
-    { q: t("cultureM2QuizQ2"), options: [t("cultureM2QuizQ2O1"), t("cultureM2QuizQ2O2"), t("cultureM2QuizQ2O3")], answer: 0 },
-    { q: t("cultureM2QuizQ3"), options: [t("cultureM2QuizQ3O1"), t("cultureM2QuizQ3O2"), t("cultureM2QuizQ3O3")], answer: 0 },
-    { q: t("cultureM2QuizQ4"), options: [t("cultureM2QuizQ4O1"), t("cultureM2QuizQ4O2"), t("cultureM2QuizQ4O3")], answer: 0 },
-    { q: t("cultureM2QuizQ5"), options: [t("cultureM2QuizQ5O1"), t("cultureM2QuizQ5O2"), t("cultureM2QuizQ5O3")], answer: 0 }
+    { q: t("cultureM3QuizQ1"), options: [t("cultureM3QuizQ1O1"), t("cultureM3QuizQ1O2"), t("cultureM3QuizQ1O3")], answer: 0 },
+    { q: t("cultureM3QuizQ2"), options: [t("cultureM3QuizQ2O1"), t("cultureM3QuizQ2O2"), t("cultureM3QuizQ2O3")], answer: 1 },
+    { q: t("cultureM3QuizQ3"), options: [t("cultureM3QuizQ3O1"), t("cultureM3QuizQ3O2"), t("cultureM3QuizQ3O3")], answer: 0 },
+    { q: t("cultureM3QuizQ4"), options: [t("cultureM3QuizQ4O1"), t("cultureM3QuizQ4O2"), t("cultureM3QuizQ4O3")], answer: 1 },
+    { q: t("cultureM3QuizQ5"), options: [t("cultureM3QuizQ5O1"), t("cultureM3QuizQ5O2"), t("cultureM3QuizQ5O3")], answer: 0 }
   ];
 
   const handleSituationAnswer = (idx) => {
@@ -187,9 +174,7 @@ function CultureMission2() {
     if (challengeFeedback) return;
     const isCorrect = idx === challengeData[challengeIndex].correctIdx;
     setChallengeFeedback(isCorrect ? "correct" : "wrong");
-    if (isCorrect) {
-      setChallengeCompleted(prev => [...prev, challengeIndex]);
-    }
+    if (isCorrect) setChallengeCompleted(prev => [...prev, challengeIndex]);
   };
 
   const handleNextChallenge = () => {
@@ -259,6 +244,9 @@ function CultureMission2() {
     </AnimatePresence>
   );
 
+  const currentDish = dishesData[selectedDish];
+  const currentEtiq = etiquetteCards[selectedEtiquette];
+
   return (
     <div className={`mission-container culture-theme ${isRTL ? "rtl" : "ltr"}`}>
       <div className="mission-header">
@@ -286,18 +274,18 @@ function CultureMission2() {
           transition={{ duration: 0.3 }}
           className="mission-content"
         >
-          {/* STEP 1 — Welcome to the Souk */}
+          {/* STEP 1 — Welcome to Moroccan Cuisine */}
           {step === "intro" && (
             <div className="intro-step">
               <div className="intro-icon">
-                <ShoppingBag size={40} />
+                <UtensilsCrossed size={40} />
               </div>
-              <h1 className="intro-title">{t("cultureM2Title")}</h1>
+              <h1 className="intro-title">{t("cultureM3Title")}</h1>
               <div className="culture-intro-hero">
                 <Sparkles size={20} style={{ color: "#15803d", marginBottom: 8 }} />
-                <p style={{ margin: 0, fontStyle: "italic" }}>{t("cultureM2IntroStory")}</p>
+                <p style={{ margin: 0, fontStyle: "italic" }}>{t("cultureM3IntroStory")}</p>
               </div>
-              <p className="intro-desc">{t("cultureM2IntroDesc")}</p>
+              <p className="intro-desc">{t("cultureM3IntroDesc")}</p>
               <div className="culture-story-grid">
                 {introStories.map((item, idx) => (
                   <motion.div
@@ -318,22 +306,70 @@ function CultureMission2() {
             </div>
           )}
 
-          {/* STEP 2 — Understanding Market Culture */}
-          {step === "culture" && (
+          {/* STEP 2 — Discover Iconic Dishes */}
+          {step === "dishes" && (
             <div>
-              <h2 className="step-title">{t("cultureM2CultureTitle")}</h2>
-              <p className="step-subtitle">{t("cultureM2CultureDesc")}</p>
+              <h2 className="step-title">{t("cultureM3DishesTitle")}</h2>
+              <p className="step-subtitle">{t("cultureM3DishesDesc")}</p>
 
-              <div style={{ display: "flex", gap: 10, flexWrap: "wrap", justifyContent: "center", marginBottom: 24 }}>
-                {cultureCards.map((card, idx) => (
+              <div style={{ display: "flex", gap: 8, flexWrap: "wrap", justifyContent: "center", marginBottom: 24 }}>
+                {dishesData.map((dish, idx) => (
                   <button
                     key={idx}
-                    className={`vocab-card culture-card-override ${selectedCultureCard === idx ? "selected" : ""}`}
-                    style={{ flex: "1 1 90px", maxWidth: 110, padding: 16, cursor: "pointer", textAlign: "center" }}
-                    onClick={() => setSelectedCultureCard(idx)}
+                    className={`vocab-card culture-card-override ${selectedDish === idx ? "selected" : ""}`}
+                    style={{ flex: "1 1 80px", maxWidth: 100, padding: 14, cursor: "pointer", textAlign: "center" }}
+                    onClick={() => setSelectedDish(idx)}
                   >
-                    <span style={{ fontSize: "1.8rem" }}>{card.icon}</span>
-                    <div style={{ fontSize: "0.75rem", fontWeight: 600, marginTop: 8, color: selectedCultureCard === idx ? "#15803d" : "var(--learn-text-secondary)" }}>
+                    <span style={{ fontSize: "1.6rem" }}>{dish.emoji}</span>
+                    <div style={{ fontSize: "0.7rem", fontWeight: 600, marginTop: 6, color: selectedDish === idx ? "#15803d" : "var(--learn-text-secondary)" }}>
+                      {dish.title}
+                    </div>
+                  </button>
+                ))}
+              </div>
+
+              <motion.div
+                key={selectedDish}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="vocab-card culture-card-override"
+                style={{ padding: 28 }}
+              >
+                <div style={{ textAlign: "center", marginBottom: 16 }}>
+                  <span style={{ fontSize: "3.5rem" }}>{currentDish.emoji}</span>
+                  <h3 style={{ margin: "12px 0 0", fontSize: "1.35rem", fontWeight: 700, color: "#15803d" }}>{currentDish.title}</h3>
+                  <div style={{ fontSize: "0.85rem", color: "var(--learn-text-secondary)", marginTop: 4 }}>{currentDish.region}</div>
+                </div>
+                <p style={{ lineHeight: 1.65, margin: "0 0 14px", color: "var(--learn-text)" }}>{currentDish.desc}</p>
+                <div style={{
+                  padding: "14px 18px", borderRadius: 12,
+                  background: "rgba(21,128,61,0.06)", border: "1px solid rgba(21,128,61,0.2)"
+                }}>
+                  <div style={{ fontSize: "0.75rem", fontWeight: 700, color: "#15803d", marginBottom: 6, textTransform: "uppercase" }}>
+                    {ui("Signification culturelle", "Cultural significance", "الأهمية الثقافية")}
+                  </div>
+                  <p style={{ margin: 0, fontSize: "0.92rem", lineHeight: 1.6, color: "var(--learn-text-secondary)" }}>{currentDish.significance}</p>
+                </div>
+              </motion.div>
+            </div>
+          )}
+
+          {/* STEP 3 — Dining Etiquette */}
+          {step === "etiquette" && (
+            <div>
+              <h2 className="step-title">{t("cultureM3EtiqTitle")}</h2>
+              <p className="step-subtitle">{t("cultureM3EtiqDesc")}</p>
+
+              <div style={{ display: "flex", gap: 10, flexWrap: "wrap", justifyContent: "center", marginBottom: 24 }}>
+                {etiquetteCards.map((card, idx) => (
+                  <button
+                    key={idx}
+                    className={`vocab-card culture-card-override ${selectedEtiquette === idx ? "selected" : ""}`}
+                    style={{ flex: "1 1 120px", maxWidth: 150, padding: 16, cursor: "pointer", textAlign: "center" }}
+                    onClick={() => setSelectedEtiquette(idx)}
+                  >
+                    <div style={{ color: "#15803d", display: "flex", justifyContent: "center", marginBottom: 8 }}>{card.icon}</div>
+                    <div style={{ fontSize: "0.78rem", fontWeight: 600, color: selectedEtiquette === idx ? "#15803d" : "var(--learn-text-secondary)" }}>
                       {card.title}
                     </div>
                   </button>
@@ -341,92 +377,45 @@ function CultureMission2() {
               </div>
 
               <motion.div
-                key={selectedCultureCard}
+                key={selectedEtiquette}
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 className="vocab-card culture-card-override"
                 style={{ padding: 28 }}
               >
                 <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 16 }}>
-                  <div style={{
-                    width: 56, height: 56, borderRadius: "50%",
-                    background: "rgba(21,128,61,0.1)", display: "flex",
-                    alignItems: "center", justifyContent: "center", fontSize: "1.8rem"
-                  }}>
-                    {cultureCards[selectedCultureCard].icon}
+                  <div style={{ color: "#15803d", background: "rgba(21,128,61,0.1)", padding: 12, borderRadius: 12 }}>
+                    {currentEtiq.icon}
                   </div>
-                  <h3 style={{ margin: 0, fontSize: "1.25rem", fontWeight: 700, color: "#15803d" }}>
-                    {cultureCards[selectedCultureCard].title}
-                  </h3>
+                  <h3 style={{ margin: 0, fontSize: "1.2rem", fontWeight: 700, color: "#15803d" }}>{currentEtiq.title}</h3>
                 </div>
-                <p style={{ lineHeight: 1.65, margin: "0 0 16px", color: "var(--learn-text)" }}>
-                  {cultureCards[selectedCultureCard].desc}
-                </p>
+                <p style={{ lineHeight: 1.65, margin: "0 0 16px", color: "var(--learn-text)" }}>{currentEtiq.desc}</p>
                 <div style={{
                   padding: "14px 18px", borderRadius: 12,
                   background: "rgba(21,128,61,0.06)", border: "1px solid rgba(21,128,61,0.2)"
                 }}>
                   <div style={{ fontSize: "0.75rem", fontWeight: 700, color: "#15803d", marginBottom: 6, textTransform: "uppercase" }}>
-                    {ui("En voyage", "While traveling", "أثناء السفر")}
+                    {ui("En pratique", "In practice", "عملياً")}
                   </div>
-                  <p style={{ margin: 0, fontSize: "0.92rem", lineHeight: 1.6, color: "var(--learn-text-secondary)" }}>
-                    {cultureCards[selectedCultureCard].context}
-                  </p>
+                  <p style={{ margin: 0, fontSize: "0.92rem", lineHeight: 1.6, color: "var(--learn-text-secondary)" }}>{currentEtiq.context}</p>
                 </div>
               </motion.div>
             </div>
           )}
 
-          {/* STEP 3 — Price Negotiation Basics */}
-          {step === "negotiation" && (
-            <div>
-              <h2 className="step-title">{t("cultureM2NegTitle")}</h2>
-              <p className="step-subtitle">{t("cultureM2NegDesc")}</p>
-
-              {negotiationData.map((item, idx) => (
-                <motion.div
-                  key={idx}
-                  className="culture-neg-card"
-                  initial={{ opacity: 0, y: 15 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: idx * 0.08 }}
-                >
-                  <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 10 }}>
-                    <div style={{ color: "#15803d", background: "rgba(21,128,61,0.1)", padding: 10, borderRadius: 12 }}>
-                      {item.icon}
-                    </div>
-                    <h3 style={{ margin: 0, fontSize: "1.1rem", fontWeight: 700, color: "#15803d" }}>{item.title}</h3>
-                  </div>
-                  <p style={{ margin: "0 0 4px", lineHeight: 1.6, color: "var(--learn-text)" }}>{item.desc}</p>
-                  <div className="culture-neg-compare">
-                    <div className="culture-neg-local">
-                      <span className="culture-neg-label">{ui("Les locaux", "How locals do it", "ما يفعله المحليون")}</span>
-                      {item.locals}
-                    </div>
-                    <div className="culture-neg-tourist">
-                      <span className="culture-neg-label">{ui("Les touristes", "What tourists often do", "ما يفعله السياح غالباً")}</span>
-                      {item.tourists}
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          )}
-
-          {/* STEP 4 — Real Market Scenarios */}
+          {/* STEP 4 — Real Dining Scenarios */}
           {step === "situations" && (() => {
             const currentSit = situationsData[currentSituationIndex];
             return (
               <div>
-                <h2 className="step-title" style={{ textAlign: "center" }}>{t("cultureM2SitTitle")}</h2>
+                <h2 className="step-title" style={{ textAlign: "center" }}>{t("cultureM3SitTitle")}</h2>
                 <p className="step-subtitle" style={{ textAlign: "center" }}>
-                  {t("cultureM2SitDesc")} ({currentSituationIndex + 1}/{situationsData.length})
+                  {t("cultureM3SitDesc")} ({currentSituationIndex + 1}/{situationsData.length})
                 </p>
 
                 <div className="vocab-card culture-card-override" style={{ padding: "32px 24px", maxWidth: 600, margin: "0 auto" }}>
                   <div style={{ textAlign: "center", marginBottom: 16 }}>
                     <span style={{ fontSize: "3rem" }}>{currentSit.emoji}</span>
-                    {currentSit.price && <div className="culture-price-tag">{currentSit.price}</div>}
                   </div>
                   <div className="quiz-question">{currentSit.q}</div>
                   <div className="quiz-options">
@@ -466,9 +455,9 @@ function CultureMission2() {
             <div>
               <h2 className="step-title" style={{ textAlign: "center" }}>
                 <AlertTriangle size={24} style={{ display: "inline", verticalAlign: "middle", marginRight: 8, color: "#15803d" }} />
-                {t("cultureM2MistakesTitle")}
+                {t("cultureM3MistakesTitle")}
               </h2>
-              <p className="step-subtitle" style={{ textAlign: "center" }}>{t("cultureM2MistakesDesc")}</p>
+              <p className="step-subtitle" style={{ textAlign: "center" }}>{t("cultureM3MistakesDesc")}</p>
 
               <div style={{ display: "flex", gap: 8, flexWrap: "wrap", justifyContent: "center", marginBottom: 20 }}>
                 {mistakesData.map((m, idx) => (
@@ -514,15 +503,43 @@ function CultureMission2() {
             </div>
           )}
 
-          {/* STEP 6 — Bargaining Challenge */}
+          {/* STEP 6 — Cultural Food Journey */}
+          {step === "journey" && (
+            <div>
+              <h2 className="step-title">{t("cultureM3JourneyTitle")}</h2>
+              <p className="step-subtitle">{t("cultureM3JourneyDesc")}</p>
+              <div className="culture-region-grid">
+                {journeyData.map((item, idx) => (
+                  <motion.div
+                    key={idx}
+                    className="vocab-card culture-card-override"
+                    style={{ padding: 24 }}
+                    initial={{ opacity: 0, y: 15 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: idx * 0.06 }}
+                  >
+                    <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 14 }}>
+                      <div style={{ color: "#15803d", background: "rgba(21,128,61,0.1)", padding: 10, borderRadius: 12 }}>
+                        {item.icon}
+                      </div>
+                      <h3 style={{ margin: 0, fontSize: "1.1rem", fontWeight: 700, color: "#15803d" }}>{item.title}</h3>
+                    </div>
+                    <p style={{ margin: 0, lineHeight: 1.65, fontSize: "0.92rem", color: "var(--learn-text-secondary)" }}>{item.desc}</p>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* STEP 7 — Food Challenge */}
           {step === "challenge" && (() => {
             const ch = challengeData[challengeIndex];
             const allDone = challengeCompleted.length === challengeData.length && challengeIndex === challengeData.length - 1 && challengeFeedback === "correct";
             return (
               <div>
-                <h2 className="step-title" style={{ textAlign: "center" }}>{t("cultureM2ChallengeTitle")}</h2>
+                <h2 className="step-title" style={{ textAlign: "center" }}>{t("cultureM3ChallengeTitle")}</h2>
                 <p className="step-subtitle" style={{ textAlign: "center" }}>
-                  {t("cultureM2ChallengeDesc")} ({challengeIndex + 1}/{challengeData.length})
+                  {t("cultureM3ChallengeDesc")} ({challengeIndex + 1}/{challengeData.length})
                 </p>
 
                 <div className="culture-challenge-progress">
@@ -565,7 +582,7 @@ function CultureMission2() {
                   {allDone && (
                     <div className="culture-challenge-reward">
                       <Award size={32} style={{ color: "#15803d", marginBottom: 8 }} />
-                      <p style={{ margin: 0, fontWeight: 600, color: "#15803d" }}>{t("cultureM2ChallengeSuccess")}</p>
+                      <p style={{ margin: 0, fontWeight: 600, color: "#15803d" }}>{t("cultureM3ChallengeSuccess")}</p>
                     </div>
                   )}
                 </div>
@@ -573,38 +590,10 @@ function CultureMission2() {
             );
           })()}
 
-          {/* STEP 7 — Cultural Discovery */}
-          {step === "discovery" && (
-            <div>
-              <h2 className="step-title">{t("cultureM2DiscTitle")}</h2>
-              <p className="step-subtitle">{t("cultureM2DiscDesc")}</p>
-              <div className="culture-region-grid">
-                {discoveryData.map((item, idx) => (
-                  <motion.div
-                    key={idx}
-                    className="vocab-card culture-card-override"
-                    style={{ padding: 24 }}
-                    initial={{ opacity: 0, y: 15 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: idx * 0.06 }}
-                  >
-                    <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 14 }}>
-                      <div style={{ color: "#15803d", background: "rgba(21,128,61,0.1)", padding: 10, borderRadius: 12 }}>
-                        {item.icon}
-                      </div>
-                      <h3 style={{ margin: 0, fontSize: "1.1rem", fontWeight: 700, color: "#15803d" }}>{item.title}</h3>
-                    </div>
-                    <p style={{ margin: 0, lineHeight: 1.65, fontSize: "0.92rem", color: "var(--learn-text-secondary)" }}>{item.desc}</p>
-                  </motion.div>
-                ))}
-              </div>
-            </div>
-          )}
-
           {/* STEP 8 — Final Quiz */}
           {step === "quiz" && (
             <div>
-              <h2 className="step-title" style={{ textAlign: "center" }}>{t("cultureM2QuizTitle")}</h2>
+              <h2 className="step-title" style={{ textAlign: "center" }}>{t("cultureM3QuizTitle")}</h2>
               <p className="step-subtitle" style={{ textAlign: "center" }}>
                 {ui(`Question ${quizQuestionIndex + 1} sur ${quizData.length}`, `Question ${quizQuestionIndex + 1} of ${quizData.length}`, `السؤال ${quizQuestionIndex + 1} من ${quizData.length}`)}
               </p>
@@ -644,17 +633,17 @@ function CultureMission2() {
           {/* STEP 9 — Completion */}
           {step === "completion" && (
             <CultureCompletion
-              missionNumber={2}
-              completeTitle={t("cultureM2CompleteTitle")}
-              completeDesc={t("cultureM2CompleteDesc")}
-              nextMissionTitle={t("cultureM3Title")}
-              nextMissionPath="/languages/culture/mission-3"
+              missionNumber={3}
+              completeTitle={t("cultureM3CompleteTitle")}
+              completeDesc={t("cultureM3CompleteDesc")}
+              nextMissionTitle={t("cultureM4Title")}
+              nextMissionPath="/languages/culture/mission-4"
             />
           )}
         </motion.div>
       </AnimatePresence>
 
-      {(step === "culture" || step === "negotiation" || step === "mistakes" || step === "discovery") && (
+      {(step === "dishes" || step === "etiquette" || step === "mistakes" || step === "journey") && (
         <div className="mission-footer">
           <button className="mission-btn secondary" onClick={handleBack}>
             <ArrowLeft size={18} />
@@ -670,4 +659,4 @@ function CultureMission2() {
   );
 }
 
-export default CultureMission2;
+export default CultureMission3;

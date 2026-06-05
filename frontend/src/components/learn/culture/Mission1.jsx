@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { X, Coffee, Users, ShieldCheck, CheckCircle, ArrowRight, ArrowLeft, Heart, Award, Lock } from "lucide-react";
+import { X, Coffee, Users, ShieldCheck, CheckCircle, ArrowRight, ArrowLeft, Heart } from "lucide-react";
 import { useLanguage } from "../../accueil/LanguageContext";
 import { AudioButton } from "../common/AudioButton";
+import CultureCompletion from "./CultureCompletion";
 import "../darija/mission.css";
 
 const STEPS = ["intro", "tea", "situations", "etiquette", "quiz", "completion"];
@@ -359,44 +360,13 @@ function CultureMission1() {
               STEP 6 — Completion
               ══════════════════════════════════════════ */}
           {step === "completion" && (
-            <div className="completion-step">
-              <div className="completion-icon">
-                <Award size={48} />
-              </div>
-              <h1 className="intro-title">{t("cultureM1CompleteTitle")}</h1>
-              <p className="intro-desc">{t("cultureM1CompleteDesc")}</p>
-
-              {/* Progression */}
-              <div style={{ marginTop: '30px', textAlign: 'left', background: 'var(--learn-surface)', padding: '20px', borderRadius: '16px', border: '1px solid var(--learn-border)', width: '100%', maxWidth: '400px' }}>
-                <h4 style={{ marginBottom: '16px', fontSize: '1.1rem', fontWeight: 600 }}>
-                  {lang === "FR" ? "Progression" : lang === "AR" ? "التقدم" : "Progression"}
-                </h4>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', color: '#10b981' }}>
-                    <CheckCircle size={20} />
-                    <span style={{ fontWeight: 500 }}>{lang === "FR" ? "Mission 1 : Hospitalité Marocaine" : lang === "AR" ? "المهمة 1: الضيافة المغربية" : "Mission 1: Moroccan Hospitality"} ✅</span>
-                  </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', color: 'var(--learn-text)' }}>
-                    <span style={{ fontSize: '1.2rem', width: 20, textAlign: 'center' }}>🔓</span>
-                    <span style={{ fontWeight: 500 }}>{t("cultureM1NextUnlock")}</span>
-                  </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', color: 'var(--learn-text-secondary)', opacity: 0.7 }}>
-                    <Lock size={20} />
-                    <span>{lang === "FR" ? "Mission 3 : Cuisine & Restaurants" : lang === "AR" ? "المهمة 3: الطعام والمطاعم" : "Mission 3: Food & Restaurants"} 🔒</span>
-                  </div>
-                </div>
-              </div>
-
-              <div style={{ display: 'flex', gap: '16px', marginTop: '40px', flexWrap: 'wrap', justifyContent: 'center' }}>
-                <button className="mission-btn secondary" onClick={() => navigate("/languages")}>
-                  {lang === "FR" ? "Accueil" : lang === "AR" ? "الرئيسية" : "Hub"}
-                </button>
-                <button className="mission-btn" onClick={() => navigate("/languages/culture/mission-2")}>
-                  {lang === "FR" ? "Commencer la Mission 2" : lang === "AR" ? "ابدأ المهمة 2" : "Start Mission 2"}
-                  <ArrowRight size={20} />
-                </button>
-              </div>
-            </div>
+            <CultureCompletion
+              missionNumber={1}
+              completeTitle={t("cultureM1CompleteTitle")}
+              completeDesc={t("cultureM1CompleteDesc")}
+              nextMissionTitle={t("cultureM2Title")}
+              nextMissionPath="/languages/culture/mission-2"
+            />
           )}
         </motion.div>
       </AnimatePresence>
