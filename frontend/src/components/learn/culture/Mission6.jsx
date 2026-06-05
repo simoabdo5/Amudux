@@ -7,9 +7,11 @@ import {
   Wallet, CreditCard, Users, Star, Compass
 } from "lucide-react";
 import { useLanguage } from "../../accueil/LanguageContext";
+import { useAuth } from "../../../context/AuthContext";
 import CultureFinalCompletion from "./CultureFinalCompletion";
 import "../darija/mission.css";
-import { useAutoProgress } from "../../../utils/progress";
+import { useAutoProgress, canAccessMission } from "../../../utils/progress";
+import LockedScreen from "../common/LockedScreen";
 
 const STEPS = ["intro", "aware", "transport", "scams", "emergency", "scenarios", "challenge", "quiz", "completion"];
 
@@ -28,6 +30,7 @@ const STEP_LABELS = {
 function CultureMission6() {
   const { t, lang, isRTL } = useLanguage();
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [selectedAware, setSelectedAware] = useState(0);
@@ -260,6 +263,12 @@ function CultureMission6() {
     </>
   );
 
+  const pathMatch = window.location.pathname.match(/\/languages\/(\w+)\/mission-(\d+)/);
+  const currentTrack = pathMatch?.[1];
+  const currentMissionNum = pathMatch?.[2] ? parseInt(pathMatch[2]) : 0;
+  if (currentTrack && currentMissionNum && !canAccessMission(currentTrack, currentMissionNum, user)) {
+    return <LockedScreen track={currentTrack} />;
+  }
   return (
     <div className={`mission-container culture-theme ${isRTL ? "rtl" : "ltr"}`}>
       <div className="mission-header">

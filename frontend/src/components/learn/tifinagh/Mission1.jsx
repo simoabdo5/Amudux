@@ -3,9 +3,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { X, CheckCircle, Type, ArrowRight, ArrowLeft, Award, Lock } from "lucide-react";
 import { useLanguage } from "../../accueil/LanguageContext";
+import { useAuth } from "../../../context/AuthContext";
 import { AudioButton } from "../common/AudioButton";
 import "../darija/mission.css"; // Reuse the mission styling system
-import { useAutoProgress } from "../../../utils/progress";
+import { useAutoProgress, canAccessMission } from "../../../utils/progress";
+import LockedScreen from "../common/LockedScreen";
 
 const tifinaghSymbols = [
   { symbol: "ⴰ", pronunciation: "a", name: "Yaz", ar: "أ", context: { en: "The sound 'a'. It often looks like a circle.", fr: "Le son 'a'. Ressemble souvent à un cercle.", ar: "صوت 'أ'. غالباً ما يشبه الدائرة." } },
@@ -40,6 +42,7 @@ const STEP_LABELS = {
 function TifinaghMission1() {
   const { lang, isRTL } = useLanguage();
   const navigate = useNavigate();
+  const { user } = useAuth();
   
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [quizQuestionIndex, setQuizQuestionIndex] = useState(0);
@@ -96,6 +99,12 @@ function TifinaghMission1() {
     return item[prop] || item[lang.toLowerCase()] || item.en || "";
   };
 
+  const pathMatch = window.location.pathname.match(/\/languages\/(\w+)\/mission-(\d+)/);
+  const currentTrack = pathMatch?.[1];
+  const currentMissionNum = pathMatch?.[2] ? parseInt(pathMatch[2]) : 0;
+  if (currentTrack && currentMissionNum && !canAccessMission(currentTrack, currentMissionNum, user)) {
+    return <LockedScreen track={currentTrack} />;
+  }
   return (
     <div className={`mission-container tifinagh-theme ${isRTL ? "rtl" : "ltr"}`}>
       <div className="mission-header">

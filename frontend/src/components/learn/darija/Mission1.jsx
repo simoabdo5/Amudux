@@ -3,9 +3,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { X, ArrowRight, ArrowLeft, MessageCircle, Plane, Lock, Award } from "lucide-react";
 import { useLanguage } from "../../accueil/LanguageContext";
+import { useAuth } from "../../../context/AuthContext";
 import { AudioButton } from "../common/AudioButton";
 import "./mission.css"; // We created this file for Mission specific CSS
-import { useAutoProgress } from "../../../utils/progress";
+import { useAutoProgress, canAccessMission } from "../../../utils/progress";
+import LockedScreen from "../common/LockedScreen";
 
 const vocabData = [
   { darija: "Salam", arabicText: "سلام", fr: "Bonjour", en: "Hello", ar: "سلام", context: { en: "Used as a friendly greeting when meeting anyone.", fr: "Utilisé comme salutation amicale pour tout le monde.", ar: "يستخدم كتحية ودية عند لقاء أي شخص." } },
@@ -62,6 +64,7 @@ const STEP_LABELS = {
 function Mission1() {
   const { lang, isRTL } = useLanguage();
   const navigate = useNavigate();
+  const { user } = useAuth();
   
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [quizQuestionIndex, setQuizQuestionIndex] = useState(0);
@@ -120,6 +123,12 @@ function Mission1() {
     return item[prop] || item[lang.toLowerCase()] || item.en || "";
   };
 
+  const pathMatch = window.location.pathname.match(/\/languages\/(\w+)\/mission-(\d+)/);
+  const currentTrack = pathMatch?.[1];
+  const currentMissionNum = pathMatch?.[2] ? parseInt(pathMatch[2]) : 0;
+  if (currentTrack && currentMissionNum && !canAccessMission(currentTrack, currentMissionNum, user)) {
+    return <LockedScreen track={currentTrack} />;
+  }
   return (
     <div className={`mission-container ${isRTL ? "rtl" : "ltr"}`}>
       {/* Header / Progress */}

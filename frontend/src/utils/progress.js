@@ -72,6 +72,17 @@ export function getPathTotalMissions(track) {
   return PATHS[track]?.total || 0;
 }
 
+export const ADMIN_EMAILS = ["yassinoubrik2021@gmail.com"];
+
+export function isAdminUser(user) {
+  return user?.email && ADMIN_EMAILS.includes(user.email);
+}
+
+export function canAccessMission(track, missionNum, user) {
+  if (isAdminUser(user)) return true;
+  return isMissionUnlocked(track, missionNum);
+}
+
 export function isMissionUnlocked(track, missionNum) {
   if (missionNum === 1) return true;
   return isMissionCompleted(track, missionNum - 1);

@@ -3,8 +3,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { X, ArrowRight, ArrowLeft, MessageCircle, CheckCircle, Award, Droplets, BookOpen, RefreshCw, Undo2, Lock } from "lucide-react";
 import { useLanguage } from "../../accueil/LanguageContext";
+import { useAuth } from "../../../context/AuthContext";
 import "../darija/mission.css"; // Reuse styling, but with tifinagh-theme class
-import { useAutoProgress } from "../../../utils/progress";
+import { useAutoProgress, canAccessMission } from "../../../utils/progress";
+import LockedScreen from "../common/LockedScreen";
 
 const vocabData = [
   { tifinagh: "ⴰⵣⵓⵍ", latin: "Azul", meaning: { en: "Hello / Welcome", fr: "Bonjour / Bienvenue", ar: "مرحباً / أهلاً" }, context: { en: "The most common Amazigh greeting.", fr: "La salutation amazighe la plus courante.", ar: "التحية الأمازيغية الأكثر شيوعاً." } },
@@ -111,6 +113,7 @@ const STEP_LABELS = {
 function Mission4() {
   const { lang, isRTL } = useLanguage();
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [quizQuestionIndex, setQuizQuestionIndex] = useState(0);
@@ -240,6 +243,12 @@ function Mission4() {
   const shuffledTifinagh = useMemo(() => [...matchingPairs].sort(() => Math.random() - 0.5), []);
   const shuffledLatin = useMemo(() => [...matchingPairs].sort(() => Math.random() - 0.5), []);
 
+  const pathMatch = window.location.pathname.match(/\/languages\/(\w+)\/mission-(\d+)/);
+  const currentTrack = pathMatch?.[1];
+  const currentMissionNum = pathMatch?.[2] ? parseInt(pathMatch[2]) : 0;
+  if (currentTrack && currentMissionNum && !canAccessMission(currentTrack, currentMissionNum, user)) {
+    return <LockedScreen track={currentTrack} />;
+  }
   return (
     <div className={`mission-container tifinagh-theme ${isRTL ? "rtl" : "ltr"}`}>
       <div className="mission-header">

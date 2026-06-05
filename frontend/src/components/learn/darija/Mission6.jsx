@@ -3,9 +3,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { X, ArrowRight, ArrowLeft, MessageCircle, CheckCircle, Map, Award, Lock } from "lucide-react";
 import { useLanguage } from "../../accueil/LanguageContext";
+import { useAuth } from "../../../context/AuthContext";
 import { AudioButton } from "../common/AudioButton";
 import "./mission.css";
-import { useAutoProgress } from "../../../utils/progress";
+import { useAutoProgress, canAccessMission } from "../../../utils/progress";
+import LockedScreen from "../common/LockedScreen";
 
 const vocabData = [
   { darija: "Fin kayn...?", arabicText: "فين كاين...؟", fr: "Où se trouve...?", en: "Where is...?", ar: "أين يوجد...؟", context: { en: "The essential phrase for asking locations. 'Fin kayn l'hotel?'", fr: "La phrase essentielle pour demander un lieu. 'Fin kayn l'hotel?'", ar: "العبارة الأساسية للسؤال عن الأماكن. 'فين كاين الفندق؟'" } },
@@ -83,6 +85,7 @@ const STEP_LABELS = {
 function Mission6() {
   const { lang, isRTL } = useLanguage();
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [quizQuestionIndex, setQuizQuestionIndex] = useState(0);
@@ -128,6 +131,12 @@ function Mission6() {
     else { handleNext(); }
   };
 
+  const pathMatch = window.location.pathname.match(/\/languages\/(\w+)\/mission-(\d+)/);
+  const currentTrack = pathMatch?.[1];
+  const currentMissionNum = pathMatch?.[2] ? parseInt(pathMatch[2]) : 0;
+  if (currentTrack && currentMissionNum && !canAccessMission(currentTrack, currentMissionNum, user)) {
+    return <LockedScreen track={currentTrack} />;
+  }
   return (
     <div className={`mission-container ${isRTL ? "rtl" : "ltr"}`}>
       <div className="mission-header">

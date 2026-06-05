@@ -3,16 +3,19 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { X, Coffee, Users, ShieldCheck, CheckCircle, ArrowRight, ArrowLeft, Heart } from "lucide-react";
 import { useLanguage } from "../../accueil/LanguageContext";
+import { useAuth } from "../../../context/AuthContext";
 import { AudioButton } from "../common/AudioButton";
 import CultureCompletion from "./CultureCompletion";
 import "../darija/mission.css";
-import { useAutoProgress } from "../../../utils/progress";
+import { useAutoProgress, canAccessMission } from "../../../utils/progress";
+import LockedScreen from "../common/LockedScreen";
 
 const STEPS = ["intro", "tea", "situations", "etiquette", "quiz", "completion"];
 
 function CultureMission1() {
   const { t, lang, isRTL } = useLanguage();
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
 
@@ -140,6 +143,12 @@ function CultureMission1() {
     }, 1500);
   };
 
+  const pathMatch = window.location.pathname.match(/\/languages\/(\w+)\/mission-(\d+)/);
+  const currentTrack = pathMatch?.[1];
+  const currentMissionNum = pathMatch?.[2] ? parseInt(pathMatch[2]) : 0;
+  if (currentTrack && currentMissionNum && !canAccessMission(currentTrack, currentMissionNum, user)) {
+    return <LockedScreen track={currentTrack} />;
+  }
   return (
     <div className={`mission-container culture-theme ${isRTL ? "rtl" : "ltr"}`}>
       {/* ── Header / Progress ── */}

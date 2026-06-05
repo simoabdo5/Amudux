@@ -6,9 +6,11 @@ import {
   Award, Users, Hand, Share2, Heart, MapPin, Sparkles, Coffee, ChefHat, Home
 } from "lucide-react";
 import { useLanguage } from "../../accueil/LanguageContext";
+import { useAuth } from "../../../context/AuthContext";
 import CultureCompletion from "./CultureCompletion";
 import "../darija/mission.css";
-import { useAutoProgress } from "../../../utils/progress";
+import { useAutoProgress, canAccessMission } from "../../../utils/progress";
+import LockedScreen from "../common/LockedScreen";
 
 const STEPS = ["intro", "dishes", "etiquette", "situations", "mistakes", "journey", "challenge", "quiz", "completion"];
 
@@ -27,6 +29,7 @@ const STEP_LABELS = {
 function CultureMission3() {
   const { t, lang, isRTL } = useLanguage();
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [selectedDish, setSelectedDish] = useState(0);
@@ -253,6 +256,12 @@ function CultureMission3() {
   const currentDish = dishesData[selectedDish];
   const currentEtiq = etiquetteCards[selectedEtiquette];
 
+  const pathMatch = window.location.pathname.match(/\/languages\/(\w+)\/mission-(\d+)/);
+  const currentTrack = pathMatch?.[1];
+  const currentMissionNum = pathMatch?.[2] ? parseInt(pathMatch[2]) : 0;
+  if (currentTrack && currentMissionNum && !canAccessMission(currentTrack, currentMissionNum, user)) {
+    return <LockedScreen track={currentTrack} />;
+  }
   return (
     <div className={`mission-container culture-theme ${isRTL ? "rtl" : "ltr"}`}>
       <div className="mission-header">

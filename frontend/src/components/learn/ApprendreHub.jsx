@@ -3,7 +3,8 @@ import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { MessageCircle, Type, Compass, ArrowRight, CheckCircle, Lock, LockOpen, BookOpen } from "lucide-react";
 import { useLanguage } from "../accueil/LanguageContext";
-import { getCompletedMissions, getPathTotalMissions, getPathProgress, getOverallProgress, getTotalCompleted, getTotalMissions, getFirstUnlockedMission } from "../../utils/progress";
+import { getCompletedMissions, getPathTotalMissions, getPathProgress, getOverallProgress, getTotalCompleted, getTotalMissions, getFirstUnlockedMission, isAdminUser } from "../../utils/progress";
+import { useAuth } from "../../context/AuthContext";
 import "./apprendre.css";
 
 const tracks = [
@@ -60,6 +61,7 @@ function ProgressBar({ percent }) {
 const ApprendreHub = () => {
   const { t, isRTL } = useLanguage();
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [refreshKey, setRefreshKey] = useState(0);
 
   useEffect(() => {
@@ -214,8 +216,9 @@ const ApprendreHub = () => {
         {tracks.map((track) => {
           const { completed, total, done, progress } = getStatusInfo(track);
           const Icon = track.icon;
+          const isAdmin = isAdminUser(user);
           const firstUnlocked = getFirstUnlockedMission(track.id);
-          const hasUnlocked = firstUnlocked !== null;
+          const hasUnlocked = isAdmin || firstUnlocked !== null;
           const statusLabel = done
             ? (isRTL ? "مكتمل" : "Completed")
             : hasUnlocked
