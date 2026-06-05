@@ -271,20 +271,35 @@ function TifinaghMission1() {
                  "You have learned your first Tifinagh symbols and their cultural significance."}
               </p>
               
-              <div className="next-mission-card">
-                <div className="next-icon">
-                  <Lock size={24} />
-                </div>
-                <div className="next-info">
-                  <h4>{lang === "FR" ? "Prochaine Mission" : lang === "AR" ? "المهمة القادمة" : "Next Mission"}</h4>
-                  <p>{lang === "FR" ? "Écrire votre premier mot (Bientôt)" : lang === "AR" ? "كتابة كلمتك الأولى (قريباً)" : "Writing Your First Word (Coming soon)"}</p>
+              <div style={{ marginTop: '30px', textAlign: 'left', background: 'var(--learn-surface)', padding: '20px', borderRadius: '16px', border: '1px solid var(--learn-border)', width: '100%', maxWidth: '400px' }}>
+                <h4 style={{ marginBottom: '16px', fontSize: '1.1rem', fontWeight: 600 }}>
+                  {lang === "FR" ? "Progression" : lang === "AR" ? "التقدم" : "Progression"}
+                </h4>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', color: '#10b981' }}>
+                    <CheckCircle size={20} />
+                    <span style={{ fontWeight: 500 }}>{lang === "FR" ? "Mission 1 : Découverte" : lang === "AR" ? "المهمة 1: اكتشاف" : "Mission 1: Discovery"} ✅</span>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', color: 'var(--learn-text)' }}>
+                    <span style={{ fontSize: '1.2rem', width: 20, textAlign: 'center' }}>🔓</span>
+                    <span style={{ fontWeight: 500 }}>{lang === "FR" ? "Mission 2 : Écrire votre premier mot" : lang === "AR" ? "المهمة 2: كتابة كلمتك الأولى" : "Mission 2: Write Your First Word"}</span>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', color: 'var(--learn-text-secondary)', opacity: 0.7 }}>
+                    <Lock size={20} />
+                    <span>{lang === "FR" ? "Mission 3 : Noms de villes" : lang === "AR" ? "المهمة 3: أسماء المدن" : "Mission 3: City Names"} 🔒</span>
+                  </div>
                 </div>
               </div>
 
-              <button className="mission-btn" style={{marginTop: '40px'}} onClick={() => navigate("/languages")}>
-                <CheckCircle size={20} />
-                {lang === "FR" ? "Retour à l'accueil" : lang === "AR" ? "العودة للرئيسية" : "Return to Hub"}
-              </button>
+              <div style={{ display: 'flex', gap: '16px', marginTop: '40px', flexWrap: 'wrap', justifyContent: 'center' }}>
+                <button className="mission-btn secondary" onClick={() => navigate("/languages")}>
+                  {lang === "FR" ? "Accueil" : lang === "AR" ? "الرئيسية" : "Hub"}
+                </button>
+                <button className="mission-btn" onClick={() => navigate("/languages/tifinagh/mission-2")}>
+                  {lang === "FR" ? "Commencer la Mission 2" : lang === "AR" ? "ابدأ المهمة 2" : "Start Mission 2"}
+                  <ArrowRight size={20} />
+                </button>
+              </div>
             </div>
           )}
         </motion.div>
