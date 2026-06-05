@@ -75,6 +75,32 @@ html.dark {
   transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+/* Step Progress Indicator */
+.step-indicator {
+  max-width: 800px;
+  margin: -24px auto 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.step-indicator-number {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--learn-text-secondary);
+  background: var(--learn-surface);
+  padding: 4px 12px;
+  border-radius: 20px;
+  border: 1px solid var(--learn-border);
+}
+
+.step-indicator-name {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--learn-accent);
+}
+
 .mission-content {
   max-width: 800px;
   margin: 0 auto;
