@@ -11,6 +11,7 @@ import CultureCompletion from "./CultureCompletion";
 import "../darija/mission.css";
 import { useAutoProgress, canAccessMission } from "../../../utils/progress";
 import LockedScreen from "../common/LockedScreen";
+import FavoriteButton from "../common/FavoriteButton";
 
 const STEPS = ["intro", "dishes", "etiquette", "situations", "mistakes", "journey", "challenge", "quiz", "completion"];
 
@@ -268,6 +269,7 @@ function CultureMission3() {
         <button className="mission-close" onClick={() => navigate("/languages")}>
           <X size={24} />
         </button>
+        <FavoriteButton track="culture" missionNum={3} />
         <div className="mission-progress-bar">
           <div className="mission-progress-fill" style={{ width: `${progressPercent}%` }} />
         </div>

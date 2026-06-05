@@ -7,6 +7,7 @@ import { useAuth } from "../../../context/AuthContext";
 import "../darija/mission.css"; // Reuse styling, but with tifinagh-theme class
 import { useAutoProgress, canAccessMission } from "../../../utils/progress";
 import LockedScreen from "../common/LockedScreen";
+import FavoriteButton from "../common/FavoriteButton";
 
 const vocabData = [
   { tifinagh: "ⴰⵣⵓⵍ", latin: "Azul", meaning: { en: "Hello / Welcome", fr: "Bonjour / Bienvenue", ar: "مرحباً / أهلاً" }, context: { en: "The most common Amazigh greeting.", fr: "La salutation amazighe la plus courante.", ar: "التحية الأمازيغية الأكثر شيوعاً." } },
@@ -253,6 +254,7 @@ function Mission4() {
     <div className={`mission-container tifinagh-theme ${isRTL ? "rtl" : "ltr"}`}>
       <div className="mission-header">
         <button className="mission-close" onClick={() => navigate("/languages")}><X size={24} /></button>
+        <FavoriteButton track="tifinagh" missionNum={4} />
         <div className="mission-progress-bar"><div className="mission-progress-fill" style={{ width: `${progressPercent}%` }}></div></div>
       </div>
 

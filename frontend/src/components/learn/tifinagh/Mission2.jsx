@@ -17,6 +17,7 @@ import { useAuth } from "../../../context/AuthContext";
 import "../darija/mission.css";
 import { useAutoProgress, canAccessMission } from "../../../utils/progress";
 import LockedScreen from "../common/LockedScreen";
+import FavoriteButton from "../common/FavoriteButton";
 
 const STEPS = [
   "intro",
@@ -339,6 +340,7 @@ function TifinaghMission2() {
         <button className="mission-close" onClick={() => navigate("/languages")}>
           <X size={24} />
         </button>
+        <FavoriteButton track="tifinagh" missionNum={2} />
         <div className="mission-progress-bar">
           <div className="mission-progress-fill" style={{ width: `${progressPercent}%` }}></div>
         </div>

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { MessageCircle, Type, Compass, ArrowRight, CheckCircle, Lock, LockOpen, BookOpen, BadgeCheck, List, Play, X } from "lucide-react";
+import { MessageCircle, Type, Compass, ArrowRight, CheckCircle, Lock, LockOpen, BookOpen, BadgeCheck, List, Play, X, Star, Heart, Lightbulb } from "lucide-react";
 import { useLanguage } from "../accueil/LanguageContext";
 import {
   getCompletedMissions, getPathTotalMissions, getPathProgress, getOverallProgress,
@@ -9,6 +9,10 @@ import {
   getMissionTitle, getMissionStatus, getContinueLearningInfo, isMissionCompleted, isMissionUnlocked
 } from "../../utils/progress";
 import { useAuth } from "../../context/AuthContext";
+import { getSavedVocabCount, getFavoriteMissionsCount } from "../../utils/storage";
+import MyVocabulary from "./common/MyVocabulary";
+import FavoriteMissions from "./common/FavoriteMissions";
+import RevisionMode from "./common/RevisionMode";
 import "./apprendre.css";
 
 const tracks = [
@@ -205,6 +209,10 @@ const ApprendreHub = () => {
   const { user } = useAuth();
   const [refreshKey, setRefreshKey] = useState(0);
   const [modalTrack, setModalTrack] = useState(null);
+  const [showVocab, setShowVocab] = useState(false);
+  const [showFavorites, setShowFavorites] = useState(false);
+  const [showRevision, setShowRevision] = useState(false);
+  const [hubRefresh, setHubRefresh] = useState(0);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -449,6 +457,148 @@ const ApprendreHub = () => {
         </div>
       </motion.div>
 
+      {/* Quick Access: My Vocabulary, Favorites, Revision */}
+      <motion.div
+        key={`quick-${hubRefresh}`}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.4 }}
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
+          gap: "16px", width: "100%", maxWidth: "1200px", marginBottom: "48px"
+        }}
+      >
+        {/* My Vocabulary */}
+        <div
+          onClick={() => setShowVocab(true)}
+          style={{
+            background: "var(--apprendre-surface)", borderRadius: "20px",
+            border: "1px solid var(--apprendre-border)",
+            boxShadow: "var(--apprendre-shadow-md)",
+            padding: "20px", cursor: "pointer",
+            transition: "all 0.25s",
+            display: "flex", flexDirection: "column", gap: "12px"
+          }}
+          onMouseEnter={e => { e.currentTarget.style.borderColor = "var(--learn-accent, #d97706)"; e.currentTarget.style.transform = "translateY(-2px)"; }}
+          onMouseLeave={e => { e.currentTarget.style.borderColor = "var(--apprendre-border)"; e.currentTarget.style.transform = "none"; }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+            <div style={{
+              width: 36, height: 36, borderRadius: "10px",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              background: "rgba(var(--learn-accent-rgb, 217,119,6), 0.12)",
+              color: "var(--learn-accent, #d97706)"
+            }}>
+              <Star size={18} />
+            </div>
+            <div style={{ flex: 1 }}>
+              <div style={{ fontSize: "0.9rem", fontWeight: 700, color: "var(--apprendre-text-primary)" }}>
+                {isRTL ? "مفرداتي" : "My Vocabulary"}
+              </div>
+              <div style={{ fontSize: "0.8rem", fontWeight: 500, color: "var(--apprendre-text-secondary)" }}>
+                {getSavedVocabCount()} {isRTL ? "كلمة محفوظة" : "word" + (getSavedVocabCount() !== 1 ? "s" : "")} {isRTL ? "" : "saved"}
+              </div>
+            </div>
+          </div>
+          <div style={{ display: "flex", justifyContent: "flex-end" }}>
+            <span style={{
+              fontSize: "0.8rem", fontWeight: 600, color: "var(--learn-accent, #d97706)",
+              display: "flex", alignItems: "center", gap: "4px"
+            }}>
+              {isRTL ? "فتح" : "Open"}
+              <ArrowRight size={14} style={{ transform: isRTL ? "rotate(180deg)" : "none" }} />
+            </span>
+          </div>
+        </div>
+
+        {/* Favorite Lessons */}
+        <div
+          onClick={() => setShowFavorites(true)}
+          style={{
+            background: "var(--apprendre-surface)", borderRadius: "20px",
+            border: "1px solid var(--apprendre-border)",
+            boxShadow: "var(--apprendre-shadow-md)",
+            padding: "20px", cursor: "pointer",
+            transition: "all 0.25s",
+            display: "flex", flexDirection: "column", gap: "12px"
+          }}
+          onMouseEnter={e => { e.currentTarget.style.borderColor = "var(--learn-error, #ef4444)"; e.currentTarget.style.transform = "translateY(-2px)"; }}
+          onMouseLeave={e => { e.currentTarget.style.borderColor = "var(--apprendre-border)"; e.currentTarget.style.transform = "none"; }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+            <div style={{
+              width: 36, height: 36, borderRadius: "10px",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              background: "rgba(239,68,68,0.12)",
+              color: "var(--learn-error, #ef4444)"
+            }}>
+              <Heart size={18} />
+            </div>
+            <div style={{ flex: 1 }}>
+              <div style={{ fontSize: "0.9rem", fontWeight: 700, color: "var(--apprendre-text-primary)" }}>
+                {isRTL ? "الدروس المفضلة" : "Favorite Lessons"}
+              </div>
+              <div style={{ fontSize: "0.8rem", fontWeight: 500, color: "var(--apprendre-text-secondary)" }}>
+                {getFavoriteMissionsCount()} {isRTL ? "درس" : "lesson" + (getFavoriteMissionsCount() !== 1 ? "s" : "")} {isRTL ? "مفضل" : "saved"}
+              </div>
+            </div>
+          </div>
+          <div style={{ display: "flex", justifyContent: "flex-end" }}>
+            <span style={{
+              fontSize: "0.8rem", fontWeight: 600, color: "var(--learn-error, #ef4444)",
+              display: "flex", alignItems: "center", gap: "4px"
+            }}>
+              {isRTL ? "فتح" : "Open"}
+              <ArrowRight size={14} style={{ transform: isRTL ? "rotate(180deg)" : "none" }} />
+            </span>
+          </div>
+        </div>
+
+        {/* Revision Mode */}
+        <div
+          onClick={() => setShowRevision(true)}
+          style={{
+            background: "var(--apprendre-surface)", borderRadius: "20px",
+            border: "1px solid var(--apprendre-border)",
+            boxShadow: "var(--apprendre-shadow-md)",
+            padding: "20px", cursor: "pointer",
+            transition: "all 0.25s",
+            display: "flex", flexDirection: "column", gap: "12px"
+          }}
+          onMouseEnter={e => { e.currentTarget.style.borderColor = "var(--learn-success, #10b981)"; e.currentTarget.style.transform = "translateY(-2px)"; }}
+          onMouseLeave={e => { e.currentTarget.style.borderColor = "var(--apprendre-border)"; e.currentTarget.style.transform = "none"; }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+            <div style={{
+              width: 36, height: 36, borderRadius: "10px",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              background: "rgba(16,185,129,0.12)",
+              color: "var(--learn-success, #10b981)"
+            }}>
+              <Lightbulb size={18} />
+            </div>
+            <div style={{ flex: 1 }}>
+              <div style={{ fontSize: "0.9rem", fontWeight: 700, color: "var(--apprendre-text-primary)" }}>
+                {isRTL ? "وضع المراجعة" : "Revision Mode"}
+              </div>
+              <div style={{ fontSize: "0.8rem", fontWeight: 500, color: "var(--apprendre-text-secondary)" }}>
+                {isRTL ? "مراجعة المفردات" : "Review vocabulary"}
+              </div>
+            </div>
+          </div>
+          <div style={{ display: "flex", justifyContent: "flex-end" }}>
+            <span style={{
+              fontSize: "0.8rem", fontWeight: 600, color: "var(--learn-success, #10b981)",
+              display: "flex", alignItems: "center", gap: "4px"
+            }}>
+              {isRTL ? "بدء المراجعة" : "Start Review"}
+              <ArrowRight size={14} style={{ transform: isRTL ? "rotate(180deg)" : "none" }} />
+            </span>
+          </div>
+        </div>
+      </motion.div>
+
       {/* Learning Paths */}
       <motion.div
         className="apprendre-cards-container"
@@ -590,6 +740,36 @@ const ApprendreHub = () => {
             lang={lang}
             isRTL={isRTL}
             onClose={() => setModalTrack(null)}
+          />
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {showVocab && (
+          <MyVocabulary
+            lang={lang}
+            isRTL={isRTL}
+            onClose={(refresh) => { setShowVocab(false); if (refresh) setTimeout(() => setHubRefresh(v => v + 1), 100); }}
+          />
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {showFavorites && (
+          <FavoriteMissions
+            lang={lang}
+            isRTL={isRTL}
+            onClose={(refresh) => { setShowFavorites(false); if (refresh) setTimeout(() => setHubRefresh(v => v + 1), 100); }}
+          />
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {showRevision && (
+          <RevisionMode
+            lang={lang}
+            isRTL={isRTL}
+            onClose={() => setShowRevision(false)}
           />
         )}
       </AnimatePresence>

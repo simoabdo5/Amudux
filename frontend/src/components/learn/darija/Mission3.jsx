@@ -8,6 +8,8 @@ import { AudioButton } from "../common/AudioButton";
 import "./mission.css";
 import { useAutoProgress, canAccessMission } from "../../../utils/progress";
 import LockedScreen from "../common/LockedScreen";
+import FavoriteButton from "../common/FavoriteButton";
+import SaveVocabButton from "../common/SaveVocabButton";
 
 const STEPS = ["intro", "vocab", "expressions", "conversation", "situations", "quiz", "recap", "completion"];
 
@@ -175,6 +177,7 @@ function Mission3() {
         <button className="mission-close" onClick={() => navigate("/languages")}>
           <X size={24} />
         </button>
+        <FavoriteButton track="darija" missionNum={3} />
         <div className="mission-progress-bar">
           <div className="mission-progress-fill" style={{ width: `${progressPercent}%` }}></div>
         </div>
@@ -224,7 +227,10 @@ function Mission3() {
                   <div key={idx} className="vocab-card">
                     <div className="vocab-word-header">
                       <div>
-                        <div className="vocab-word">{item.word}</div>
+                        <div className="vocab-word" style={{display:"flex",alignItems:"center",gap:"8px"}}>
+  <span>{item.word}</span>
+  <SaveVocabButton id={'darija_3_' + item.word} word={item.word} translation={item.en} track="darija" missionNum={3} />
+</div>
                         <div className="vocab-trans">{item.trans}</div>
                       </div>
                       <AudioButton text={item.word} arabicText={item.ar} />
@@ -248,7 +254,10 @@ function Mission3() {
                 {expressionsList.map((exp, idx) => (
                   <div key={idx} className="expression-card">
                     <div className="expression-content">
-                      <div className="exp-darija">{exp.darija}</div>
+                      <div className="exp-darija" style={{display:"flex",alignItems:"center",gap:"8px"}}>
+  <span>{exp.darija}</span>
+  <SaveVocabButton id={'darija_3_' + exp.darija} word={exp.darija} translation={exp.en || exp.fr} track="darija" missionNum={3} type="expression" />
+</div>
                       <div className="exp-trans">{exp.trans}</div>
                     </div>
                     <AudioButton text={exp.darija} />

@@ -8,6 +8,8 @@ import { AudioButton } from "../common/AudioButton";
 import "./mission.css";
 import { useAutoProgress, canAccessMission } from "../../../utils/progress";
 import LockedScreen from "../common/LockedScreen";
+import FavoriteButton from "../common/FavoriteButton";
+import SaveVocabButton from "../common/SaveVocabButton";
 
 const vocabData = [
   { darija: "Mosa3ada", arabicText: "مساعدة", fr: "Aide", en: "Help", ar: "مساعدة", context: { en: "The most important word for emergencies.", fr: "Le mot le plus important pour les urgences.", ar: "أهم كلمة في حالات الطوارئ." } },
@@ -139,6 +141,7 @@ function Mission7() {
     <div className={`mission-container ${isRTL ? "rtl" : "ltr"}`}>
       <div className="mission-header">
         <button className="mission-close" onClick={() => navigate("/languages")}><X size={24} /></button>
+        <FavoriteButton track="darija" missionNum={7} />
         <div className="mission-progress-bar"><div className="mission-progress-fill" style={{ width: `${progressPercent}%` }}></div></div>
       </div>
 
@@ -173,7 +176,10 @@ function Mission7() {
                 {vocabData.map((word, idx) => (
                   <div key={idx} className="vocab-card">
                     <AudioButton text={word.darija} ttsText={word.arabicText} overrideLang="AR" />
-                    <div className="vocab-word">{word.darija}</div>
+                    <div className="vocab-word" style={{display:"flex",alignItems:"center",gap:"8px"}}>
+  <span>{word.darija}</span>
+  <SaveVocabButton id={'darija_7_' + word.darija} word={word.darija} translation={word.en} track="darija" missionNum={7} />
+</div>
                     <div className="vocab-translations">
                       <span className="vocab-trans-item"><strong>{lang === "FR" ? "Français:" : "English:"}</strong> {lang === "FR" ? word.fr : word.en}</span>
                       <span className="vocab-trans-item ar">{word.ar}</span>
@@ -197,7 +203,10 @@ function Mission7() {
                   <div key={idx} className="expression-card">
                     <AudioButton text={exp.darija} ttsText={exp.arabicText} overrideLang="AR" style={{position:'static', flexShrink:0}} />
                     <div className="expression-content">
-                      <div className="exp-darija">{exp.darija}</div>
+                      <div className="exp-darija" style={{display:"flex",alignItems:"center",gap:"8px"}}>
+  <span>{exp.darija}</span>
+  <SaveVocabButton id={'darija_7_' + exp.darija} word={exp.darija} translation={exp.en || exp.fr} track="darija" missionNum={7} type="expression" />
+</div>
                       <div className="exp-trans">{lang === "FR" ? exp.fr : lang === "AR" ? exp.ar : exp.en}</div>
                       <div className="chat-trans" style={{marginTop: '8px', color: 'var(--learn-text-secondary)'}}>
                         {getLangProp(exp, 'context')}
