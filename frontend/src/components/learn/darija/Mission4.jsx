@@ -403,19 +403,44 @@ function Mission4() {
               <h1 className="intro-title">{t("darijaM4CompleteTitle")}</h1>
               <p className="intro-desc">{t("darijaM4CompleteDesc")}</p>
 
-              <div className="next-mission-card">
-                <div className="next-icon">
-                  <span style={{ fontSize: "1.5rem" }}>🔓</span>
-                </div>
-                <div className="next-info">
-                  <h4>{t("darijaM4NextUnlock")}</h4>
+              {/* Progression */}
+              <div style={{ marginTop: '30px', textAlign: 'left', background: 'var(--learn-surface)', padding: '20px', borderRadius: '16px', border: '1px solid var(--learn-border)', width: '100%', maxWidth: '400px' }}>
+                <h4 style={{ marginBottom: '16px', fontSize: '1.1rem', fontWeight: 600 }}>
+                  {lang === "FR" ? "Progression" : lang === "AR" ? "التقدم" : "Progression"}
+                </h4>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', color: '#10b981' }}>
+                    <CheckCircle size={20} />
+                    <span style={{ fontWeight: 500 }}>{lang === "FR" ? "Mission 1 : Aéroport" : lang === "AR" ? "المهمة 1: المطار" : "Mission 1: Airport"} ✅</span>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', color: '#10b981' }}>
+                    <CheckCircle size={20} />
+                    <span style={{ fontWeight: 500 }}>{lang === "FR" ? "Mission 2 : Trajet en Taxi" : lang === "AR" ? "المهمة 2: رحلة التاكسي" : "Mission 2: Taxi Journey"} ✅</span>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', color: '#10b981' }}>
+                    <CheckCircle size={20} />
+                    <span style={{ fontWeight: 500 }}>{lang === "FR" ? "Mission 3 : Arrivée à l'Hôtel" : lang === "AR" ? "المهمة 3: تسجيل الدخول في الفندق" : "Mission 3: Hotel Check-In"} ✅</span>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', color: '#10b981' }}>
+                    <CheckCircle size={20} />
+                    <span style={{ fontWeight: 500 }}>{lang === "FR" ? "Mission 4 : Restaurant & Café" : lang === "AR" ? "المهمة 4: مطعم ومقهى" : "Mission 4: Restaurant & Café"} ✅</span>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', color: 'var(--learn-text)' }}>
+                    <span style={{ fontSize: '1.2rem', width: 20, textAlign: 'center' }}>🔓</span>
+                    <span style={{ fontWeight: 500 }}>{t("darijaM4NextUnlock")}</span>
+                  </div>
                 </div>
               </div>
 
-              <button className="mission-btn" style={{ marginTop: 40 }} onClick={() => navigate("/languages")}>
-                <CheckCircle size={20} />
-                {lang === "FR" ? "Retour à l'accueil" : lang === "AR" ? "العودة للرئيسية" : "Return to Hub"}
-              </button>
+              <div style={{ display: 'flex', gap: '16px', marginTop: '40px', flexWrap: 'wrap', justifyContent: 'center' }}>
+                <button className="mission-btn secondary" onClick={() => navigate("/languages")}>
+                  {lang === "FR" ? "Accueil" : lang === "AR" ? "الرئيسية" : "Hub"}
+                </button>
+                <button className="mission-btn" onClick={() => navigate("/languages/darija/mission-5")}>
+                  {lang === "FR" ? "Commencer la Mission 5" : lang === "AR" ? "ابدأ المهمة 5" : "Start Mission 5"}
+                  <ArrowRight size={20} style={{ marginLeft: 8 }} />
+                </button>
+              </div>
             </div>
           )}
         </motion.div>
