@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { MessageCircle, Type, Compass, ArrowRight, CheckCircle, Lock, LockOpen, BookOpen } from "lucide-react";
+import { MessageCircle, Type, Compass, ArrowRight, CheckCircle, Lock, LockOpen, BookOpen, BadgeCheck, List, Play, X } from "lucide-react";
 import { useLanguage } from "../accueil/LanguageContext";
-import { getCompletedMissions, getPathTotalMissions, getPathProgress, getOverallProgress, getTotalCompleted, getTotalMissions, getFirstUnlockedMission, isAdminUser } from "../../utils/progress";
+import {
+  getCompletedMissions, getPathTotalMissions, getPathProgress, getOverallProgress,
+  getTotalCompleted, getTotalMissions, getFirstUnlockedMission, isAdminUser,
+  getMissionTitle, getMissionStatus, getContinueLearningInfo, isMissionCompleted, isMissionUnlocked
+} from "../../utils/progress";
 import { useAuth } from "../../context/AuthContext";
 import "./apprendre.css";
 
@@ -18,6 +22,7 @@ const tracks = [
     descKey: "learnPathDarijaDesc",
     ctaKey: "learnPathDarijaCTA",
     eyebrowKey: "learnPathDarijaEyebrow",
+    label: "Darija"
   },
   {
     id: "tifinagh",
@@ -29,6 +34,7 @@ const tracks = [
     descKey: "learnPathTifinaghDesc",
     ctaKey: "learnPathTifinaghCTA",
     eyebrowKey: "learnPathTifinaghEyebrow",
+    label: "Tifinagh"
   },
   {
     id: "culture",
@@ -40,6 +46,7 @@ const tracks = [
     descKey: "learnPathTipsDesc",
     ctaKey: "learnPathTipsCTA",
     eyebrowKey: "learnPathTipsEyebrow",
+    label: "Culture"
   },
 ];
 
@@ -58,11 +65,146 @@ function ProgressBar({ percent }) {
   );
 }
 
+function MissionListModal({ track, lang, isRTL, onClose }) {
+  const navigate = useNavigate();
+  const total = getPathTotalMissions(track);
+
+  const handleMissionClick = (missionNum) => {
+    if (isMissionCompleted(track, missionNum) || isMissionUnlocked(track, missionNum)) {
+      navigate(`/languages/${track}/mission-${missionNum}`);
+    }
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      style={{
+        position: "fixed", inset: 0, zIndex: 1000,
+        background: "rgba(0,0,0,0.5)", backdropFilter: "blur(4px)",
+        display: "flex", alignItems: "center", justifyContent: "center",
+        padding: "20px"
+      }}
+      onClick={onClose}
+    >
+      <motion.div
+        initial={{ scale: 0.92, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        exit={{ scale: 0.92, opacity: 0 }}
+        transition={{ type: "spring", stiffness: 400, damping: 30 }}
+        onClick={e => e.stopPropagation()}
+        style={{
+          background: "var(--apprendre-surface)", borderRadius: "24px",
+          border: "1px solid var(--apprendre-border)",
+          boxShadow: "var(--apprendre-shadow-lg, 0 20px 60px rgba(0,0,0,0.15))",
+          width: "100%", maxWidth: "480px", maxHeight: "80vh",
+          overflow: "hidden", display: "flex", flexDirection: "column"
+        }}
+      >
+        <div style={{
+          display: "flex", alignItems: "center", justifyContent: "space-between",
+          padding: "20px 24px",
+          borderBottom: "1px solid var(--apprendre-border)"
+        }}>
+          <h3 style={{
+            margin: 0, fontSize: "1.2rem", fontWeight: 700,
+            color: "var(--apprendre-text-primary)"
+          }}>
+            {track === "darija" ? "Darija" : track === "tifinagh" ? "Tifinagh" : "Culture"}
+          </h3>
+          <button
+            onClick={onClose}
+            className="mission-close"
+            style={{ position: "static", width: 36, height: 36 }}
+          >
+            <X size={20} />
+          </button>
+        </div>
+
+        <div style={{
+          padding: "12px 8px", overflowY: "auto", flex: 1
+        }}>
+          {Array.from({ length: total }, (_, i) => {
+            const num = i + 1;
+            const status = getMissionStatus(track, num);
+            const title = getMissionTitle(track, num, lang);
+            const isClickable = status === "completed" || status === "unlocked";
+
+            let StatusIcon, iconColor;
+            if (status === "completed") {
+              StatusIcon = BadgeCheck;
+              iconColor = "var(--learn-success, #10b981)";
+            } else if (status === "unlocked") {
+              StatusIcon = LockOpen;
+              iconColor = "var(--learn-accent, #d97706)";
+            } else {
+              StatusIcon = Lock;
+              iconColor = "var(--apprendre-text-secondary)";
+            }
+
+            return (
+              <button
+                key={num}
+                onClick={() => isClickable && handleMissionClick(num)}
+                disabled={!isClickable}
+                style={{
+                  display: "flex", alignItems: "center", gap: "14px",
+                  width: "100%", padding: "14px 16px",
+                  border: "none", borderRadius: "14px",
+                  background: "transparent", cursor: isClickable ? "pointer" : "default",
+                  opacity: status === "locked" ? 0.5 : 1,
+                  transition: "all 0.2s",
+                  textAlign: isRTL ? "right" : "left"
+                }}
+                onMouseEnter={e => { if (isClickable) e.currentTarget.style.background = "var(--apprendre-hover, rgba(0,0,0,0.04))"; }}
+                onMouseLeave={e => e.currentTarget.style.background = "transparent"}
+              >
+                <StatusIcon size={22} style={{ color: iconColor, flexShrink: 0 }} />
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{
+                    fontSize: "0.8rem", fontWeight: 600,
+                    color: "var(--apprendre-text-secondary)", marginBottom: "2px"
+                  }}>
+                    {isRTL ? `المهمة ${num}` : `Mission ${num}`}
+                  </div>
+                  <div style={{
+                    fontSize: "0.95rem", fontWeight: 600,
+                    color: isClickable ? "var(--apprendre-text-primary)" : "var(--apprendre-text-secondary)",
+                    whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis"
+                  }}>
+                    {title}
+                  </div>
+                </div>
+                <div style={{
+                  fontSize: "0.75rem", fontWeight: 600, padding: "3px 10px",
+                  borderRadius: "999px", flexShrink: 0,
+                  background: status === "completed" ? "rgba(16,185,129,0.12)" :
+                              status === "unlocked" ? "rgba(var(--learn-accent-rgb, 217,119,6),0.12)" :
+                              "rgba(0,0,0,0.05)",
+                  color: status === "completed" ? "var(--learn-success, #10b981)" :
+                         status === "unlocked" ? "var(--learn-accent, #d97706)" :
+                         "var(--apprendre-text-secondary)"
+                }}>
+                  {status === "completed" ? (isRTL ? "مكتمل" : "Completed") :
+                   status === "unlocked" ? (isRTL ? "متاح" : "Available") :
+                   (isRTL ? "مقفل" : "Locked")}
+                </div>
+              </button>
+            );
+          })}
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+}
+
 const ApprendreHub = () => {
-  const { t, isRTL } = useLanguage();
+  const { t, lang, isRTL } = useLanguage();
   const navigate = useNavigate();
   const { user } = useAuth();
   const [refreshKey, setRefreshKey] = useState(0);
+  const [modalTrack, setModalTrack] = useState(null);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -77,6 +219,7 @@ const ApprendreHub = () => {
   const overallProgress = getOverallProgress();
   const totalCompleted = getTotalCompleted();
   const totalMissions = getTotalMissions();
+  const continueInfo = getContinueLearningInfo();
 
   const handleCardClick = (track) => {
     const firstUnlocked = getFirstUnlockedMission(track.id);
@@ -111,6 +254,27 @@ const ApprendreHub = () => {
     },
   };
 
+  const renderSectionTitle = (icon, text) => (
+    <div style={{
+      width: "100%", maxWidth: "1200px", marginBottom: "20px",
+      display: "flex", alignItems: "center", gap: "10px"
+    }}>
+      <div style={{
+        width: 36, height: 36, borderRadius: "10px",
+        display: "flex", alignItems: "center", justifyContent: "center",
+        background: "var(--apprendre-border)", color: "var(--apprendre-text-primary)"
+      }}>
+        {icon}
+      </div>
+      <h2 style={{
+        margin: 0, fontSize: "1.3rem", fontWeight: 700,
+        color: "var(--apprendre-text-primary)"
+      }}>
+        {text}
+      </h2>
+    </div>
+  );
+
   return (
     <div className={`apprendre-foundation ${isRTL ? "rtl" : "ltr"}`}>
       <motion.div
@@ -124,6 +288,85 @@ const ApprendreHub = () => {
         <p className="apprendre-subtitle">{t("learnHeroCopy")}</p>
       </motion.div>
 
+      {/* Continue Learning Section */}
+      {continueInfo && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.15 }}
+          style={{ width: "100%", maxWidth: "1200px" }}
+        >
+          {renderSectionTitle(
+            <Play size={18} />,
+            isRTL ? "مواصلة التعلم" : "Continue Learning"
+          )}
+
+          <div
+            onClick={() => navigate(`/languages/${continueInfo.track}/mission-${continueInfo.missionNum}`)}
+            style={{
+              background: "var(--apprendre-surface)", borderRadius: "24px",
+              border: "1px solid var(--apprendre-border)",
+              boxShadow: "var(--apprendre-shadow-md)",
+              padding: "24px 28px", cursor: "pointer",
+              display: "flex", alignItems: "center", justifyContent: "space-between",
+              gap: "16px", flexWrap: "wrap",
+              transition: "all 0.25s",
+              marginBottom: "40px"
+            }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor = "var(--learn-accent, #d97706)"; e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = "var(--apprendre-shadow-lg)"; }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor = "var(--apprendre-border)"; e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "var(--apprendre-shadow-md)"; }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: "16px", minWidth: 0 }}>
+              <div style={{
+                width: "52px", height: "52px", borderRadius: "16px",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                background: "linear-gradient(135deg, var(--learn-accent, #d97706), var(--learn-accent-secondary, #f59e0b))",
+                color: "#fff", flexShrink: 0
+              }}>
+                <Play size={24} />
+              </div>
+
+              <div style={{ minWidth: 0 }}>
+                <div style={{
+                  fontSize: "0.8rem", fontWeight: 600, textTransform: "uppercase",
+                  letterSpacing: "0.04em", color: "var(--apprendre-text-secondary)",
+                  marginBottom: "4px"
+                }}>
+                  {isRTL ? `مسار ${continueInfo.track === "darija" ? "الدارجة" : continueInfo.track === "tifinagh" ? "تيفيناغ" : "الثقافة"}` :
+                   `${continueInfo.track === "darija" ? "Darija" : continueInfo.track === "tifinagh" ? "Tifinagh" : "Culture"} Path`}
+                </div>
+                <div style={{
+                  fontSize: "1.1rem", fontWeight: 700,
+                  color: "var(--apprendre-text-primary)"
+                }}>
+                  {isRTL ? `المهمة ${continueInfo.missionNum}` : `Mission ${continueInfo.missionNum}`}
+                  <span style={{
+                    fontWeight: 500, color: "var(--apprendre-text-secondary)", marginLeft: "8px"
+                  }}>
+                    — {getMissionTitle(continueInfo.track, continueInfo.missionNum, lang)}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div style={{ display: "flex", alignItems: "center", gap: "12px", flexShrink: 0 }}>
+              <div style={{
+                fontSize: "0.9rem", fontWeight: 600,
+                color: "var(--learn-accent, #d97706)",
+                whiteSpace: "nowrap"
+              }}>
+                {isRTL ? "متابعة" : "Continue"}
+              </div>
+              <ArrowRight size={20} style={{
+                color: "var(--learn-accent, #d97706)",
+                transform: isRTL ? "rotate(180deg)" : "none"
+              }} />
+            </div>
+          </div>
+        </motion.div>
+      )}
+
+      {/* Learning Summary */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -206,6 +449,7 @@ const ApprendreHub = () => {
         </div>
       </motion.div>
 
+      {/* Learning Paths */}
       <motion.div
         className="apprendre-cards-container"
         variants={containerVariants}
@@ -230,57 +474,82 @@ const ApprendreHub = () => {
           return (
             <motion.div
               key={track.id}
-              className={`apprendre-card ${track.cardClass} cursor-pointer`}
+              className={`apprendre-card ${track.cardClass}`}
               variants={itemVariants}
-              onClick={() => handleCardClick(track)}
               style={{ opacity: hasUnlocked || done ? 1 : 0.6 }}
             >
-              <div className="card-header">
-                <div className={`card-icon-wrapper ${track.iconWrapper}`}>
-                  <Icon size={32} strokeWidth={1.5} />
+              <div
+                className="cursor-pointer"
+                onClick={() => handleCardClick(track)}
+              >
+                <div className="card-header">
+                  <div className={`card-icon-wrapper ${track.iconWrapper}`}>
+                    <Icon size={32} strokeWidth={1.5} />
+                  </div>
+                  <div className="card-header-meta">
+                    <span className={`card-status ${statusClass}`}
+                      style={done ? {
+                        background: "rgba(16, 185, 129, 0.12)",
+                        color: "var(--learn-success, #10b981)",
+                        display: "inline-flex", alignItems: "center", gap: "4px"
+                      } : hasUnlocked ? {} : {}}
+                    >
+                      <StatusIcon size={12} />
+                      {statusLabel}
+                    </span>
+                    <span className="card-eyebrow">{t(track.eyebrowKey)}</span>
+                  </div>
                 </div>
-                <div className="card-header-meta">
-                  <span className={`card-status ${statusClass}`}
-                    style={done ? {
-                      background: "rgba(16, 185, 129, 0.12)",
-                      color: "var(--learn-success, #10b981)",
-                      display: "inline-flex", alignItems: "center", gap: "4px"
-                    } : hasUnlocked ? {} : {}}
-                  >
-                    <StatusIcon size={12} />
-                    {statusLabel}
-                  </span>
-                  <span className="card-eyebrow">{t(track.eyebrowKey)}</span>
+                <h2 className="card-title">{t(track.titleKey)}</h2>
+                <p className="card-desc">{t(track.descKey)}</p>
+                <div style={{ marginBottom: "16px" }}>
+                  <div style={{
+                    display: "flex", justifyContent: "space-between",
+                    fontSize: "0.85rem", fontWeight: 600,
+                    color: done ? "var(--learn-success, #10b981)" : "var(--apprendre-text-secondary)",
+                    marginBottom: "6px"
+                  }}>
+                    <span>{done
+                      ? (isRTL ? "مكتمل" : "Completed")
+                      : `${completed} / ${total} ${isRTL ? "مكتمل" : "Completed"}`}
+                    </span>
+                    <span>{done ? "100%" : `${progress}%`}</span>
+                  </div>
+                  <ProgressBar percent={progress} />
                 </div>
-              </div>
-              <h2 className="card-title">{t(track.titleKey)}</h2>
-              <p className="card-desc">{t(track.descKey)}</p>
-              <div style={{ marginBottom: "16px" }}>
-                <div style={{
-                  display: "flex", justifyContent: "space-between",
-                  fontSize: "0.85rem", fontWeight: 600,
-                  color: done ? "var(--learn-success, #10b981)" : "var(--apprendre-text-secondary)",
-                  marginBottom: "6px"
-                }}>
+                <button className="card-btn group" onClick={(e) => { e.stopPropagation(); handleCardClick(track); }}>
                   <span>{done
-                    ? (isRTL ? "مكتمل" : "Completed")
-                    : `${completed} / ${total} ${isRTL ? "مكتمل" : "Completed"}`}
+                    ? (isRTL ? "مراجعة" : "Review")
+                    : hasUnlocked
+                    ? (isRTL ? "متابعة" : "Continue Journey")
+                    : (isRTL ? "مقفل" : "Locked")}
                   </span>
-                  <span>{done ? "100%" : `${progress}%`}</span>
-                </div>
-                <ProgressBar percent={progress} />
+                  {done ? <CheckCircle size={20} /> : hasUnlocked
+                    ? <ArrowRight size={20} className={`transition-transform duration-300 ${isRTL ? "rotate-180 group-hover:-translate-x-1" : "group-hover:translate-x-1"}`} />
+                    : <Lock size={20} />}
+                </button>
               </div>
-              <button className="card-btn group" onClick={(e) => { e.stopPropagation(); handleCardClick(track); }}>
-                <span>{done
-                  ? (isRTL ? "مراجعة" : "Review")
-                  : hasUnlocked
-                  ? (isRTL ? "متابعة" : "Continue Journey")
-                  : (isRTL ? "مقفل" : "Locked")}
-                </span>
-                {done ? <CheckCircle size={20} /> : hasUnlocked
-                  ? <ArrowRight size={20} className={`transition-transform duration-300 ${isRTL ? "rotate-180 group-hover:-translate-x-1" : "group-hover:translate-x-1"}`} />
-                  : <Lock size={20} />}
-              </button>
+
+              {/* View All Missions */}
+              <div style={{ padding: "0 24px 20px" }}>
+                <button
+                  onClick={() => setModalTrack(track.id)}
+                  style={{
+                    display: "flex", alignItems: "center", justifyContent: "center", gap: "8px",
+                    width: "100%", padding: "12px",
+                    border: "1px solid var(--apprendre-border)", borderRadius: "12px",
+                    background: "transparent", cursor: "pointer",
+                    color: "var(--apprendre-text-secondary)", fontSize: "0.85rem", fontWeight: 600,
+                    transition: "all 0.2s"
+                  }}
+                  onMouseEnter={e => { e.currentTarget.style.background = "var(--apprendre-hover, rgba(0,0,0,0.03))"; e.currentTarget.style.borderColor = "var(--apprendre-text-secondary)"; }}
+                  onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.borderColor = "var(--apprendre-border)"; }}
+                >
+                  <List size={16} />
+                  {isRTL ? "عرض جميع المهام" : "View All Missions"}
+                </button>
+              </div>
+
               <svg className="card-decoration" viewBox="0 0 100 100" preserveAspectRatio="xMaxYMax meet">
                 {track.id === "darija" && (
                   <>
@@ -312,6 +581,18 @@ const ApprendreHub = () => {
           );
         })}
       </motion.div>
+
+      {/* Mission List Modal */}
+      <AnimatePresence>
+        {modalTrack && (
+          <MissionListModal
+            track={modalTrack}
+            lang={lang}
+            isRTL={isRTL}
+            onClose={() => setModalTrack(null)}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 };
