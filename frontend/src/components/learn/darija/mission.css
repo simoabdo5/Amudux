@@ -643,3 +643,192 @@ html.dark .vocab-card:hover {
     height: 80px;
   }
 }
+
+.tifinagh-word-card {
+  text-align: center;
+  align-items: center;
+  cursor: pointer;
+  width: 100%;
+}
+
+.tifinagh-script {
+  font-family: "Noto Sans Tifinagh", "Segoe UI Symbol", "Arial Unicode MS", sans-serif;
+}
+
+.tifinagh-review-card-active {
+  border-color: var(--learn-accent);
+  box-shadow: 0 12px 32px rgba(3, 105, 161, 0.16);
+}
+
+.tifinagh-review-detail {
+  text-align: center;
+  align-items: center;
+}
+
+.tifinagh-symbol-chip {
+  font-size: 3rem;
+  color: var(--learn-accent);
+  margin-bottom: 12px;
+  line-height: 1;
+}
+
+.tifinagh-inline-note {
+  color: var(--learn-text-secondary);
+  line-height: 1.7;
+  font-size: 0.98rem;
+}
+
+.tifinagh-lesson-block {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.tifinagh-hero-word {
+  font-size: clamp(3rem, 8vw, 5rem);
+  color: var(--learn-accent);
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.tifinagh-hero-translation {
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.tifinagh-breakdown-card {
+  border-color: rgba(3, 105, 161, 0.18);
+}
+
+.tifinagh-breakdown-row {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+
+.tifinagh-break-symbol,
+.tifinagh-break-latin {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--learn-accent);
+}
+
+.tifinagh-break-arrow {
+  font-size: 1.5rem;
+  color: var(--learn-text-secondary);
+}
+
+.tifinagh-assembly-board {
+  text-align: center;
+}
+
+.tifinagh-target-label {
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  color: var(--learn-text-secondary);
+  margin-bottom: 18px;
+}
+
+.tifinagh-slots {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+
+.tifinagh-slot {
+  width: 72px;
+  height: 72px;
+  border-radius: 18px;
+  border: 2px solid var(--learn-accent);
+  background: rgba(3, 105, 161, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--learn-accent);
+  box-shadow: 0 8px 24px rgba(3, 105, 161, 0.12);
+}
+
+.tifinagh-pool {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+
+.tifinagh-options-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.tifinagh-letter-btn {
+  min-width: 88px;
+  font-size: 2rem;
+  text-align: center;
+}
+
+.tifinagh-action-row {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.tifinagh-recognition-word {
+  font-size: clamp(3rem, 9vw, 5.5rem);
+  color: var(--learn-accent);
+  font-weight: 700;
+  margin-bottom: 28px;
+}
+
+.tifinagh-info-card {
+  box-shadow: 0 12px 32px rgba(3, 105, 161, 0.08);
+}
+
+.tifinagh-mini-icon {
+  width: 52px;
+  height: 52px;
+  margin: 0 0 18px;
+}
+
+html.dark .tifinagh-slot {
+  background: rgba(14, 165, 233, 0.12);
+  box-shadow: 0 10px 28px rgba(14, 165, 233, 0.14);
+}
+
+html.dark .tifinagh-info-card {
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.22);
+}
+
+html.dark .tifinagh-review-card-active {
+  box-shadow: 0 14px 34px rgba(14, 165, 233, 0.18);
+}
+
+@media (max-width: 768px) {
+  .tifinagh-options-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .tifinagh-slot {
+    width: 62px;
+    height: 62px;
+    font-size: 1.75rem;
+  }
+
+  .tifinagh-letter-btn {
+    min-width: 76px;
+  }
+
+  .tifinagh-breakdown-row {
+    gap: 12px;
+  }
+}
