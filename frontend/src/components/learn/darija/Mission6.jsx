@@ -1,74 +1,75 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { X, ArrowRight, ArrowLeft, MessageCircle, CheckCircle, ShoppingBag, Award } from "lucide-react";
+import { X, ArrowRight, ArrowLeft, MessageCircle, CheckCircle, Map, Award } from "lucide-react";
 import { useLanguage } from "../../accueil/LanguageContext";
 import { AudioButton } from "../common/AudioButton";
 import "./mission.css";
 
 const vocabData = [
-  { darija: "Souk", arabicText: "سوق", fr: "Marché", en: "Market", ar: "سوق", context: { en: "The traditional open-air market. Every city has one.", fr: "Le marché traditionnel en plein air. Chaque ville en a un.", ar: "السوق التقليدي المفتوح. كل مدينة لديها واحد." } },
-  { darija: "Bshhal?", arabicText: "بشحال؟", fr: "Combien ?", en: "How much?", ar: "بشحال؟", context: { en: "The first word you need in any souk. Always ask before buying.", fr: "Le premier mot dont vous avez besoin dans tout souk. Demandez toujours avant d'acheter.", ar: "أول كلمة تحتاجها في أي سوق. اسأل دائماً قبل الشراء." } },
-  { darija: "Ghali", arabicText: "غالي", fr: "Cher", en: "Expensive", ar: "غالي", context: { en: "Use this to signal that the price is too high. Opens negotiation.", fr: "Utilisez-le pour signaler que le prix est trop élevé. Ouvre la négociation.", ar: "استخدمها للإشارة إلى أن السعر مرتفع جداً. يفتح باب التفاوض." } },
-  { darija: "Rkhis", arabicText: "رخيص", fr: "Pas cher", en: "Cheap", ar: "رخيص", context: { en: "The opposite of ghali. Use when suggesting a lower price.", fr: "Le contraire de ghali. Utilisez quand vous suggérez un prix plus bas.", ar: "عكس غالي. استخدمها عند اقتراح سعر أقل." } },
-  { darija: "3tini", arabicText: "عطيني", fr: "Donne-moi", en: "Give me", ar: "عطيني", context: { en: "Polite way to ask for an item. '3tini wahd had...' = Give me one of these.", fr: "Façon polie de demander un article. '3tini wahd had...' = Donne-moi un de ceux-ci.", ar: "طريقة مهذبة لطلب سلعة. 'عطيني واحد هاد...' = أعطني واحد من هذا." } },
-  { darija: "Nqss", arabicText: "نقص", fr: "Réduire", en: "Lower / Reduce", ar: "نقص", context: { en: "Key negotiation word. 'Nqss shwiya' = Lower it a bit.", fr: "Mot clé de négociation. 'Nqss shwiya' = Baisse un peu.", ar: "كلمة تفاوض رئيسية. 'نقص شوية' = انزل شوية." } }
+  { darija: "Fin kayn...?", arabicText: "فين كاين...؟", fr: "Où se trouve...?", en: "Where is...?", ar: "أين يوجد...؟", context: { en: "The essential phrase for asking locations. 'Fin kayn l'hotel?'", fr: "La phrase essentielle pour demander un lieu. 'Fin kayn l'hotel?'", ar: "العبارة الأساسية للسؤال عن الأماكن. 'فين كاين الفندق؟'" } },
+  { darija: "Ymna", arabicText: "يمنى", fr: "Droite", en: "Right", ar: "يمين", context: { en: "Means 'Right'. Often '3la limn' (on the right).", fr: "Signifie 'Droite'. Souvent '3la limn' (sur la droite).", ar: "تعني 'يمين'. غالباً 'على ليمن' (على اليمين)." } },
+  { standard: true, darija: "Ysar", arabicText: "يسار", fr: "Gauche", en: "Left", ar: "يسار", context: { en: "Means 'Left'. Often '3la lissr' (on the left).", fr: "Signifie 'Gauche'. Souvent '3la lissr' (sur la gauche).", ar: "تعني 'يسار'. غالباً 'على ليسر' (على اليسار)." } },
+  { darija: "Niche", arabicText: "نيشان", fr: "Tout droit", en: "Straight ahead", ar: "مباشرة", context: { en: "Very common. Keep going straight.", fr: "Très courant. Continuez tout droit.", ar: "شائعة جداً. استمر بشكل مستقيم." } },
+  { darija: "Qrib", arabicText: "قريب", fr: "Près", en: "Near", ar: "قريب", context: { en: "Means it's close. You can walk.", fr: "Signifie que c'est proche. Vous pouvez marcher.", ar: "تعني أنه قريب. يمكنك المشي." } },
+  { darija: "B3id", arabicText: "بعيد", fr: "Loin", en: "Far", ar: "بعيد", context: { en: "Means it's far. You might need a taxi.", fr: "Signifie que c'est loin. Vous aurez peut-être besoin d'un taxi.", ar: "تعني أنه بعيد. قد تحتاج إلى سيارة أجرة." } }
 ];
 
 const expressionsData = [
-  { darija: "Bshhal hada?", arabicText: "بشحال هدا؟", fr: "Combien ça coûte ?", en: "How much is this?", ar: "بشحال هدا؟", context: { en: "Point at the item and ask. Always your first move.", fr: "Montrez l'article et demandez. Toujours votre premier geste.", ar: "أشر إلى السلعة واسأل. دائماً خطوتك الأولى." } },
-  { darija: "Ghali bzaf! Nqss shwiya.", arabicText: "غالي بزاف! نقص شوية.", fr: "C'est trop cher ! Baissez un peu.", en: "Too expensive! Lower it a bit.", ar: "غالي بزاف! نقص شوية.", context: { en: "The classic bargaining opener. Say it with a smile.", fr: "L'ouverture classique de négociation. Dites-le avec le sourire.", ar: "الافتتاحية الكلاسيكية للمساومة. قلها بابتسامة." } },
-  { darija: "Wakha, 3tini b...", arabicText: "واخا، عطيني ب...", fr: "D'accord, donnez-moi à...", en: "Okay, give it to me for...", ar: "واخا، عطيني ب...", context: { en: "Use to propose your counter-offer after negotiating.", fr: "Utilisez pour proposer votre contre-offre après négociation.", ar: "استخدمها لاقتراح عرضك المضاد بعد التفاوض." } }
+  { darija: "Fin kayn l'hotel?", arabicText: "فين كاين الفندق؟", fr: "Où est l'hôtel ?", en: "Where is the hotel?", ar: "أين يوجد الفندق؟", context: { en: "Replace 'l'hotel' with any place.", fr: "Remplacez 'l'hotel' par n'importe quel endroit.", ar: "استبدل 'الفندق' بأي مكان." } },
+  { darija: "Wach qrib?", arabicText: "واش قريب؟", fr: "Est-ce que c'est près ?", en: "Is it near?", ar: "هل هو قريب؟", context: { en: "Useful to know if you should take a taxi.", fr: "Utile pour savoir si vous devez prendre un taxi.", ar: "مفيد لمعرفة ما إذا كان يجب أن تأخذ سيارة أجرة." } },
+  { darija: "Nmshi ymna wla ysar?", arabicText: "نمشي يمنى ولا يسار؟", fr: "Je vais à droite ou à gauche ?", en: "Do I go right or left?", ar: "أذهب يميناً أم يساراً؟", context: { en: "When you reach an intersection.", fr: "Quand vous arrivez à une intersection.", ar: "عندما تصل إلى تقاطع." } },
+  { darija: "Ch7al mn d9i9a?", arabicText: "شحال من دقيقة؟", fr: "Combien de minutes ?", en: "How many minutes?", ar: "كم عدد الدقائق؟", context: { en: "To ask about the walking distance.", fr: "Pour demander la distance de marche.", ar: "للسؤال عن مسافة المشي." } }
 ];
 
 const conversationData = [
-  { speaker: "Traveler", darija: "Salam! Bshhal hada?", arabicText: "سلام! بشحال هدا؟", fr: "Bonjour ! Combien ça coûte ?", en: "Hello! How much is this?", isRight: true },
-  { speaker: "Seller", darija: "Salam! Hada b 300 dirham.", arabicText: "سلام! هدا ب 300 درهم.", fr: "Bonjour ! C'est 300 dirhams.", en: "Hello! That's 300 dirhams.", isRight: false },
-  { speaker: "Traveler", darija: "Ghali bzaf! Nqss shwiya.", arabicText: "غالي بزاف! نقص شوية.", fr: "C'est trop cher ! Baissez un peu.", en: "Too expensive! Lower it a bit.", isRight: true },
-  { speaker: "Seller", darija: "Hada mezyan, qualité mezyana. 250?", arabicText: "هدا مزيان، كواليطي مزيانة. 250؟", fr: "C'est bon, bonne qualité. 250 ?", en: "It's good, great quality. 250?", isRight: false },
-  { speaker: "Traveler", darija: "La, 150 afak.", arabicText: "لا، 150 عافاك.", fr: "Non, 150 s'il vous plaît.", en: "No, 150 please.", isRight: true },
-  { speaker: "Seller", darija: "200, akhir taman.", arabicText: "200، آخر تمن.", fr: "200, dernier prix.", en: "200, final price.", isRight: false },
-  { speaker: "Traveler", darija: "Wakha, 3tini b 200. Shukran!", arabicText: "واخا، عطيني ب 200. شكرا!", fr: "D'accord, donnez-moi à 200. Merci !", en: "Okay, give it to me for 200. Thanks!", isRight: true },
+  { speaker: "Traveler", darija: "Salam, sm7li. Fin kayn la gare?", arabicText: "سلام، سمحلي. فين كاين لاگار؟", fr: "Bonjour, excusez-moi. Où est la gare ?", en: "Hello, excuse me. Where is the train station?", isRight: true },
+  { speaker: "Local", darija: "Salam. La gare? Sair niche.", arabicText: "سلام. لاگار؟ سير نيشان.", fr: "Bonjour. La gare ? Allez tout droit.", en: "Hello. The train station? Go straight ahead.", isRight: false },
+  { speaker: "Traveler", darija: "Wach qrib wla b3id?", arabicText: "واش قريب ولا بعيد؟", fr: "C'est près ou loin ?", en: "Is it near or far?", isRight: true },
+  { speaker: "Local", darija: "Qrib, shi 5 d9ay9.", arabicText: "قريب، شي 5 دقايق.", fr: "Près, environ 5 minutes.", en: "Near, about 5 minutes.", isRight: false },
+  { speaker: "Traveler", darija: "Ndor ymna?", arabicText: "ندور يمنى؟", fr: "Je tourne à droite ?", en: "Do I turn right?", isRight: true },
+  { speaker: "Local", darija: "La, ndor ysar. 3la lissr.", arabicText: "لا، ندور يسار. على ليسر.", fr: "Non, tournez à gauche. Sur la gauche.", en: "No, turn left. On the left.", isRight: false },
+  { speaker: "Traveler", instructor: true, darija: "Shukran bzaf!", arabicText: "شكرا بزاف!", fr: "Merci beaucoup !", en: "Thank you very much!", isRight: true },
 ];
 
 const situationsData = [
   {
-    q: { en: "A seller quotes 500 dirhams for a leather bag. You think it's too expensive. What do you say?", fr: "Un vendeur propose un sac en cuir à 500 dirhams. Vous trouvez que c'est trop cher. Que dites-vous ?", ar: "بائع يقترح حقيبة جلدية بـ 500 درهم. تعتقد أنها غالية جداً. ماذا تقول؟" },
-    options: { en: ["Ghali bzaf! Nqss shwiya.", "Shukran, bslama."], fr: ["Ghali bzaf! Nqss shwiya.", "Shukran, bslama."], ar: ["غالي بزاف! نقص شوية.", "شكرا، بسلامة."] },
+    q: { en: "You are trying to find the train station and want to know if you can walk there. What do you ask?", fr: "Vous essayez de trouver la gare et voulez savoir si vous pouvez y aller à pied. Que demandez-vous ?", ar: "أنت تحاول العثور على محطة القطار وتريد أن تعرف ما إذا كان يمكنك المشي إلى هناك. ماذا تسأل؟" },
+    options: { en: ["Wach qrib?", "Fin kayn l'hotel?"], fr: ["Wach qrib?", "Fin kayn l'hotel?"], ar: ["واش قريب؟", "فين كاين الفندق؟"] },
     correctIdx: 0,
-    feedback: { en: "Correct! This opens a friendly negotiation. The seller expects it.", fr: "Correct ! Cela ouvre une négociation amicale. Le vendeur s'y attend.", ar: "صحيح! هذا يفتح مفاوضة ودية. البائع يتوقع ذلك." },
-    feedbackWrong: { en: "That means 'Thanks, goodbye.' You left without trying to negotiate!", fr: "Ça signifie 'Merci, au revoir.' Vous êtes parti sans essayer de négocier !", ar: "هذا يعني 'شكرا، مع السلامة.' غادرت دون محاولة التفاوض!" }
+    feedback: { en: "Correct! 'Wach qrib?' means 'Is it near?'.", fr: "Correct ! 'Wach qrib?' signifie 'Est-ce que c'est près ?'.", ar: "صحيح! 'واش قريب؟' تعني 'هل هو قريب؟'." },
+    feedbackWrong: { en: "That means 'Where is the hotel?'. You need to ask if it's close.", fr: "Ça signifie 'Où est l'hôtel ?'. Vous devez demander si c'est proche.", ar: "هذا يعني 'أين الفندق؟'. يجب أن تسأل عما إذا كان قريباً." }
   },
   {
-    q: { en: "You want to know the price of spices at a stall. What do you ask?", fr: "Vous voulez connaître le prix des épices à un étal. Que demandez-vous ?", ar: "تريد معرفة سعر التوابل في كشك. ماذا تسأل؟" },
-    options: { en: ["3tini wahd kilo.", "Bshhal hada?"], fr: ["3tini wahd kilo.", "Bshhal hada?"], ar: ["عطيني واحد كيلو.", "بشحال هدا؟"] },
+    q: { en: "A local tells you 'Sair niche, w ndor ymna'. Where should you go?", fr: "Un habitant vous dit 'Sair niche, w ndor ymna'. Où devez-vous aller ?", ar: "يخبرك شخص محلي 'سير نيشان، و ندور يمنى'. أين يجب أن تذهب؟" },
+    options: { en: ["Straight, then left", "Straight, then right"], fr: ["Tout droit, puis à gauche", "Tout droit, puis à droite"], ar: ["مباشرة، ثم يساراً", "مباشرة، ثم يميناً"] },
     correctIdx: 1,
-    feedback: { en: "Correct! Always ask the price first before committing.", fr: "Correct ! Demandez toujours le prix avant de vous engager.", ar: "صحيح! اسأل دائماً عن السعر أولاً قبل الالتزام." },
-    feedbackWrong: { en: "That means 'Give me one kilo.' You ordered without knowing the price!", fr: "Ça signifie 'Donne-moi un kilo.' Vous avez commandé sans connaître le prix !", ar: "هذا يعني 'أعطني كيلو واحد.' طلبت دون معرفة السعر!" }
+    feedback: { en: "Correct! 'Niche' is straight, and 'Ymna' is right.", fr: "Correct ! 'Niche' c'est tout droit, et 'Ymna' c'est à droite.", ar: "صحيح! 'نيشان' تعني مباشرة، و 'يمنى' تعني يميناً." },
+    feedbackWrong: { en: "Oops. 'Ysar' is left. 'Ymna' is right.", fr: "Oops. 'Ysar' c'est à gauche. 'Ymna' c'est à droite.", ar: "عفواً. 'يسار' هو اليسار. 'يمنى' هو اليمين." }
   }
 ];
 
 const quizData = [
   {
-    q: { en: 'What does "Bshhal?" mean?', fr: 'Que signifie "Bshhal?" ?', ar: 'ماذا تعني "بشحال؟"' },
-    options: { en: ["Give me", "How much?", "Too expensive", "Lower it"], fr: ["Donne-moi", "Combien ?", "Trop cher", "Baisse"], ar: ["أعطني", "بشحال؟", "غالي بزاف", "نقص"] },
+    q: { en: 'What does "Niche" mean?', fr: 'Que signifie "Niche" ?', ar: 'ماذا تعني "نيشان"؟' },
+    options: { en: ["Right", "Straight ahead", "Left", "Far"], fr: ["Droite", "Tout droit", "Gauche", "Loin"], ar: ["يمين", "مباشرة", "يسار", "بعيد"] },
     answer: 1
   },
   {
-    q: { en: 'How do you say "Too expensive" in Darija?', fr: 'Comment dit-on "Trop cher" en darija ?', ar: 'كيف تقول "غالي جداً" بالدارجة؟' },
-    options: { en: ["Rkhis", "Nqss", "Ghali bzaf", "3tini"], fr: ["Rkhis", "Nqss", "Ghali bzaf", "3tini"], ar: ["رخيص", "نقص", "غالي بزاف", "عطيني"] },
-    answer: 2
+    q: { en: 'How do you ask "Where is...?"', fr: 'Comment demandez-vous "Où est..." ?', ar: 'كيف تسأل "أين يوجد...؟"' },
+    options: { en: ["Wach qrib?", "Fin kayn...?", "Ch7al mn d9i9a?", "Ndor ymna?"], fr: ["Wach qrib?", "Fin kayn...?", "Ch7al mn d9i9a?", "Ndor ymna?"], ar: ["واش قريب؟", "فين كاين...؟", "شحال من دقيقة؟", "ندور يمنى؟"] },
+    answer: 1
   },
   {
-    q: { en: 'You agreed on a price. How do you say "Give it to me for 200"?', fr: 'Vous êtes d\'accord sur un prix. Comment dit-on "Donnez-le moi à 200" ?', ar: 'اتفقت على السعر. كيف تقول "أعطني بـ 200"؟' },
-    options: { en: ["Bshhal 200?", "Ghali 200", "3tini b 200", "Nqss 200"], fr: ["Bshhal 200?", "Ghali 200", "3tini b 200", "Nqss 200"], ar: ["بشحال 200؟", "غالي 200", "عطيني ب 200", "نقص 200"] },
+    q: { en: 'If a place is very far, the local will say it is:', fr: 'Si un endroit est très loin, l\'habitant dira qu\'il est :', ar: 'إذا كان المكان بعيداً جداً، سيقول المحلي إنه:' },
+    options: { en: ["Qrib", "Ymna", "B3id", "Ysar"], fr: ["Qrib", "Ymna", "B3id", "Ysar"], ar: ["قريب", "يمنى", "بعيد", "يسار"] },
     answer: 2
   }
 ];
 
 const STEPS = ["intro", "vocab", "expressions", "conversation", "situations", "quiz", "completion"];
 
-function Mission5() {
+function Mission6() {
   const { lang, isRTL } = useLanguage();
   const navigate = useNavigate();
 
@@ -127,12 +128,12 @@ function Mission5() {
 
           {step === "intro" && (
             <div className="intro-step">
-              <div className="intro-icon"><ShoppingBag size={40} /></div>
-              <h1 className="intro-title">{lang === "FR" ? "Souk & Négociation" : lang === "AR" ? "السوق والمساومة" : "Souk & Bargaining"}</h1>
+              <div className="intro-icon"><Map size={40} /></div>
+              <h1 className="intro-title">{lang === "FR" ? "Demander son Chemin" : lang === "AR" ? "طلب الاتجاهات" : "Asking Directions"}</h1>
               <p className="intro-desc">
-                {lang === "FR" ? "Maîtrisez l'art de la négociation dans les souks marocains. Apprenez à demander les prix, négocier avec respect et obtenir les meilleures offres." :
-                 lang === "AR" ? "أتقن فن المساومة في الأسواق المغربية. تعلم كيف تسأل عن الأسعار، تتفاوض باحترام وتحصل على أفضل العروض." :
-                 "Master the art of negotiation in Moroccan souks. Learn to ask prices, bargain respectfully and get the best deals."}
+                {lang === "FR" ? "Apprenez à demander de l'aide, comprendre les instructions de direction et naviguer dans les villes marocaines comme un local." :
+                 lang === "AR" ? "تعلم كيف تطلب المساعدة، وتفهم إرشادات الاتجاهات، وتتنقل في المدن المغربية كالمحليين." :
+                 "Learn how to ask for help, understand direction instructions, and navigate Moroccan cities like a local."}
               </p>
               <button className="mission-btn" onClick={handleNext}>
                 {lang === "FR" ? "Commencer la mission" : lang === "AR" ? "ابدأ المهمة" : "Start Mission"}
@@ -142,8 +143,8 @@ function Mission5() {
 
           {step === "vocab" && (
             <div>
-              <h2 className="step-title">{lang === "FR" ? "Vocabulaire du Souk" : lang === "AR" ? "مفردات السوق" : "Souk Vocabulary"}</h2>
-              <p className="step-subtitle">{lang === "FR" ? "Les mots essentiels pour survivre au souk." : lang === "AR" ? "الكلمات الأساسية للتعامل في السوق." : "Essential words to survive the souk."}</p>
+              <h2 className="step-title">{lang === "FR" ? "Vocabulaire de Navigation" : lang === "AR" ? "مفردات التنقل" : "Navigation Vocabulary"}</h2>
+              <p className="step-subtitle">{lang === "FR" ? "Les mots essentiels pour se repérer." : lang === "AR" ? "الكلمات الأساسية لتحديد موقعك." : "Essential words to find your way."}</p>
               <div className="vocab-grid">
                 {vocabData.map((word, idx) => (
                   <div key={idx} className="vocab-card">
@@ -165,8 +166,8 @@ function Mission5() {
 
           {step === "expressions" && (
             <div>
-              <h2 className="step-title">{lang === "FR" ? "Expressions de Négociation" : lang === "AR" ? "عبارات التفاوض" : "Bargaining Expressions"}</h2>
-              <p className="step-subtitle">{lang === "FR" ? "Les phrases clés pour négocier comme un local." : lang === "AR" ? "العبارات الرئيسية للتفاوض كالمحليين." : "Key phrases to bargain like a local."}</p>
+              <h2 className="step-title">{lang === "FR" ? "Expressions Utiles" : lang === "AR" ? "عبارات مفيدة" : "Useful Expressions"}</h2>
+              <p className="step-subtitle">{lang === "FR" ? "Les phrases clés pour trouver votre chemin." : lang === "AR" ? "العبارات الرئيسية لإيجاد طريقك." : "Key phrases to find your way."}</p>
               <div className="expressions-list">
                 {expressionsData.map((exp, idx) => (
                   <div key={idx} className="expression-card">
@@ -186,13 +187,13 @@ function Mission5() {
 
           {step === "conversation" && (
             <div>
-              <h2 className="step-title">{lang === "FR" ? "Négociation en Pratique" : lang === "AR" ? "التفاوض عملياً" : "Bargaining in Practice"}</h2>
-              <p className="step-subtitle">{lang === "FR" ? "Une négociation réaliste dans le souk." : lang === "AR" ? "مساومة واقعية في السوق." : "A realistic negotiation in the souk."}</p>
+              <h2 className="step-title">{lang === "FR" ? "En Pratique" : lang === "AR" ? "في الممارسة" : "In Practice"}</h2>
+              <p className="step-subtitle">{lang === "FR" ? "Demander le chemin vers la gare." : lang === "AR" ? "السؤال عن الطريق إلى محطة القطار." : "Asking the way to the train station."}</p>
               <div className="chat-container">
                 {conversationData.map((line, idx) => (
                   <div key={idx} className={`chat-bubble-wrapper ${line.isRight ? 'right' : 'left'}`}>
                     <div className="chat-speaker">
-                      {line.speaker === "Traveler" ? (lang === "FR" ? "Vous" : lang === "AR" ? "أنت" : "You") : (lang === "FR" ? "Vendeur" : lang === "AR" ? "بائع" : "Seller")}
+                      {line.speaker === "Traveler" ? (lang === "FR" ? "Vous" : lang === "AR" ? "أنت" : "You") : (lang === "FR" ? "Habitant" : lang === "AR" ? "محلي" : "Local")}
                     </div>
                     <div className="chat-bubble">
                       <div>
@@ -246,7 +247,7 @@ function Mission5() {
 
           {step === "quiz" && (
             <div>
-              <h2 className="step-title">{lang === "FR" ? "Défi du Souk" : lang === "AR" ? "تحدي السوق" : "Souk Challenge"}</h2>
+              <h2 className="step-title">{lang === "FR" ? "Défi d'Orientation" : lang === "AR" ? "تحدي الاتجاهات" : "Direction Challenge"}</h2>
               <p className="step-subtitle">
                 {lang === "FR" ? `Question ${quizQuestionIndex + 1} sur ${quizData.length}` : lang === "AR" ? `السؤال ${quizQuestionIndex + 1} من ${quizData.length}` : `Question ${quizQuestionIndex + 1} of ${quizData.length}`}
               </p>
@@ -273,10 +274,11 @@ function Mission5() {
               <div className="completion-icon"><Award size={48} /></div>
               <h1 className="intro-title">{lang === "FR" ? "Mission Accomplie !" : lang === "AR" ? "تمت المهمة!" : "Mission Completed!"}</h1>
               <p className="intro-desc">
-                {lang === "FR" ? "Vous maîtrisez maintenant l'art de la négociation au souk marocain. Vous pouvez acheter avec confiance !" :
-                 lang === "AR" ? "أنت تتقن الآن فن المساومة في السوق المغربي. يمكنك الشراء بثقة!" :
-                 "You have mastered the art of bargaining in the Moroccan souk. You can shop with confidence!"}
+                {lang === "FR" ? "Vous savez maintenant comment demander votre chemin en arabe marocain." :
+                 lang === "AR" ? "أنت تعرف الآن كيف تطلب الاتجاهات باللغة العربية المغربية." :
+                 "You now know how to ask for directions in Moroccan Arabic."}
               </p>
+              
               {/* Progression */}
               <div style={{ marginTop: '30px', textAlign: 'left', background: 'var(--learn-surface)', padding: '20px', borderRadius: '16px', border: '1px solid var(--learn-border)', width: '100%', maxWidth: '400px' }}>
                 <h4 style={{ marginBottom: '16px', fontSize: '1.1rem', fontWeight: 600 }}>
@@ -303,9 +305,13 @@ function Mission5() {
                     <CheckCircle size={20} />
                     <span style={{ fontWeight: 500 }}>{lang === "FR" ? "Mission 5 : Souk & Négociation" : lang === "AR" ? "المهمة 5: الأسواق والمساومة" : "Mission 5: Souk & Bargaining"} ✅</span>
                   </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', color: '#10b981' }}>
+                    <CheckCircle size={20} />
+                    <span style={{ fontWeight: 500 }}>{lang === "FR" ? "Mission 6 : Demander son Chemin" : lang === "AR" ? "المهمة 6: طلب الاتجاهات" : "Mission 6: Asking Directions"} ✅</span>
+                  </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '12px', color: 'var(--learn-text)' }}>
                     <span style={{ fontSize: '1.2rem', width: 20, textAlign: 'center' }}>🔓</span>
-                    <span style={{ fontWeight: 500 }}>{lang === "FR" ? "Prochaine Mission : Demander son Chemin" : lang === "AR" ? "المهمة القادمة: طلب الاتجاهات" : "Next Mission: Asking Directions"}</span>
+                    <span style={{ fontWeight: 500 }}>{lang === "FR" ? "Dernière Mission : Urgences" : lang === "AR" ? "المهمة الأخيرة: حالات الطوارئ" : "Final Mission: Emergencies"}</span>
                   </div>
                 </div>
               </div>
@@ -314,8 +320,8 @@ function Mission5() {
                 <button className="mission-btn secondary" onClick={() => navigate("/languages")}>
                   {lang === "FR" ? "Accueil" : lang === "AR" ? "الرئيسية" : "Hub"}
                 </button>
-                <button className="mission-btn" onClick={() => navigate("/languages/darija/mission-6")}>
-                  {lang === "FR" ? "Commencer la Mission 6" : lang === "AR" ? "ابدأ المهمة 6" : "Start Mission 6"}
+                <button className="mission-btn" onClick={() => navigate("/languages/darija/mission-7")}>
+                  {lang === "FR" ? "Commencer la Mission 7" : lang === "AR" ? "ابدأ المهمة 7" : "Start Mission 7"}
                   <ArrowRight size={20} style={{ marginLeft: 8 }} />
                 </button>
               </div>
@@ -338,4 +344,4 @@ function Mission5() {
   );
 }
 
-export default Mission5;
+export default Mission6;
