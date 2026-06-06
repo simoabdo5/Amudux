@@ -33,4 +33,8 @@ class City extends Model
     {
         return $this->hasMany(HiddenGem::class);
     }
+    public function favorites()
+{
+    return $this->morphMany(Favorite::class, 'favoritable');
+}
 }

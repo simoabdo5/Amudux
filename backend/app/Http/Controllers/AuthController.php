@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\VerificationCode;
-use App\Models\PasswordReset; //
+use App\Models\PasswordReset;
 use App\Mail\VerificationCodeMail;
 use App\Mail\ResetPasswordMail;     
 use Illuminate\Http\Request;

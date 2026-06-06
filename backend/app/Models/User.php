@@ -14,6 +14,9 @@ class User extends Authenticatable
 
     protected $fillable = [
         'name',
+        'image',
+        'bio',
+        'ville',
         'email',
         'password',
         'role',
@@ -33,6 +36,11 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function isAdmin()
+    {
+        return $this->role === 'admin';
     }
 
     // Relation m3a profil

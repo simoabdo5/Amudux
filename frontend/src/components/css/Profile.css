@@ -6,7 +6,8 @@
   box-sizing: border-box;
 }
 
-html,body {
+html,
+body {
   margin: 0;
   padding: 0;
   overflow-x: hidden;
@@ -334,7 +335,7 @@ html.dark {
     var(--orange-primary),
     #ffb36b
   );
-
+  background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -538,7 +539,6 @@ html.dark .readonly-field {
 /* Toast */
 .save-toast {
   position: fixed;
-
   bottom: 2rem;
   left: 50%;
 
