@@ -30,7 +30,7 @@ const getImageSrc = (image) => {
 
 const getFavoriteData = (favorite) => {
   const relation = relationByType[favorite.item_type];
-  return relation ? favorite[relation] : null;
+  return relation ? favorite[relation] || favorite.item : favorite.item || null;
 };
 
 const getFavoriteLink = (favorite, data) => {

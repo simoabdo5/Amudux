@@ -28,10 +28,40 @@ const getFavoriteKey = (itemType, itemId) => `${itemType}:${itemId}`;
 const isSameFavorite = (favorite, itemType, itemId) =>
   favorite?.item_type === itemType && String(favorite?.item_id) === String(itemId);
 
+const isLocalFavoriteId = (favoriteId) => String(favoriteId || "").startsWith("local-");
+
+const normalizeFavorite = (favorite, options = {}) => {
+  if (!favorite?.item_type || !favorite?.item_id) return null;
+
+  const relation = relationByType[favorite.item_type];
+  if (!relation) return null;
+
+  const item = favorite[relation] || favorite.item || null;
+  const normalized = {
+    ...favorite,
+    favorite_id:
+      favorite.favorite_id ||
+      (options.persisted && !isLocalFavoriteId(favorite.id) ? favorite.id : null),
+  };
+
+  if (item) {
+    normalized.item = item;
+    normalized[relation] = item;
+  }
+
+  return normalized;
+};
+
+const normalizeFavorites = (favorites, options = {}) =>
+  favorites
+    .map((favorite) => normalizeFavorite(favorite, options))
+    .filter(Boolean);
+
 const readStoredFavorites = (storageKey) => {
   try {
     const stored = localStorage.getItem(storageKey);
-    return stored ? JSON.parse(stored) : [];
+    const parsed = stored ? JSON.parse(stored) : [];
+    return Array.isArray(parsed) ? normalizeFavorites(parsed) : [];
   } catch (error) {
     console.error("Unable to read favorites from storage:", error);
     return [];
@@ -51,30 +81,36 @@ const buildLocalFavorite = (itemType, item, userId) => {
 
   return {
     id: `local-${itemType}-${item.id}`,
+    favorite_id: null,
     user_id: userId || null,
     item_type: itemType,
     item_id: item.id,
     local: true,
+    item,
     [relation]: item,
   };
 };
 
 const mergeWithStoredFavorites = (apiFavorites, storedFavorites) => {
+  const normalizedApiFavorites = normalizeFavorites(apiFavorites, { persisted: true });
+  const normalizedStoredFavorites = normalizeFavorites(storedFavorites);
   const storedByKey = new Map(
-    storedFavorites.map((favorite) => [
+    normalizedStoredFavorites.map((favorite) => [
       getFavoriteKey(favorite.item_type, favorite.item_id),
       favorite,
     ])
   );
 
-  const merged = apiFavorites.map((favorite) => {
+  const merged = normalizedApiFavorites.map((favorite) => {
     const relation = relationByType[favorite.item_type];
     const stored = storedByKey.get(getFavoriteKey(favorite.item_type, favorite.item_id));
+    const storedItem = stored?.[relation] || stored?.item;
 
-    if (relation && stored?.[relation] && !favorite?.[relation]) {
+    if (relation && storedItem && !favorite?.[relation]) {
       return {
         ...favorite,
-        [relation]: stored[relation],
+        item: favorite.item || storedItem,
+        [relation]: storedItem,
       };
     }
 
@@ -85,9 +121,9 @@ const mergeWithStoredFavorites = (apiFavorites, storedFavorites) => {
     merged.map((favorite) => getFavoriteKey(favorite.item_type, favorite.item_id))
   );
 
-  storedFavorites.forEach((favorite) => {
+  normalizedStoredFavorites.forEach((favorite) => {
     const key = getFavoriteKey(favorite.item_type, favorite.item_id);
-    if (!apiKeys.has(key)) {
+    if (!apiKeys.has(key) && favorite.local) {
       merged.push(favorite);
     }
   });
@@ -199,10 +235,14 @@ export function FavoritesProvider({ children }) {
 
         if (response.data?.favorite) {
           const relation = relationByType[itemType];
-          const serverFavorite = {
-            ...response.data.favorite,
-            [relation]: response.data.favorite[relation] || item,
-          };
+          const serverFavorite = normalizeFavorite(
+            {
+              ...response.data.favorite,
+              item: response.data.favorite.item || response.data.favorite[relation] || item,
+              [relation]: response.data.favorite[relation] || response.data.favorite.item || item,
+            },
+            { persisted: true }
+          );
 
           replaceFavorites((current) => [
             serverFavorite,
@@ -250,8 +290,26 @@ export function FavoritesProvider({ children }) {
       }
 
       try {
-        await api.delete(`/favorites/${favoriteToRemove.id}`);
+        const payload = {
+          user_id: userId,
+          item_type: favoriteToRemove.item_type,
+          item_id: favoriteToRemove.item_id,
+        };
+
+        if (favoriteToRemove.favorite_id) {
+          await api.delete(`/favorites/${favoriteToRemove.favorite_id}`, {
+            data: payload,
+          });
+        } else {
+          await api.delete("/favorites/by-item", {
+            data: payload,
+          });
+        }
       } catch (error) {
+        if (error?.response?.status === 404) {
+          return;
+        }
+
         console.error("Unable to remove favorite:", error);
         replaceFavorites((current) => [favoriteToRemove, ...current]);
       }

@@ -75,4 +75,6 @@ Route::get('/favorites', [FavoriteController::class, 'index']);
 
 Route::post('/favorites/toggle', [FavoriteController::class, 'toggle']);
 
+Route::delete('/favorites/by-item', [FavoriteController::class, 'destroyByItem']);
+
 Route::delete('/favorites/{id}', [FavoriteController::class, 'destroy']);
