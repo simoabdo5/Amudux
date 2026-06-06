@@ -9,6 +9,7 @@ import {
 
 import { LanguageProvider } from "./components/accueil/LanguageContext"; 
 import { AuthProvider } from "./context/AuthContext";
+import { FavoritesProvider } from "./context/FavoritesContext";
 
 import Menu from "./components/accueil/Menu";
 import Home from "./components/accueil/home";
@@ -24,8 +25,8 @@ import ForgotPassword from './components/auth/ForgotPassword';
 import ResetPassword from './components/auth/ResetPassword';
 import GoogleCallback from './components/auth/GoogleCallback';
 import ProtectedRoute from "./components/pages/ProtectedRoute";
-import Saved from "./components/pages/saved";
-import AdminDashboard from "./components/pages/adminDashboard";
+import Saved from "./components/pages/favorite";
+import AdminDashboard from "./pageadmin/AdminDashboard";
 import Pack from "./components/pages/pack";
 import Profile from "./components/pages/Profile";
 import CityDetail from "./components/pages/destinations/Citydetail";
@@ -45,6 +46,7 @@ function AppContent() {
 
     const showMenu = !noMenuPages.includes(location.pathname);
     const showChatbot = !noChatbotPages.includes(location.pathname);
+    const showFooter = location.pathname !== '/admin';
 
 
   return (
@@ -99,7 +101,7 @@ function AppContent() {
             </Routes>
 
             {showChatbot && <Chatbot /> }
-            <Footer />
+            {showFooter && <Footer />}
         </>
     );
 }
@@ -108,9 +110,11 @@ function App() {
   return (
     <AuthProvider>
       <LanguageProvider>
-        <Router>
-          <AppContent />
-        </Router>
+        <FavoritesProvider>
+          <Router>
+            <AppContent />
+          </Router>
+        </FavoritesProvider>
       </LanguageProvider>
     </AuthProvider>
   );
