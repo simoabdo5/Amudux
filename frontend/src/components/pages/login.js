@@ -399,7 +399,7 @@ function Login() {
                                     {loading ? <span className="spinner"></span> : (
                                         <>
                                             {isRegister ? currentLang.register : currentLang.login}
-                                            <ArrowRight size={18} />
+                                            <ArrowRight size={20} />
                                         </>
                                     )}
                                 </button>
