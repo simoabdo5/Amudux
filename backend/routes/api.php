@@ -3,6 +3,10 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\SocialAuthController;
+use App\Http\Controllers\CityController;
+
+
 
 // PUBLIC
 Route::post('/login', [AuthController::class, 'login']);
@@ -17,6 +21,9 @@ Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
 Route::post('/reset-password', [AuthController::class, 'resetPassword']);
 Route::post('/verify-reset-token', [AuthController::class, 'verifyResetToken']);
 
+// ===== google AUTH CALLBACKS =====
+Route::post('/auth/google/callback', [SocialAuthController::class, 'handleGoogleCallback']);
+
 // PROTECTED
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
@@ -28,3 +35,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/admin/stats', [AdminController::class, 'getStats']);
     });
 });
+
+//Laravel api routes
+Route::get('/cities', [CityController::class, 'index']);
+
+Route::get('/cities/{slug}', [CityController::class, 'show']);

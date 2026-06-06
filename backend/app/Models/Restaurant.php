@@ -21,4 +21,8 @@ class Restaurant extends Model
     {
         return $this->belongsTo(City::class);
     }
+    public function favorites()
+{
+    return $this->morphMany(Favorite::class, 'favoritable');
+}
 }
