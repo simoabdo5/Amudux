@@ -34,6 +34,7 @@ import Pack from "./components/pages/pack";
 import Profile from "./components/pages/Profile";
 
 import Commentaire from "./components/accueil/Commentaire";
+import WhyChooseUs from "./components/accueil/WhyChooseUs";
 import CityDetail from "./components/pages/destinations/Citydetail";
 import ContactUs from "./components/pages/ContactUs";
 
@@ -121,6 +122,9 @@ function AppContent() {
 
       {/* COMMENTAIRE → ONLY HOME */}
       {isHome && <Commentaire />}
+
+      {/* WHY CHOOSE US → ONLY HOME */}
+      {isHome && <WhyChooseUs />}
 
       {/* CHATBOT */}
       {showChatbot && <Chatbot />}
