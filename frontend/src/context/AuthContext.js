@@ -4,23 +4,21 @@ import api from '../services/api';
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
-    const [user, setUser] = useState(null);
-    const [token, setToken] = useState(localStorage.getItem('token') || null);
-    const [loading, setLoading] = useState(true);
-
-    // Load user from localStorage on mount
-    useEffect(() => {
+    const [user, setUser] = useState(() => {
         const storedUser = localStorage.getItem('user');
-        const storedToken = localStorage.getItem('token');
+        if (storedUser) {
+            try { return JSON.parse(storedUser); } 
+            catch (e) { return null; }
+        }
+        return null;
+    });
+    const [token, setToken] = useState(() => localStorage.getItem('token') || null);
+    const [loading, setLoading] = useState(false);
 
-        if (storedUser && storedToken) {
-            try {
-                setUser(JSON.parse(storedUser));
-                setToken(storedToken);
-            } catch (e) {
-                console.error('Error parsing user:', e);
-                _clearSession();
-            }
+    // Initial mount check (in case localStorage was cleared between ticks or we need side effects)
+    useEffect(() => {
+        if (!localStorage.getItem('token') || !localStorage.getItem('user')) {
+            _clearSession();
         }
         setLoading(false);
     }, []);
@@ -39,14 +37,14 @@ export function AuthProvider({ children }) {
             .catch(() => {/* silent — token may have expired */});
     }, [token]);
 
-    const _clearSession = () => {
+    const _clearSession = useCallback(() => {
         setUser(null);
         setToken(null);
         localStorage.removeItem('token');
         localStorage.removeItem('user');
-    };
+    }, []);
 
-    const login = (userData, userToken) => {
+    const login = useCallback((userData, userToken) => {
         if (!userData || !userToken) {
             console.error('Missing user or token');
             return;
@@ -56,9 +54,9 @@ export function AuthProvider({ children }) {
         setToken(userToken);
         localStorage.setItem('token', userToken);
         localStorage.setItem('user', JSON.stringify(userWithRole));
-    };
+    }, []);
 
-    const logout = () => _clearSession();
+    const logout = useCallback(() => _clearSession(), [_clearSession]);
 
     /**
      * Update the current user's profile.
@@ -83,7 +81,7 @@ export function AuthProvider({ children }) {
     }, [user]);
 
     const isAuthenticated = !!user && !!token;
-    const isAdmin = () => user?.role === 'admin';
+    const isAdmin = useCallback(() => user?.role === 'admin', [user?.role]);
 
     return (
         <AuthContext.Provider value={{

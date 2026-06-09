@@ -271,9 +271,7 @@ function AdminDashboard() {
     navigate("/");
   };
 
-  if (loading) {
-    return <AdminLoading />;
-  }
+
 
   return (
     <div className={`admin-dashboard ${isRTL ? "rtl" : ""}`}>
@@ -287,7 +285,7 @@ function AdminDashboard() {
       />
 
       <main className="admin-main">
-        <AdminHeader lang={lang} refreshing={refreshing} onRefresh={() => fetchData(false)} />
+        <AdminHeader lang={lang} refreshing={loading || refreshing} onRefresh={() => fetchData(false)} />
 
         <AdminNotice notice={notice} onDismiss={() => setNotice(null)} />
 

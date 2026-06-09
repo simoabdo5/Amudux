@@ -11,7 +11,7 @@ function AdminDashboard() {
     const { user, logout, isAdmin } = useAuth();
     const { lang, isRTL } = useLanguage();
     const navigate = useNavigate();
-    
+
     const [users, setUsers] = useState([]);
     const [stats, setStats] = useState({ total_users: 0, total_admins: 0, total_regular_users: 0 });
     const [loading, setLoading] = useState(true);
@@ -42,7 +42,7 @@ function AdminDashboard() {
 
     const deleteUser = async (userId) => {
         if (!window.confirm(at[lang].confirmDelete)) return;
-        
+
         try {
             await api.delete(`/admin/users/${userId}`);
             fetchData();
@@ -64,7 +64,7 @@ function AdminDashboard() {
     const handleLogout = async () => {
         try {
             await api.post('/logout');
-        } catch (e) {}
+        } catch (e) { }
         setLogoutConfirmOpen(false);
         logout();
         navigate('/');
@@ -153,7 +153,7 @@ function AdminDashboard() {
             {/* SIDEBAR - Glassmorphism like home menu */}
             <aside className="admin-sidebar">
                 <div className="sidebar-gradient"></div>
-                
+
                 <div className="admin-logo">
                     <div className="logo-icon">
                         <Crown size={28} />
@@ -163,7 +163,7 @@ function AdminDashboard() {
                         <span className="logo-tag">{currentLang.adminPanel}</span>
                     </div>
                 </div>
-                
+
                 <nav className="admin-nav">
                     <button className="nav-item active">
                         <div className="nav-icon">
@@ -171,9 +171,9 @@ function AdminDashboard() {
                         </div>
                         <span>{currentLang.dashboard}</span>
                     </button>
-                    
+
                     <div className="nav-divider"></div>
-                    
+
                     <button className="nav-item logout-item" onClick={() => setLogoutConfirmOpen(true)}>
                         <div className="nav-icon">
                             <LogOut size={18} />
@@ -263,7 +263,7 @@ function AdminDashboard() {
                         <h2>{currentLang.userList}</h2>
                         <div className="section-count">{users.length} {lang === 'FR' ? 'utilisateurs' : lang === 'AR' ? 'مستخدم' : 'users'}</div>
                     </div>
-                    
+
                     <div className="table-container">
                         <table className="users-table">
                             <thead>
@@ -295,7 +295,7 @@ function AdminDashboard() {
                                             </span>
                                         </td>
                                         <td className="actions-cell">
-                                            <button 
+                                            <button
                                                 className={`action-btn role-btn ${u.role === 'admin' ? 'is-admin' : ''}`}
                                                 onClick={() => toggleRole(u.id, u.role)}
                                                 title={u.role === 'admin' ? currentLang.removeAdmin : currentLang.makeAdmin}
@@ -303,7 +303,7 @@ function AdminDashboard() {
                                             >
                                                 <Shield size={14} />
                                             </button>
-                                            <button 
+                                            <button
                                                 className="action-btn delete-btn"
                                                 onClick={() => deleteUser(u.id)}
                                                 disabled={u.id === user?.id}

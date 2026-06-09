@@ -80,8 +80,8 @@ export const getFieldConfig = (section, mode, cities = [], isSelf = false) => {
     ],
     hotels: [
       ...sharedContentFields.slice(0, 3),
-      { name: "price", label: "Price (e.g. 1200 MAD)", type: "text" },
-      { name: "reviews", label: "Reviews (e.g. 3,2 k)", type: "text" },
+      { name: "price", label: "Price", type: "text", suffix: "MAD" },
+      { name: "reviews", label: "Reviews", type: "text", suffix: "k" },
       {
         name: "budget_level",
         label: "Budget level",

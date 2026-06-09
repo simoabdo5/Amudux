@@ -370,6 +370,7 @@ body {
     opacity: 0;
     transform: scale(0.9) translateY(-10px);
   }
+
   to {
     opacity: 1;
     transform: scale(1) translateY(0);
@@ -397,6 +398,7 @@ body {
   right: auto !important;
   left: 0 !important;
 }
+
 /* ================= DARK MODE LINKS FIX ================= */
 
 .dark .dropdown-item {
@@ -444,8 +446,12 @@ body {
   color: white;
 }
 
+.mobile-close, .mobile-menu-header {
+  display: none;
+}
+
 /* ================= RESPONSIVE ================= */
-@media (max-width: 900px) {
+@media (max-width: 1100px) {
   .menu {
     padding: 0 20px;
   }
@@ -455,6 +461,7 @@ body {
   }
 
   .mobile-icon {
+    margin-top: 5px;
     display: block;
   }
 
@@ -462,7 +469,7 @@ body {
     position: fixed;
     top: 0;
     left: -100%;
-    width: 80%;
+    width: 280px;
     height: 100vh;
     flex-direction: column;
     justify-content: center;
@@ -470,12 +477,75 @@ body {
     transition: 0.5s;
   }
 
+  .mobile-menu-header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-sizing: border-box;
+  }
+
+  .mobile-greeting {
+    display: flex;
+    align-items: center;
+    width: 80%;
+    justify-content: center;
+    gap: 8px;
+    padding: 8px 14px;
+    background: linear-gradient(135deg, rgba(255, 122, 0, 0.15), rgba(255, 77, 0, 0.1));
+    border: 1px solid rgba(255, 122, 0, 0.2);
+    border-radius: 50px;
+    color: #ff7a00 !important;
+    font-size: 8px;
+    font-weight: 600;
+    text-decoration: none !important;
+    transition: all 0.3s ease;
+  }
+
+  .mobile-greeting:hover {
+    background: linear-gradient(135deg, rgba(255, 122, 0, 0.25), rgba(255, 77, 0, 0.15));
+    transform: scale(1.02);
+    color: #ff9800 !important;
+  }
+
+  .mobile-greeting::after {
+    display: none !important;
+  }
+
+  .mobile-greeting-placeholder {
+    width: 10px;
+  }
+
+  .mobile-close {
+    display: block;
+    color: white;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+
+  .mobile-close:hover {
+    color: #ff7a00;
+  }
+
   .menu-links.active {
     left: 0;
   }
 
+  /* Ensure links are white on mobile because the background is always dark */
+  .menu.scrolled .menu-links li a {
+    color: white;
+  }
+
+  .menu.scrolled .menu-links li a.active-link {
+    color: #ff7a00 !important;
+  }
+
   .menu-right {
-    margin-right: 50px;
+    gap: 10px;
   }
 
   .user-greeting {
