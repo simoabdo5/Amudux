@@ -7,6 +7,7 @@ import AdminNotice from "../components/admin/AdminNotice";
 import AdminSidebar from "../components/admin/AdminSidebar";
 import AdminWorkspace from "../components/admin/AdminWorkspace";
 import StatsCards from "../components/admin/StatsCards";
+import ApprendreAnalytics from "../components/admin/ApprendreAnalytics";
 import {
   adminEndpoints,
   adminSections,
@@ -270,6 +271,8 @@ function AdminDashboard() {
         <AdminNotice notice={notice} onDismiss={() => setNotice(null)} />
 
         <StatsCards stats={stats} collections={collections} />
+
+        <ApprendreAnalytics />
 
         <AdminWorkspace
           activeMeta={activeMeta}

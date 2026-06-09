@@ -7,10 +7,10 @@ import {
   getCompletedMissions, getPathTotalMissions, getPathProgress, getOverallProgress,
   getTotalCompleted, getTotalMissions, getFirstUnlockedMission, isAdminUser,
   getMissionTitle, getMissionStatus, getContinueLearningInfo, isMissionCompleted,
-  isMissionUnlocked, syncProgressFromDb, loadMissionMap
+  isMissionUnlocked
 } from "../../utils/progress";
 import { useAuth } from "../../context/AuthContext";
-import { getSavedVocabCount, getFavoriteMissionsCount, syncFavoritesFromDb, syncSavedFromDb } from "../../utils/storage";
+import { getSavedVocabCount, getFavoriteMissionsCount, syncApprendreFromDb } from "../../utils/storage";
 import MyVocabulary from "./common/MyVocabulary";
 import FavoriteMissions from "./common/FavoriteMissions";
 import RevisionMode from "./common/RevisionMode";
@@ -219,24 +219,24 @@ const ApprendreHub = () => {
     window.scrollTo(0, 0);
   }, []);
 
-  // Sync from database on mount when authenticated
+  // Sync from database on mount when authenticated. The DB is authoritative:
+  // the cache is rewritten to match before the UI reads it.
   useEffect(() => {
     if (user) {
-      // Load the mission map first so any subsequent writes can resolve mission ids.
-      loadMissionMap().then(() =>
-        Promise.all([
-          syncProgressFromDb(),
-          syncFavoritesFromDb(),
-          syncSavedFromDb(),
-        ])
-      ).then(() => setRefreshKey(k => k + 1));
+      syncApprendreFromDb().then(() => setRefreshKey(k => k + 1));
     }
   }, [user]);
 
+  // Refresh when the cache changes — cross-tab ("storage") or after a login-time
+  // hydration completes ("apprendre:synced", dispatched by syncApprendreFromDb).
   useEffect(() => {
     const handle = () => setRefreshKey(k => k + 1);
     window.addEventListener("storage", handle);
-    return () => window.removeEventListener("storage", handle);
+    window.addEventListener("apprendre:synced", handle);
+    return () => {
+      window.removeEventListener("storage", handle);
+      window.removeEventListener("apprendre:synced", handle);
+    };
   }, []);
 
   const overallProgress = getOverallProgress();

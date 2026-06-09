@@ -193,3 +193,55 @@ describe("Fix 4 — write failures are logged and the cache is reverted", () => 
     expect(console.error).toHaveBeenCalled();
   });
 });
+
+describe("Login-time hydration — database is the source of truth", () => {
+  test("syncApprendreFromDb rewrites the cache from the DB and notifies listeners", async () => {
+    // DB returns authoritative state for this user across all three datasets.
+    api.get.mockImplementation((url) => {
+      if (url === "/apprendre/missions") return Promise.resolve({ data: MISSIONS });
+      if (url === "/apprendre/progress") {
+        return Promise.resolve({ data: [
+          { track: "darija", mission_number: 1, completed: true },
+          { track: "tifinagh", mission_number: 3, completed: true },
+        ] });
+      }
+      if (url === "/apprendre/favorites") {
+        return Promise.resolve({ data: [
+          { id: 1, track: "darija", mission_number: 2 },
+        ] });
+      }
+      if (url === "/apprendre/saved") {
+        return Promise.resolve({ data: [
+          { id: 5, content: "salam", translation: "hello", track: "darija", mission_number: 1, type: "vocab", category: null },
+        ] });
+      }
+      return Promise.resolve({ data: [] });
+    });
+
+    const synced = jest.fn();
+    window.addEventListener("apprendre:synced", synced);
+
+    await storage.syncApprendreFromDb();
+
+    // Progress hydrated from DB
+    expect(progress.isMissionCompleted("darija", 1)).toBe(true);
+    expect(progress.isMissionCompleted("tifinagh", 3)).toBe(true);
+    // Favorites hydrated from DB
+    expect(storage.isMissionFavorited("darija", 2)).toBe(true);
+    // Saved vocabulary hydrated from DB
+    expect(storage.isVocabularySaved("darija", 1, "salam")).toBe(true);
+    // Listeners are notified so mounted views refresh
+    expect(synced).toHaveBeenCalled();
+
+    window.removeEventListener("apprendre:synced", synced);
+  });
+
+  test("syncApprendreFromDb is a no-op when unauthenticated", async () => {
+    localStorage.removeItem("token");
+    api.get.mockClear();
+
+    await storage.syncApprendreFromDb();
+
+    expect(api.get).not.toHaveBeenCalled();
+  });
+});

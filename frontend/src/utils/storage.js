@@ -1,6 +1,6 @@
 import { getUserScope } from "./userScope";
 import api from "../services/api";
-import { resolveMissionId } from "./progress";
+import { resolveMissionId, loadMissionMap, syncProgressFromDb } from "./progress";
 
 const STORAGE_KEYS = {
   savedVocabulary: "saved_vocabulary",
@@ -227,4 +227,32 @@ export function setRevisionProgress(progress) {
 
 export function getRevisionProgress() {
   return safeGet(STORAGE_KEYS.revisionProgress, {});
+}
+
+/* ===== Full DB → cache hydration (called on login) ===== */
+
+// Database-first bootstrap. When a user authenticates we pull the authoritative
+// Apprendre state (progress, favorites, saved vocabulary) from the database and
+// rewrite the localStorage cache to match. This is what makes progress restored
+// after closing the browser or switching devices — the DB is the source of truth,
+// localStorage is only a per-user performance cache.
+//
+// Safe to call repeatedly. No-op when unauthenticated. Notifies listeners (the
+// hub re-reads the cache) once hydration completes.
+export async function syncApprendreFromDb() {
+  const token = localStorage.getItem("token");
+  if (!token) return;
+
+  // The mission map must load first so id-keyed writes can resolve later.
+  await loadMissionMap();
+  await Promise.all([
+    syncProgressFromDb(),
+    syncFavoritesFromDb(),
+    syncSavedFromDb(),
+  ]);
+
+  // Let any mounted Apprendre views refresh from the freshly-hydrated cache.
+  try {
+    window.dispatchEvent(new Event("apprendre:synced"));
+  } catch { /* non-browser env */ }
 }
