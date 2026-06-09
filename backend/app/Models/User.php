@@ -57,5 +57,20 @@ class User extends Authenticatable
         return $this->hasMany(Commentaire::class);
     }
 
+    // Apprendre relations
+    public function apprendreProgress()
+    {
+        return $this->hasMany(ApprendreProgress::class);
+    }
+
+    public function apprendreFavorites()
+    {
+        return $this->hasMany(ApprendreFavorite::class);
+    }
+
+    public function apprendreSavedContent()
+    {
+        return $this->hasMany(ApprendreSavedContent::class);
+    }
 
 }

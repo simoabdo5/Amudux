@@ -6,7 +6,8 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\SocialAuthController;
 use App\Http\Controllers\CityController;
 use App\Http\Controllers\FavoriteController;
-use App\Http\Controllers\CommentaireController; 
+use App\Http\Controllers\CommentaireController;
+use App\Http\Controllers\ApprendreController; 
 
 
 
@@ -67,6 +68,21 @@ Route::middleware('auth:sanctum')->group(function () {
     });
     Route::post('/commentaires', [CommentaireController::class, 'store']);
     Route::delete('/commentaires/{id}', [CommentaireController::class, 'destroy']);
+
+    // Apprendre routes (authenticated)
+    Route::prefix('apprendre')->group(function () {
+        Route::get('/missions', [ApprendreController::class, 'missions']);
+        Route::get('/progress', [ApprendreController::class, 'getProgress']);
+        Route::post('/progress', [ApprendreController::class, 'storeProgress']);
+        Route::get('/favorites', [ApprendreController::class, 'getFavorites']);
+        Route::post('/favorites', [ApprendreController::class, 'storeFavorite']);
+        Route::delete('/favorites/{id}', [ApprendreController::class, 'destroyFavorite']);
+        Route::get('/saved', [ApprendreController::class, 'getSaved']);
+        Route::post('/saved', [ApprendreController::class, 'storeSaved']);
+        // Delete by natural key (mission_id + content) — must be declared before /{id}
+        Route::delete('/saved', [ApprendreController::class, 'destroySavedByContent']);
+        Route::delete('/saved/{id}', [ApprendreController::class, 'destroySaved']);
+    });
 });
 
 //Laravel api routes
