@@ -69,7 +69,9 @@ function AdminDashboard() {
         restaurantsRes,
         placesRes,
         hiddenGemsRes,
+        hotelsRes,
         favoritesRes,
+        commentsRes,
       ] = await Promise.all([
         api.get(adminEndpoints.users),
         api.get("/admin/stats"),
@@ -78,7 +80,9 @@ function AdminDashboard() {
         api.get(adminEndpoints.restaurants),
         api.get(adminEndpoints.places),
         api.get(adminEndpoints.hiddenGems),
+        api.get(adminEndpoints.hotels),
         api.get(adminEndpoints.favorites),
+        api.get(adminEndpoints.comments),
       ]);
 
       setCollections({
@@ -88,7 +92,9 @@ function AdminDashboard() {
         restaurants: normalizeList(restaurantsRes.data, "restaurants"),
         places: normalizeList(placesRes.data, "places"),
         hiddenGems: normalizeList(hiddenGemsRes.data, "hidden_gems"),
+        hotels: normalizeList(hotelsRes.data, "hotels"),
         favorites: normalizeList(favoritesRes.data, "favorites"),
+        comments: normalizeList(commentsRes.data, "comments"),
       });
       setStats(statsRes.data || {});
     } catch (error) {
@@ -217,6 +223,22 @@ function AdminDashboard() {
     }
   };
 
+  const handleApproveComment = async (comment) => {
+    try {
+      setRefreshing(true);
+      await api.put(`/admin/comments/${comment.id}/approve`);
+      setNotice({
+        type: "success",
+        message: "Comment approved successfully.",
+      });
+      fetchData(false);
+    } catch (error) {
+      setNotice({ type: "error", message: getErrorMessage(error) });
+    } finally {
+      setRefreshing(false);
+    }
+  };
+
   const handleDelete = async () => {
     if (!confirmTarget) return;
 
@@ -250,9 +272,7 @@ function AdminDashboard() {
     navigate("/");
   };
 
-  if (loading) {
-    return <AdminLoading />;
-  }
+
 
   return (
     <div className={`admin-dashboard ${isRTL ? "rtl" : ""}`}>
@@ -266,7 +286,7 @@ function AdminDashboard() {
       />
 
       <main className="admin-main">
-        <AdminHeader lang={lang} refreshing={refreshing} onRefresh={() => fetchData(false)} />
+        <AdminHeader lang={lang} refreshing={loading || refreshing} onRefresh={() => fetchData(false)} />
 
         <AdminNotice notice={notice} onDismiss={() => setNotice(null)} />
 
@@ -289,6 +309,7 @@ function AdminDashboard() {
             currentUser={user}
             onEdit={(section, item) => openModal(section, "edit", item)}
             onDelete={(section, item) => setConfirmTarget({ section, item })}
+            onApprove={handleApproveComment}
           />
         </AdminWorkspace>
       </main>

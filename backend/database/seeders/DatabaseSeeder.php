@@ -12,25 +12,30 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             ApprendreMissionSeeder::class,
+            HotelSeeder::class,
         ]);
 
         // Supprimer users l9doma (optionnel)
         // User::truncate();
 
         // Créer admin
-        User::create([
-            'name' => 'Admin User',
-            'email' => 'admin@gmail.com',
-            'password' => Hash::make('admin123'),
-            'role' => 'admin',
-        ]);
+        User::firstOrCreate(
+            ['email' => 'admin@gmail.com'],
+            [
+                'name' => 'Admin User',
+                'password' => Hash::make('admin123'),
+                'role' => 'admin',
+            ]
+        );
 
         // Créer user
-        User::create([
-            'name' => 'Normal User',
-            'email' => 'user@gmail.com',
-            'password' => Hash::make('user123'),
-            'role' => 'user',
-        ]);
+        User::firstOrCreate(
+            ['email' => 'user@gmail.com'],
+            [
+                'name' => 'Normal User',
+                'password' => Hash::make('user123'),
+                'role' => 'user',
+            ]
+        );
     }
 }

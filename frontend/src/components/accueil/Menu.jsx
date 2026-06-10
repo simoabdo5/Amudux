@@ -17,7 +17,7 @@ import {
     X,
 } from "lucide-react";
 import { useLanguage } from "./LanguageContext";
-import { useAuth} from "../../context/AuthContext"
+import { useAuth } from "../../context/AuthContext"
 import ConfirmDialog from "../common/ConfirmDialog";
 import logo from "../../assets/logo12.png";
 import "../css/Menu.css";
@@ -135,9 +135,8 @@ function Menu() {
     return (
         <>
             <nav
-                className={`menu ${scrolled ? "scrolled" : ""} ${
-                    isRTL ? "rtl" : ""
-                }`}
+                className={`menu ${scrolled ? "scrolled" : ""} ${isRTL ? "rtl" : ""
+                    }`}
             >
                 <div className="menu-left">
                     <Link to="/">
@@ -145,14 +144,31 @@ function Menu() {
                     </Link>
                 </div>
 
-                <div
-                    className="mobile-icon"
-                    onClick={() => setMobile(!mobile)}
-                >
-                    {mobile ? <X size={28} /> : <MenuIcon size={28} />}
-                </div>
-
                 <ul className={mobile ? "menu-links active" : "menu-links"}>
+                    <li className="mobile-menu-header">
+                        {isAuthenticated && user ? (
+                            <Link 
+                                to="/profile" 
+                                className="mobile-greeting" 
+                                onClick={() => setMobile(false)}
+                            >
+                                <User size={18} />
+                                <span>
+                                    {lang === "AR"
+                                        ? "مرحباً"
+                                        : lang === "FR"
+                                            ? "Bonjour"
+                                            : "Hello"}{" "}
+                                    {user.name}
+                                </span>
+                            </Link>
+                        ) : (
+                            <div className="mobile-greeting-placeholder"></div>
+                        )}
+                        <div className="mobile-close" onClick={() => setMobile(false)}>
+                            <X size={28} />
+                        </div>
+                    </li>
                     {navLinks.map((link, index) => (
                         <li key={index}>
                             <Link
@@ -195,11 +211,20 @@ function Menu() {
                                 {lang === "AR"
                                     ? "مرحباً"
                                     : lang === "FR"
-                                    ? "Bonjour"
-                                    : "Hello"}{" "}
+                                        ? "Bonjour"
+                                        : "Hello"}{" "}
                                 {user.name}
                             </span>
                         </Link>
+                    )}
+
+                    {!mobile && (
+                        <div
+                            className="mobile-icon"
+                            onClick={() => setMobile(true)}
+                        >
+                            <MenuIcon size={28} />
+                        </div>
                     )}
 
                     <button
@@ -218,9 +243,8 @@ function Menu() {
                     {open && (
                         <div
                             ref={dropdownRef}
-                            className={`dropdown ${
-                                isRTL ? "dropdown-rtl" : ""
-                            }`}
+                            className={`dropdown ${isRTL ? "dropdown-rtl" : ""
+                                }`}
                         >
                             <div className="dropdown-header">
                                 {t("translation")}
@@ -228,9 +252,8 @@ function Menu() {
 
                             <div className="language-bar">
                                 <button
-                                    className={`lang-btn ${
-                                        lang === "AR" ? "active" : ""
-                                    }`}
+                                    className={`lang-btn ${lang === "AR" ? "active" : ""
+                                        }`}
                                     onClick={() =>
                                         handleLanguageChange("AR")
                                     }
@@ -238,9 +261,8 @@ function Menu() {
                                     AR
                                 </button>
                                 <button
-                                    className={`lang-btn ${
-                                        lang === "FR" ? "active" : ""
-                                    }`}
+                                    className={`lang-btn ${lang === "FR" ? "active" : ""
+                                        }`}
                                     onClick={() =>
                                         handleLanguageChange("FR")
                                     }
@@ -248,9 +270,8 @@ function Menu() {
                                     FR
                                 </button>
                                 <button
-                                    className={`lang-btn ${
-                                        lang === "EN" ? "active" : ""
-                                    }`}
+                                    className={`lang-btn ${lang === "EN" ? "active" : ""
+                                        }`}
                                     onClick={() =>
                                         handleLanguageChange("EN")
                                     }
@@ -277,8 +298,8 @@ function Menu() {
                                         {lang === "AR"
                                             ? "الملف الشخصي"
                                             : lang === "FR"
-                                            ? "Profil"
-                                            : "Profile"}
+                                                ? "Profil"
+                                                : "Profile"}
                                     </span>
                                 </Link>
                             )}
@@ -317,8 +338,8 @@ function Menu() {
                                         {lang === "AR"
                                             ? "تسجيل الخروج"
                                             : lang === "FR"
-                                            ? "Déconnexion"
-                                            : "Logout"}
+                                                ? "Déconnexion"
+                                                : "Logout"}
                                     </span>
                                 </div>
                             ) : (

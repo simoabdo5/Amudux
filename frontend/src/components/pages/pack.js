@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
+import { useLocation } from "react-router-dom";
 import { 
   Sparkles, 
   MapPin, 
@@ -18,13 +19,20 @@ import {
   Camera,
   ChevronLeft,
   ChevronRight,
-  Tent,
-  Home,
-  ChevronDown
+  ChevronDown,
+  User,
+  Heart,
+  Users,
+  Sun,
+  Waves,
+  Mountain,
+  Landmark
 } from "lucide-react";
 import { useLanguage } from "../accueil/LanguageContext";
 import { generateTripData } from "../../services/aiService";
 import { MOROCCO_CITIES, getMoroccoImageByText, CITY_CATEGORIES, getGoogleMapsHotelOptions, getRealGoogleMapsOptions } from "../../services/moroccoData";
+import api from "../../services/api";
+import { getUploadUrl } from "../../services/config";
 import "../css/pack.css";
 
 const formatDateInput = (date) => date.toISOString().slice(0, 10);
@@ -44,12 +52,13 @@ const getInclusiveDays = (startDate, endDate) => {
 
 function Pack() {
   const { t, lang, isRTL } = useLanguage();
+  const locationState = useLocation();
   const today = formatDateInput(new Date());
   const defaultEndDate = formatDateInput(addDays(new Date(), 2));
   
   // Form State
   const [formData, setFormData] = useState({
-    location: "Marrakech",
+    location: locationState.state?.city || "Marrakech",
     noOfDays: "3",
     startDate: today,
     endDate: defaultEndDate,
@@ -72,8 +81,6 @@ function Pack() {
   // Horizontal Scroll Refs
   const hotelsScrollRef = useRef(null);
   const restaurantsScrollRef = useRef(null);
-  const hostelsScrollRef = useRef(null);
-  const campingScrollRef = useRef(null);
 
   // Saved Trips State
   const [savedTrips, setSavedTrips] = useState(() => {
@@ -84,6 +91,93 @@ function Pack() {
       return [];
     }
   });
+
+  // DB cities & items fetched from backend
+  const [dbCities, setDbCities]   = useState([]);
+  const [dbItems, setDbItems]     = useState(null);  // { activities, restaurants, places, hidden_gems }
+  const [dbHotels, setDbHotels]   = useState([]);     // Hotels from /hotels?city=
+
+  // Merged city list: static MOROCCO_CITIES + any extra DB city names
+  const allCities = useMemo(() => {
+    const dbNames = dbCities.map(c => c.name);
+    const extras  = dbNames.filter(n => !MOROCCO_CITIES.includes(n));
+    return [...MOROCCO_CITIES, ...extras];
+  }, [dbCities]);
+
+  // Fetch cities from backend on mount
+  useEffect(() => {
+    api.get('/cities')
+      .then(res => {
+        const list = Array.isArray(res.data?.cities) ? res.data.cities : [];
+        setDbCities(list);
+      })
+      .catch(() => { /* silent — fall back to static list */ });
+  }, []);
+
+  // When the selected city changes, try to load DB details for it
+  useEffect(() => {
+    const match = dbCities.find(
+      c => c.name.toLowerCase() === formData.location.toLowerCase()
+    );
+    if (!match) { setDbItems(null); return; }
+
+    api.get(`/cities/${match.slug}`)
+      .then(res => {
+        setDbItems({
+          activities:   Array.isArray(res.data?.activities)   ? res.data.activities   : [],
+          restaurants:  Array.isArray(res.data?.restaurants)  ? res.data.restaurants  : [],
+          places:       Array.isArray(res.data?.places)        ? res.data.places        : [],
+          hidden_gems:  Array.isArray(res.data?.hidden_gems)   ? res.data.hidden_gems  : [],
+        });
+      })
+      .catch(() => setDbItems(null));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [formData.location, dbCities]);
+
+  // When the selected city changes, fetch DB hotels for it
+  useEffect(() => {
+    const cityName = formData.location;
+    if (!cityName) { setDbHotels([]); return; }
+
+    api.get(`/hotels?city=${encodeURIComponent(cityName)}`)
+      .then(res => {
+        const list = Array.isArray(res.data) ? res.data : [];
+        setDbHotels(list);
+      })
+      .catch(() => setDbHotels([]));
+  }, [formData.location]);
+
+  // Build "DB hotel cards" from the /hotels endpoint
+  const dbHotelCards = useMemo(() => {
+    if (!dbHotels.length) return [];
+    return dbHotels.map(h => ({
+      name: h.name,
+      price: h.price || 'Sur place',
+      rating: h.rating ? String(h.rating) : '4.5',
+      reviews: h.reviews || '',
+      address: h.city?.name ? `${h.city.name}, Maroc` : `${formData.location}, Maroc`,
+      description: h.description || '',
+      image_url: h.image || getMoroccoImageByText(formData.location, 'hotel'),
+      maps_query: h.maps_query || `${h.name}, ${formData.location}, Morocco`,
+      source: h.source || 'Base de données',
+    }));
+  }, [dbHotels, formData.location]);
+
+  // Build "DB restaurant cards"
+  const dbRestaurantCards = useMemo(() => {
+    if (!dbItems?.restaurants?.length) return [];
+    return dbItems.restaurants.map(r => ({
+      name: r.name,
+      price: r.price_range || 'Varie',
+      rating: r.rating ? String(r.rating) : '4.4',
+      cuisine: r.cuisine || 'Marocain',
+      address: r.address || formData.location,
+      description: r.description || '',
+      image_url: r.image ? getUploadUrl(r.image) : getMoroccoImageByText(formData.location, 'restaurant'),
+      maps_query: `${r.name}, ${formData.location}, Morocco`,
+      source: 'Base de données',
+    }));
+  }, [dbItems, formData.location]);
 
   const stepTimerRef = useRef(null);
   const progressTimerRef = useRef(null);
@@ -96,10 +190,10 @@ function Pack() {
   // Emoji Categories mapping helper
   const getCityCategoryIcon = (cityName) => {
     const cat = getCityCategory(cityName);
-    if (cat === "desert") return "🐪";
-    if (cat === "beach") return "🌊";
-    if (cat === "nature") return "🏔️";
-    return "🏛️";
+    if (cat === "desert") return <Sun size={20} className="city-category-icon" />;
+    if (cat === "beach") return <Waves size={20} className="city-category-icon" />;
+    if (cat === "nature") return <Mountain size={20} className="city-category-icon" />;
+    return <Landmark size={20} className="city-category-icon" />;
   };
 
   // Timeline Time of Day Pill Styling Helpers
@@ -221,7 +315,8 @@ function Pack() {
         noOfDays: formData.noOfDays,
         budget: formData.budget,
         traveler: formData.traveler,
-        lang: lang
+        lang: lang,
+        dbItems: dbItems
       });
 
       // Complete the progress animation
@@ -326,24 +421,20 @@ function Pack() {
 
   // Traveler Options config
   const travelerOptions = [
-    { value: "Solo", label: t("soloTravel"), desc: t("soloDesc"), icon: "👤" },
-    { value: "Couple", label: t("coupleTravel"), desc: t("coupleDesc"), icon: "💖" },
-    { value: "Family", label: t("familyTravel"), desc: t("familyDesc"), icon: "👨‍👩‍👧‍👦" },
-    { value: "Friends", label: t("friendsTravel"), desc: t("friendsDesc"), icon: "👥" }
+    { value: "Solo", label: t("soloTravel"), desc: t("soloDesc"), icon: User },
+    { value: "Couple", label: t("coupleTravel"), desc: t("coupleDesc"), icon: Heart },
+    { value: "Family", label: t("familyTravel"), desc: t("familyDesc"), icon: Users },
+    { value: "Friends", label: t("friendsTravel"), desc: t("friendsDesc"), icon: Users }
   ];
 
   // Section headings for accommodation types
   const sectionLabels = {
     hotels: lang === "AR" ? "فنادق حقيقية على Google Maps" : lang === "FR" ? "Hôtels réels sur Google Maps" : "Real hotels on Google Maps",
-    restaurants: lang === "AR" ? "مطاعم حقيقية" : lang === "FR" ? "Restaurants réels" : "Real restaurants",
-    hostels: lang === "AR" ? "نزل حقيقية" : lang === "FR" ? "Auberges réelles" : "Real hostels",
-    camping: lang === "AR" ? "Camping réel" : lang === "FR" ? "Camping réel" : "Real camping"
+    restaurants: lang === "AR" ? "مطاعم حقيقية" : lang === "FR" ? "Restaurants réels" : "Real restaurants"
   };
 
   const googleHotelOptions = getGoogleMapsHotelOptions(formData.location, lang, formData.budget);
   const realRestaurantOptions = getRealGoogleMapsOptions(formData.location, lang, formData.budget, "restaurants");
-  const realHostelOptions = getRealGoogleMapsOptions(formData.location, lang, formData.budget, "hostels");
-  const realCampingOptions = getRealGoogleMapsOptions(formData.location, lang, formData.budget, "camping");
   const mapsLabel = "Google Maps";
 
   const renderRealPlaceCard = (item, index, fallbackContext = "hotel") => (
@@ -470,7 +561,7 @@ function Pack() {
                           autoFocus
                         />
                         <div className="dropdown-options-list">
-                          {MOROCCO_CITIES.filter(city => 
+                          {allCities.filter(city => 
                             city.toLowerCase().includes(citySearch.toLowerCase())
                           ).map((city) => (
                             <div 
@@ -490,7 +581,7 @@ function Pack() {
                               {formData.location === city && <Check size={14} className="option-check" />}
                             </div>
                           ))}
-                          {MOROCCO_CITIES.filter(city => 
+                          {allCities.filter(city => 
                             city.toLowerCase().includes(citySearch.toLowerCase())
                           ).length === 0 && (
                             <div className="dropdown-no-results">
@@ -575,19 +666,24 @@ function Pack() {
                     <span>{t("groupLabel")}</span>
                   </label>
                   <div className="card-selector-grid">
-                    {travelerOptions.map((opt) => (
-                      <div 
-                        key={opt.value}
-                        className={`selector-card ${formData.traveler === opt.value ? "active" : ""}`}
-                        onClick={() => handleInputChange("traveler", opt.value)}
-                      >
-                        <div className="selector-header">
-                          <span className="selector-emoji">{opt.icon}</span>
-                          <h3>{opt.label}</h3>
+                    {travelerOptions.map((opt) => {
+                      const TravelerIcon = opt.icon;
+                      return (
+                        <div 
+                          key={opt.value}
+                          className={`selector-card ${formData.traveler === opt.value ? "active" : ""}`}
+                          onClick={() => handleInputChange("traveler", opt.value)}
+                        >
+                          <div className="selector-header">
+                            <span className="selector-emoji">
+                              <TravelerIcon size={20} className="traveler-icon" />
+                            </span>
+                            <h3>{opt.label}</h3>
+                          </div>
+                          <p>{opt.desc}</p>
                         </div>
-                        <p>{opt.desc}</p>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 </div>
 
@@ -732,7 +828,7 @@ function Pack() {
                 {renderHorizontalSection(
                   sectionLabels.hotels,
                   <Hotel size={20} className="section-icon" />,
-                  googleHotelOptions,
+                  [...dbHotelCards, ...googleHotelOptions],
                   hotelsScrollRef,
                   renderGoogleHotelCard
                 )}
@@ -741,28 +837,12 @@ function Pack() {
                 {renderHorizontalSection(
                   sectionLabels.restaurants,
                   <UtensilsCrossed size={20} className="section-icon" />,
-                  realRestaurantOptions,
+                  [...dbRestaurantCards, ...realRestaurantOptions],
                   restaurantsScrollRef,
                   (restaurant, index) => renderRealPlaceCard(restaurant, index, "restaurant")
                 )}
 
-                {/* ============ HOSTELS — HORIZONTAL SCROLL ============ */}
-                {renderHorizontalSection(
-                  sectionLabels.hostels,
-                  <Home size={20} className="section-icon" />,
-                  realHostelOptions,
-                  hostelsScrollRef,
-                  (hostel, index) => renderRealPlaceCard(hostel, index, "hostel")
-                )}
 
-                {/* ============ CAMPING — HORIZONTAL SCROLL ============ */}
-                {renderHorizontalSection(
-                  sectionLabels.camping,
-                  <Tent size={20} className="section-icon" />,
-                  realCampingOptions,
-                  campingScrollRef,
-                  (camp, index) => renderRealPlaceCard(camp, index, "camping hiking")
-                )}
 
                 {/* Day by Day Plan Timeline */}
                 <div className="itinerary-timeline-section">

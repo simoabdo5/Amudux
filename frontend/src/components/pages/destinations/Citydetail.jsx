@@ -3,9 +3,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import {
   Star,
   Heart,
-  Share2,
+  Sparkles,
   ArrowLeft,
-  ChevronRight,
   Utensils,
   Building2,
   Mountain,
@@ -17,12 +16,15 @@ import {
 } from "lucide-react";
 
 import { useFavorites } from "../../../context/FavoritesContext";
+import { useLanguage } from "../../accueil/LanguageContext";
+import { API_BASE_URL, getUploadUrl } from "../../../services/config";
 import "../../css/CityDetail.css";
 
 function CityDetail() {
   const navigate = useNavigate();
   const { slug } = useParams();
   const { isFavorite, toggleFavorite } = useFavorites();
+  const { lang } = useLanguage();
 
   const [activeTab, setActiveTab] = useState("activities");
   const [scrolled, setScrolled] = useState(false);
@@ -45,9 +47,7 @@ function CityDetail() {
       try {
         setLoading(true);
 
-        const res = await fetch(
-          `http://localhost:8000/api/cities/${slug}`
-        );
+        const res = await fetch(`${API_BASE_URL}/cities/${slug}`);
 
         if (!res.ok) {
           throw new Error("Failed to fetch city");
@@ -116,7 +116,7 @@ function CityDetail() {
       <div
         className="city-hero"
         style={{
-          backgroundImage: `url(http://localhost:8000/uploads/${cityData.city.image})`
+          backgroundImage: `url(${getUploadUrl(cityData.city.image)})`
         }}
       >
         <div className="hero-overlay"></div>
@@ -206,9 +206,12 @@ function CityDetail() {
                 {citySaved ? "Saved" : "Save"}
               </button>
 
-              <button className="share-btn">
-                <Share2 size={18} />
-                Share
+              <button
+                className="generate-trip-btn"
+                onClick={() => navigate("/pack", { state: { city: cityData.city.name } })}
+              >
+                <Sparkles size={18} className="generate-sparkle-icon" />
+                {lang === "AR" ? "توليد رحلتي" : lang === "FR" ? "Générer mon voyage" : "Plan my trip"}
               </button>
 
             </div>
@@ -285,7 +288,7 @@ function CityDetail() {
                 <div className="activity-image">
 
                   <img
-                    src={`http://localhost:8000/uploads/${activity.image}`}
+                    src={getUploadUrl(activity.image)}
                     alt={activity.name}
                   />
 
@@ -337,11 +340,6 @@ function CityDetail() {
 
                   </div>
 
-                  <button className="book-btn">
-                    Book Now
-                    <ChevronRight size={16} />
-                  </button>
-
                 </div>
 
               </div>
@@ -366,7 +364,7 @@ function CityDetail() {
                 <div className="restaurant-image">
 
                   <img
-                    src={`http://localhost:8000/uploads/${restaurant.image}`}
+                    src={getUploadUrl(restaurant.image)}
                     alt={restaurant.name}
                   />
 
@@ -442,7 +440,7 @@ function CityDetail() {
                 <div className="place-image">
 
                   <img
-                    src={`http://localhost:8000/uploads/${place.image}`}
+                    src={getUploadUrl(place.image)}
                     alt={place.name}
                   />
 
@@ -518,7 +516,7 @@ function CityDetail() {
                 <div className="hidden-image">
 
                   <img
-                    src={`http://localhost:8000/uploads/${gem.image}`}
+                    src={getUploadUrl(gem.image)}
                     alt={gem.name}
                   />
 
