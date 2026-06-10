@@ -3,6 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Activity;
+use App\Models\ApprendreFavorite;
+use App\Models\ApprendreMission;
+use App\Models\ApprendreProgress;
+use App\Models\ApprendreSavedContent;
 use App\Models\City;
 use App\Models\Favorite;
 use App\Models\HiddenGem;
@@ -181,6 +185,207 @@ class AdminController extends Controller
             });
 
         return response()->json($favorites);
+    }
+
+    // ──────────────────────────────────────────────
+    //  Apprendre analytics
+    //
+    //  Every value here is computed directly from the apprendre_* tables.
+    //  localStorage is never consulted — the database is the single source of truth.
+    // ──────────────────────────────────────────────
+
+    public function getApprendreStats()
+    {
+        $tracks = ['darija', 'tifinagh', 'culture'];
+
+        // ── Totals (aggregate counts straight from the tables) ──
+        $totalMissions    = ApprendreMission::count();
+        $totalCompletions = ApprendreProgress::where('completed', true)->count();
+        $totalFavorites   = ApprendreFavorite::count();
+        $totalSaved       = ApprendreSavedContent::count();
+
+        // Distinct learners: users who have at least one completed mission.
+        $activeLearners = ApprendreProgress::where('completed', true)
+            ->distinct('user_id')
+            ->count('user_id');
+
+        // ── Per-track breakdown ──
+        $missionsPerTrack = ApprendreMission::select('track', DB::raw('COUNT(*) as total'))
+            ->groupBy('track')
+            ->pluck('total', 'track');
+
+        $completionsPerTrack = ApprendreProgress::where('completed', true)
+            ->join('apprendre_missions', 'apprendre_progress.mission_id', '=', 'apprendre_missions.id')
+            ->select('apprendre_missions.track', DB::raw('COUNT(*) as total'))
+            ->groupBy('apprendre_missions.track')
+            ->pluck('total', 'track');
+
+        $favoritesPerTrack = ApprendreFavorite::join('apprendre_missions', 'apprendre_favorites.mission_id', '=', 'apprendre_missions.id')
+            ->select('apprendre_missions.track', DB::raw('COUNT(*) as total'))
+            ->groupBy('apprendre_missions.track')
+            ->pluck('total', 'track');
+
+        $savedPerTrack = ApprendreSavedContent::join('apprendre_missions', 'apprendre_saved_content.mission_id', '=', 'apprendre_missions.id')
+            ->select('apprendre_missions.track', DB::raw('COUNT(*) as total'))
+            ->groupBy('apprendre_missions.track')
+            ->pluck('total', 'track');
+
+        $byTrack = collect($tracks)->map(function ($track) use (
+            $missionsPerTrack, $completionsPerTrack, $favoritesPerTrack, $savedPerTrack
+        ) {
+            $missions    = (int) ($missionsPerTrack[$track] ?? 0);
+            $completions = (int) ($completionsPerTrack[$track] ?? 0);
+
+            return [
+                'track'        => $track,
+                'missions'     => $missions,
+                'completions'  => $completions,
+                'favorites'    => (int) ($favoritesPerTrack[$track] ?? 0),
+                'saved'        => (int) ($savedPerTrack[$track] ?? 0),
+            ];
+        })->values();
+
+        // ── Most-completed missions (top 5) ──
+        $topMissions = ApprendreMission::query()
+            ->withCount(['progress as completions' => function ($q) {
+                $q->where('completed', true);
+            }])
+            ->orderByDesc('completions')
+            ->orderBy('track')
+            ->orderBy('mission_number')
+            ->take(5)
+            ->get()
+            ->map(fn ($m) => [
+                'id'             => $m->id,
+                'track'          => $m->track,
+                'mission_number' => $m->mission_number,
+                'title'          => $m->title,
+                'completions'    => (int) $m->completions,
+            ]);
+
+        // Overall completion rate = completed rows / (learners × missions).
+        $possible = $activeLearners * $totalMissions;
+        $completionRate = $possible > 0
+            ? round(($totalCompletions / $possible) * 100)
+            : 0;
+
+        return response()->json([
+            'totals' => [
+                'missions'        => $totalMissions,
+                'active_learners' => $activeLearners,
+                'completions'     => $totalCompletions,
+                'favorites'       => $totalFavorites,
+                'saved_content'   => $totalSaved,
+                'completion_rate' => $completionRate,
+            ],
+            'by_track'     => $byTrack,
+            'top_missions' => $topMissions,
+        ]);
+    }
+
+    // ──────────────────────────────────────────────
+    //  Apprendre inspection (drill-down lists)
+    //
+    //  Each endpoint returns paginated, searchable records straight from the
+    //  apprendre_* tables so an admin can click a stat card and inspect the real
+    //  rows behind the number. Shared query params: ?page, ?per_page, ?search.
+    // ──────────────────────────────────────────────
+
+    // Clamp pagination params to a sane range (defaults: page 1, 10 per page, max 100).
+    private function apprendrePerPage(Request $request): int
+    {
+        return (int) min(max((int) $request->query('per_page', 10), 1), 100);
+    }
+
+    // Active learners: users with at least one completed mission, plus their counts.
+    public function getApprendreLearners(Request $request)
+    {
+        $search = trim((string) $request->query('search', ''));
+
+        $query = User::query()
+            ->whereHas('apprendreProgress', fn ($q) => $q->where('completed', true))
+            ->withCount([
+                'apprendreProgress as completed_count' => fn ($q) => $q->where('completed', true),
+                'apprendreFavorites as favorites_count',
+                'apprendreSavedContent as saved_count',
+            ])
+            ->select(['id', 'name', 'email', 'role', 'image', 'created_at']);
+
+        if ($search !== '') {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%");
+            });
+        }
+
+        return response()->json(
+            $query->orderByDesc('completed_count')->orderBy('name')
+                ->paginate($this->apprendrePerPage($request))
+        );
+    }
+
+    // All completion records (mission + learner), newest first.
+    public function getApprendreCompletions(Request $request)
+    {
+        $search = trim((string) $request->query('search', ''));
+
+        $query = ApprendreProgress::query()
+            ->where('completed', true)
+            ->with(['user:id,name,email', 'mission:id,track,mission_number,title']);
+
+        if ($search !== '') {
+            $query->where(function ($q) use ($search) {
+                $q->whereHas('user', fn ($u) => $u->where('name', 'like', "%{$search}%")->orWhere('email', 'like', "%{$search}%"))
+                  ->orWhereHas('mission', fn ($m) => $m->where('title', 'like', "%{$search}%")->orWhere('track', 'like', "%{$search}%"));
+            });
+        }
+
+        return response()->json(
+            $query->orderByDesc('completed_at')->orderByDesc('id')
+                ->paginate($this->apprendrePerPage($request))
+        );
+    }
+
+    // All favorite records (mission + learner).
+    public function getApprendreFavoritesList(Request $request)
+    {
+        $search = trim((string) $request->query('search', ''));
+
+        $query = ApprendreFavorite::query()
+            ->with(['user:id,name,email', 'mission:id,track,mission_number,title']);
+
+        if ($search !== '') {
+            $query->where(function ($q) use ($search) {
+                $q->whereHas('user', fn ($u) => $u->where('name', 'like', "%{$search}%")->orWhere('email', 'like', "%{$search}%"))
+                  ->orWhereHas('mission', fn ($m) => $m->where('title', 'like', "%{$search}%")->orWhere('track', 'like', "%{$search}%"));
+            });
+        }
+
+        return response()->json(
+            $query->orderByDesc('id')->paginate($this->apprendrePerPage($request))
+        );
+    }
+
+    // All saved vocabulary records (content + learner + mission).
+    public function getApprendreSavedList(Request $request)
+    {
+        $search = trim((string) $request->query('search', ''));
+
+        $query = ApprendreSavedContent::query()
+            ->with(['user:id,name,email', 'mission:id,track,mission_number,title']);
+
+        if ($search !== '') {
+            $query->where(function ($q) use ($search) {
+                $q->where('content', 'like', "%{$search}%")
+                  ->orWhere('translation', 'like', "%{$search}%")
+                  ->orWhereHas('user', fn ($u) => $u->where('name', 'like', "%{$search}%")->orWhere('email', 'like', "%{$search}%"))
+                  ->orWhereHas('mission', fn ($m) => $m->where('title', 'like', "%{$search}%")->orWhere('track', 'like', "%{$search}%"));
+            });
+        }
+
+        return response()->json(
+            $query->orderByDesc('id')->paginate($this->apprendrePerPage($request))
+        );
     }
 
     public function getCities()

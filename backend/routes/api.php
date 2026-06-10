@@ -33,6 +33,12 @@ Route::middleware('auth:sanctum')->group(function () {
     
     Route::middleware('admin')->group(function () {
         Route::get('/admin/stats', [AdminController::class, 'getStats']);
+        Route::get('/admin/apprendre-stats', [AdminController::class, 'getApprendreStats']);
+        // Apprendre drill-down lists (paginated + searchable)
+        Route::get('/admin/apprendre/learners', [AdminController::class, 'getApprendreLearners']);
+        Route::get('/admin/apprendre/completions', [AdminController::class, 'getApprendreCompletions']);
+        Route::get('/admin/apprendre/favorites', [AdminController::class, 'getApprendreFavoritesList']);
+        Route::get('/admin/apprendre/saved', [AdminController::class, 'getApprendreSavedList']);
         Route::get('/admin/favorites', [AdminController::class, 'getFavorites']);
 
         Route::get('/admin/users', [AdminController::class, 'getAllUsers']);
