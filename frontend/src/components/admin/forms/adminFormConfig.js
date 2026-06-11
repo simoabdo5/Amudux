@@ -69,7 +69,7 @@ export const getFieldConfig = (section, mode, cities = [], isSelf = false) => {
     places: [
       ...sharedContentFields.slice(0, 3),
       { name: "category", label: "Category", type: "text" },
-      { name: "entry_price", label: "Entry price", type: "number", min: "0", step: "0.01" },
+      { name: "entry_price", label: "Entry price", type: "number", min: "0", step: "0.01", suffix: "MAD" },
       ...sharedContentFields.slice(3),
     ],
     hiddenGems: [
