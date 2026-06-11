@@ -17,7 +17,7 @@ import { getUploadUrl } from "../../services/config";
 
 import "../css/Profile.css";
 
-function Profile() {
+function Profile({ embedded = false }) {
   const { user, updateUser } = useAuth();
   const { lang } = useLanguage();
   const fileInputRef = useRef(null);
@@ -112,10 +112,14 @@ function Profile() {
   };
 
   return (
-    <div className="profile-container">
-      <div className="bg-shape-1" />
-      <div className="bg-shape-2" />
-      <div className="bg-shape-3" />
+    <div className={`profile-container ${embedded ? "embedded" : ""}`}>
+      {!embedded && (
+        <>
+          <div className="bg-shape-1" />
+          <div className="bg-shape-2" />
+          <div className="bg-shape-3" />
+        </>
+      )}
 
       <div className="profile-card">
         <div className="profile-card-inner">

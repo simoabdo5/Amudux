@@ -196,6 +196,7 @@ body {
   border: 1px solid rgba(255, 122, 0, 0.2);
   border-radius: 50px;
   color: #ff7a00;
+  font-family: inherit;
   font-size: 13px;
   font-weight: 600;
   white-space: nowrap;
@@ -500,10 +501,12 @@ body {
     border: 1px solid rgba(255, 122, 0, 0.2);
     border-radius: 50px;
     color: #ff7a00 !important;
+    font-family: inherit;
     font-size: 8px;
     font-weight: 600;
     text-decoration: none !important;
     transition: all 0.3s ease;
+    cursor: pointer;
   }
 
   .mobile-greeting:hover {
