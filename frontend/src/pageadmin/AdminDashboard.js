@@ -30,7 +30,7 @@ import ConfirmDialog from "../components/common/ConfirmDialog";
 import "../components/css/AdminDashboard.css";
 
 function AdminDashboard() {
-  const { user, isAdmin } = useAuth();
+  const { user, isAdmin, refreshUser } = useAuth();
   const { lang, isRTL } = useLanguage();
   const navigate = useNavigate();
 
@@ -153,6 +153,13 @@ function AdminDashboard() {
     setQuery("");
   };
 
+  const handleRefresh = useCallback(async () => {
+    await Promise.all([
+      refreshUser().catch(() => null),
+      fetchData(false),
+    ]);
+  }, [fetchData, refreshUser]);
+
   const openModal = (section, mode, item = null) => {
     const isSelf = section === "users" && item?.id === user?.id;
     const cities = collections.cities || [];
@@ -265,7 +272,7 @@ function AdminDashboard() {
         lang={lang}
         refreshing={loading || refreshing}
         onHome={() => navigate("/")}
-        onRefresh={() => fetchData(false)}
+        onRefresh={handleRefresh}
         className="admin-topbar-mobile"
       />
 
@@ -283,7 +290,7 @@ function AdminDashboard() {
           lang={lang}
           refreshing={loading || refreshing}
           onHome={() => navigate("/")}
-          onRefresh={() => fetchData(false)}
+          onRefresh={handleRefresh}
           className="admin-topbar-desktop"
         />
 
