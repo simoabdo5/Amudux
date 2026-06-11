@@ -908,6 +908,10 @@
     background: var(--admin-bg);
   }
 
+  .admin-topbar-mobile .admin-topbar-actions {
+    width: 100%;
+  }
+
   .admin-topbar-mobile .admin-topbar-content,
   .admin-topbar-desktop .admin-topbar-actions {
     display: none;
@@ -926,6 +930,7 @@
     align-items: center;
     gap: 10px;
     padding-inline-end: 4px;
+    margin-inline-end: auto;
   }
 
   .admin-sidebar {
@@ -1044,6 +1049,17 @@
   .admin-secondary-btn {
     width: auto;
     flex: 1;
+  }
+
+  .admin-topbar-mobile .admin-topbar-actions {
+    justify-content: flex-end;
+  }
+
+  .admin-topbar-mobile .admin-secondary-btn {
+    min-height: 38px;
+    flex: 0 0 auto;
+    padding: 0 12px;
+    font-size: 14px;
   }
 }
 
