@@ -101,12 +101,16 @@ function Menu() {
         };
         document.addEventListener("keydown", handleKeyDown);
 
-        const previousOverflow = document.body.style.overflow;
+        const root = document.documentElement;
+        const previousRootOverflow = root.style.overflow;
+        const previousBodyOverflow = document.body.style.overflow;
+        root.style.overflow = "hidden";
         document.body.style.overflow = "hidden";
 
         return () => {
             document.removeEventListener("keydown", handleKeyDown);
-            document.body.style.overflow = previousOverflow;
+            root.style.overflow = previousRootOverflow;
+            document.body.style.overflow = previousBodyOverflow;
         };
     }, [profileOpen]);
 

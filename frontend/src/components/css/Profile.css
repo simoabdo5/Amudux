@@ -654,35 +654,36 @@ html.dark .profile-modal-backdrop {
 
 .profile-modal-close {
   position: absolute;
-  top: 18px;
-  right: 18px;
+  top: 20px;
+  left: 20px;
+  right: auto;
   z-index: 5;
 
   width: 40px;
   height: 40px;
-  display: grid;
-  place-items: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   border: none;
-  border-radius: 999px;
+  border-radius: 50%;
   cursor: pointer;
 
-  color: var(--text-primary);
-  background: var(--card-right-bg);
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+  color: #fff;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
 
-  transition: transform 0.15s ease, background 0.15s ease;
+  transition: background 0.2s ease;
 }
 
 .profile-modal.rtl .profile-modal-close {
-  right: auto;
-  left: 18px;
+  left: auto;
+  right: 20px;
 }
 
 .profile-modal-close:hover {
-  transform: scale(1.08);
-  background: var(--orange-primary);
-  color: #fff;
+  background: rgba(255, 255, 255, 0.3);
 }
 
 /* Neutralize the full-page layout when embedded in the modal */
@@ -742,6 +743,62 @@ html.dark .profile-modal-backdrop {
 
 .profile-container.embedded .save-button {
   margin-top: 0.2rem;
+  padding: 0.7rem 1.5rem;
+}
+
+.profile-container.embedded .profile-header {
+  margin-bottom: 0.25rem;
+}
+
+/* Tighten field vertical rhythm so the whole card fits without scrolling,
+   even in edit mode when the Save button is visible */
+.profile-container.embedded .input-icon-wrapper input,
+.profile-container.embedded .input-icon-wrapper textarea {
+  padding: 0.6rem 1rem 0.6rem 0;
+  font-size: 0.95rem;
+}
+
+.profile-container.embedded .input-icon {
+  margin-top: 0.6rem;
+}
+
+.profile-container.embedded .form-group label {
+  font-size: 0.78rem;
+  letter-spacing: 0.5px;
+}
+
+.profile-container.embedded .email-hint {
+  margin-top: 0.1rem;
+}
+
+/* ---- Fix style bleed from Login.css (.form-group input) ----
+   Both stylesheets are global; Login's input rule has equal specificity
+   and was rendering a bordered white box INSIDE the profile pill.
+   These higher-specificity rules keep the wrapper as the single clean field. */
+.profile-card .input-icon-wrapper input,
+.profile-card .input-icon-wrapper textarea {
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  background-color: transparent;
+  box-shadow: none;
+}
+
+.profile-card .input-icon-wrapper input:focus,
+.profile-card .input-icon-wrapper textarea:focus {
+  border: none;
+  box-shadow: none;
+  outline: none;
+}
+
+.profile-card .readonly-field {
+  background-color: transparent;
+}
+
+html.dark .profile-card .input-icon-wrapper input,
+html.dark .profile-card .input-icon-wrapper textarea,
+html.dark .profile-card .readonly-field {
+  background-color: transparent;
 }
 
 @keyframes profileModalFade {
