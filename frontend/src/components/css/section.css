@@ -170,30 +170,39 @@ body {
   align-items: center;
   gap: 8px;
   
-  background: rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background: transparent;
   
-  padding: 10px 20px;
+  padding: 10px 22px;
   border-radius: 50px;
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  border: 1.5px solid rgba(255, 255, 255, 0.6);
   
   color: white;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   
-  /* HNA: Hidden by default */
+  /* Hidden by default */
   opacity: 0;
   transform: translateY(15px);
-  transition: all 0.4s ease;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
   
-  margin-top: 12px; /* HNA: Margin mn lfo9 */
+  margin-top: 12px;
 }
 
-/* HNA: Yban fach hover */
+/* Yban fach hover */
 .popular-card:hover .card-btn {
   opacity: 1;
   transform: translateY(0);
+}
+
+/* Hover button itself: Solid orange gradient */
+.card-btn:hover {
+  background: linear-gradient(135deg, #ff7a00, #ff5100);
+  border-color: transparent;
+  color: white;
+  transform: translateY(-3px) !important;
+  box-shadow: 0 10px 25px rgba(255, 122, 0, 0.25);
 }
 
 /* Icon */
@@ -201,7 +210,7 @@ body {
   transition: transform 0.3s ease;
 }
 
-.popular-card:hover .card-btn svg {
+.card-btn:hover svg {
   transform: translateX(4px);
 }
 
